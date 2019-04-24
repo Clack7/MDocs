@@ -19,6 +19,7 @@
 
 // Highlight JS
 @import '~highlight.js/styles/github';
+// @import '~highlight.js/styles/monokai-sublime'; // darkly
 
 
 // Github markdown
@@ -97,3 +98,37 @@
 .path-header-input span, .path-header-extension {
   color:#999;
 }
+
+// Darkly adjust
+/*.markdown-body {
+  color: white;
+  h1, h2 {
+    border-bottom-color:rgba(255, 255, 255, 0.1);
+  }
+  a {
+    color: #38c172;
+  }
+  .highlight pre, pre, code {
+    background-color: #23241F;
+  }
+}
+.path-header-input input {
+  color:white;
+}
+.sidebar {
+  border-right: 1px solid #222;
+  box-shadow: none;
+}
+.sidebar .nav-link {
+  color: white;
+}
+.sidebar .nav-link.active {
+  color: #38c172;
+  background: #333;
+  border-right: none;
+  outline: 1px solid #1a1a1a;
+}
+.sidebar .nav-link:hover {
+  background: #444;
+  border-right: none;
+}*/
