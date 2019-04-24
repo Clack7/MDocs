@@ -25569,6 +25569,8 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
+    // Clean initial path
+    this.pathClean();
     var that = this; // Vim save command
 
     ace.config.loadModule("ace/keyboard/vim", function (m) {
@@ -25791,7 +25793,7 @@ __webpack_require__.r(__webpack_exports__);
       this.editor.getSession().setScrollTop(editTop);
     },
     pathClean: function pathClean() {
-      this.path_new = this.path_new.replace(/[^a-zA-Z0-9-_ \/]/g, '');
+      this.path_new = this.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
     },
     save: function save() {
       var _this2 = this;
@@ -25935,6 +25937,8 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
+    // Clean initial path
+    this.pathClean();
     axios.get('/api/file/' + this.path).then(function (response) {
       _this.content = response.data.content;
 
@@ -25964,7 +25968,7 @@ __webpack_require__.r(__webpack_exports__);
       this.contentMarked = this.$options.filters['marked'](this.content);
     },
     pathClean: function pathClean() {
-      this.path_new = this.path_new.replace(/[^a-zA-Z0-9-_ \/]/g, '');
+      this.path_new = this.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
     },
     pathChange: function pathChange() {
       if (this.path_new == '') {

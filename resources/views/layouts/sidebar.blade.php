@@ -46,6 +46,9 @@
         window.UtilConfig = {
             spaRoutes: {!! json_encode(config('app.spa.routes')) !!},
         };
+        window.MDocs = {
+            char_regex: '{{ config('mdocs.char_regex') }}'
+        };
     </script>
 </body>
 </html>

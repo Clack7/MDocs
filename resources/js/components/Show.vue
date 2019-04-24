@@ -35,6 +35,9 @@
             };
         },
         mounted() {
+            // Clean initial path
+            this.pathClean();
+
             axios.get('/api/file/' + this.path)
                 .then((response) => {
                     this.content = response.data.content;
@@ -63,7 +66,7 @@
                 this.contentMarked = this.$options.filters['marked'](this.content);
             },
             pathClean() {
-                this.path_new = this.path_new.replace(/[^a-zA-Z0-9-_ \/]/g, '');
+                this.path_new = this.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
             },
             pathChange() {
                 if (this.path_new == '') {

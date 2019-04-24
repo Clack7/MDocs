@@ -72,6 +72,9 @@
             };
         },
         mounted() {
+            // Clean initial path
+            this.pathClean();
+
             var that = this;
 
             // Vim save command
@@ -279,7 +282,7 @@
                 this.editor.getSession().setScrollTop(editTop);
             },
             pathClean() {
-                this.path_new = this.path_new.replace(/[^a-zA-Z0-9-_ \/]/g, '');
+                this.path_new = this.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
             },
             save() {
                 if (this.saving) {
