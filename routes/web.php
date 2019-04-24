@@ -11,6 +11,53 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['middleware' => []], function () {
+    Route::get('/a/{path}:{key}', 'API\FileController@attachmentShow')->name('file.attachment.show')->where('path', '([^:]*)');
+
+    // API routes
+    Route::group(['prefix' => 'api', 'namespace' => 'API'], function () {
+        // File
+        Route::get('/file', 'FileController@list')->name('file.list');
+        Route::post('/file/attach', 'FileController@attachmentUpload')->name('file.attachment.upload');
+        Route::get('/file/{path}', 'FileController@show')->name('file.show')->where('path', '(.*)');
+        Route::post('/file/{path}', 'FileController@save')->name('file.save')->where('path', '(.*)');
+        Route::delete('/file/{path}', 'FileController@delete')->name('file.delete')->where('path', '(.*)');
+    });
+
+    // SPA routes
+    $spa = [
+        '/'             => [
+            'name'      => 'index',
+            'component' => 'Index',
+        ],
+        '/create' => [
+            'name'      => 'create',
+            'component' => 'Editor',
+        ],
+        '/update/{path}' => [
+            'name'      => 'update',
+            'component' => 'Editor',
+            'path'      => '/update/:path(.*)',
+            'where'     => ['path' => '(.*)']
+        ],
+        // Load last
+        '/{path}' => [
+            'name'      => 'show',
+            'component' => 'Show',
+            'path'      => '/:path(.*)',
+            'where'     => ['path' => '(.*)']
+        ],
+    ];
+    $jsRoutes = [];
+    foreach ($spa as $key => $val) {
+        $r = Route::get($key, 'IndexController@index')->name($val['name']);
+        if (!empty($val['where'])) {
+            foreach ($val['where'] as $k => $v) {
+                $r->where($k, $v);
+            }
+        }
+        $jsRoutes[isset($val['path']) ? $val['path'] : $key] = $val['component'];
+    }
+    // Set config for JS access
+    config(['app.spa.routes' => $jsRoutes]);
 });

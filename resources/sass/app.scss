@@ -4,11 +4,96 @@
 
 // Variables
 @import 'variables';
+// @import 'darkly';
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+// Sidebar layout
+@import 'sidebar';
+
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+// Highlight JS
+@import '~highlight.js/styles/github';
+
+
+// Github markdown
+@import '~github-markdown-css/github-markdown';
+.markdown-body {
+  box-sizing: border-box;
+  padding: 20px 20px;
+
+  .task-list-item {
+    list-style-type: none;
+  }
+  .task-list-item + .task-list-item {
+    margin-top: 3px;
+  }
+  .task-list-item input {
+    margin: 0 .2em .25em -1.3em;
+    vertical-align: middle;
+  }
+}
+@media (max-width: 767px) {
+  .markdown-body {
+    padding: 15px;
+  }
+}
+
+// Vue Transitions
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 50.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+// Header file path
+.path-header-input {
+  position:relative;
+
+  input, span {
+    font-family: monaco;
+    border: 0;
+    background: transparent;
+    font-size:0.9rem;
+    display: block;
+    padding: 1px;
+    margin: 0;
+  }
+
+  input {
+    position: absolute;
+    width: 100%;
+  }
+
+  span {
+    visibility: hidden;
+  }
+}
+.path-header-extension, .path-header-title {
+  font-family: monaco;
+  border: 0;
+  background: transparent;
+  font-size:0.9rem;
+}
+.path-header-input span, .path-header-extension {
+  color:#999;
 }
