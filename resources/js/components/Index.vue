@@ -1,5 +1,5 @@
 <template>
-    <div class="card border-0">
+    <div class="card border-0 rounded-0">
         <div class="markdown-body" v-html="this.$options.filters['marked'](this.content)"></div>
     </div>
 </template>

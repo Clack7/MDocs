@@ -2,7 +2,7 @@
     <div v-shortkey="['alt', 'c']" @shortkey="cancel()">
         <div class="alert alert-danger m-0 rounded-0" v-if="error != ''">{{ error }}</div>
         <div class="card border-0">
-            <div class="card-header d-flex">
+            <div class="card-header d-flex rounded-0">
                 <div class="path-header-input">
                     <input type="text" v-model="path_new" @input="pathClean" v-shortkey.native.focus="['alt', 'n']" />
                     <span v-bind:class="{ visible: path_new == '' }">{{ path_new == '' ? 'File path...' : path_new|spaceNbsp }}</span>
