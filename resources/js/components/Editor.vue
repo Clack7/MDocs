@@ -2,20 +2,7 @@
     <div v-shortkey="['alt', 'c']" @shortkey="cancel()">
         <div class="alert alert-danger m-0 rounded-0" v-if="error != ''">{{ error }}</div>
         <div class="card border-0">
-            <div class="card-header d-flex rounded-0">
-                <div class="path-header-input">
-                    <input type="text" v-model="path_new" @input="pathClean" v-shortkey.native.focus="['alt', 'n']" />
-                    <span v-bind:class="{ visible: path_new == '' }">{{ path_new == '' ? 'File path...' : path_new|spaceNbsp }}</span>
-                </div>
-                <div class="path-header-extension flex-grow-1">{{ path_new == '' ? '' : '.md ' }}</div>
-                <div>
-                    <button v-if="!createAction" tabindex="-1" class="btn btn-sm btn-outline-danger" @click="destroyConfirm()" style="margin: -3px">Delete</button>
-                    &nbsp;&nbsp;&nbsp;
-                    <button tabindex="-1" class="btn btn-sm btn-outline-info" @click="editorImagesHide()" style="margin: -3px"  v-shortkey="['alt', 'i']" @shortkey="editorImagesHide()">Hide IMG</button>
-                    &nbsp;&nbsp;&nbsp;
-                    <button tabindex="-1" class="btn btn-sm" :class="{ 'btn-success' : !createAction, 'btn-primary': createAction }" style="margin: -3px" @click.prevent="save" v-shortkey="['ctrl', 's']" @shortkey="save()">{{ saving ? 'Saving...' : 'Save file' }}</button>
-                </div>
-            </div>
+            <path-header-component mode="editor"></path-header-component>
             <div class="row no-gutters">
                 <div class="col-6" ref="editorColumn" :style="{ height: columnHeight + 'px', overflow: 'auto', 'border-right': '1px solid #ccc' }">
                     <div style="position:relative;height:100%;">
@@ -72,9 +59,6 @@
             };
         },
         mounted() {
-            // Clean initial path
-            this.pathClean();
-
             var that = this;
 
             // Vim save command
@@ -281,9 +265,6 @@
                 var editTop = (this.editor.renderer.layerConfig.maxHeight - this.columnHeight) * prevPercent;
                 this.editor.getSession().setScrollTop(editTop);
             },
-            pathClean() {
-                this.path_new = this.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
-            },
             save() {
                 if (this.saving) {
                     return;
@@ -325,11 +306,6 @@
                         this.error = error.response.data.message;
                         Vue.handleAxiosError(error);
                     });
-            }
-        },
-        filters: {
-            spaceNbsp(text) {
-                return text.replace(/ /g, '\xA0');
             }
         }
     }

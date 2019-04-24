@@ -25534,19 +25534,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -25569,8 +25556,6 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    // Clean initial path
-    this.pathClean();
     var that = this; // Vim save command
 
     ace.config.loadModule("ace/keyboard/vim", function (m) {
@@ -25792,9 +25777,6 @@ __webpack_require__.r(__webpack_exports__);
       var editTop = (this.editor.renderer.layerConfig.maxHeight - this.columnHeight) * prevPercent;
       this.editor.getSession().setScrollTop(editTop);
     },
-    pathClean: function pathClean() {
-      this.path_new = this.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
-    },
     save: function save() {
       var _this2 = this;
 
@@ -25852,11 +25834,6 @@ __webpack_require__.r(__webpack_exports__);
         Vue.handleAxiosError(error);
       });
     }
-  },
-  filters: {
-    spaceNbsp: function spaceNbsp(text) {
-      return text.replace(/ /g, '\xA0');
-    }
   }
 });
 
@@ -25890,10 +25867,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Show.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Show.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PathHeader.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PathHeader.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -25919,13 +25896,69 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['mode'],
+  data: function data() {
+    return {};
+  },
+  mounted: function mounted() {
+    this.pathClean();
+  },
+  methods: {
+    pathClean: function pathClean() {
+      this.$parent.path_new = this.$parent.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
+    },
+    pathChange: function pathChange() {
+      if (this.mode != 'show') {
+        return;
+      }
+
+      if (this.$parent.path_new == '') {
+        this.$parent.path_new = this.$parent.path_cur;
+        return;
+      }
+
+      this.$parent.$router.push('/' + this.$parent.path_new);
+    }
+  },
+  filters: {
+    spaceNbsp: function spaceNbsp(text) {
+      return text.replace(/ /g, '\xA0');
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Show.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Show.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       path_new: this.$route.params.path,
-      path: this.$route.params.path,
+      path_cur: this.$route.params.path,
       content: '',
       contentMarked: 'Loading...',
       createAction: false,
@@ -25937,15 +25970,11 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    // Clean initial path
-    this.pathClean();
-    axios.get('/api/file/' + this.path).then(function (response) {
+    axios.get('/api/file/' + this.path_cur).then(function (response) {
       _this.content = response.data.content;
 
       _this.update();
     })["catch"](function (error) {
-      Vue.handleAxiosError(error);
-
       if (error.response.status == 404 && error.response.data.message == 'File not found.') {
         _this.createAction = true;
       } else {
@@ -25967,24 +25996,8 @@ __webpack_require__.r(__webpack_exports__);
     update: function update() {
       this.contentMarked = this.$options.filters['marked'](this.content);
     },
-    pathClean: function pathClean() {
-      this.path_new = this.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
-    },
-    pathChange: function pathChange() {
-      if (this.path_new == '') {
-        this.path_new = this.path;
-        return;
-      }
-
-      this.$router.push('/' + this.path_new);
-    },
     edit: function edit() {
-      this.$router.push('/update/' + this.path);
-    }
-  },
-  filters: {
-    spaceNbsp: function spaceNbsp(text) {
-      return text.replace(/ /g, '\xA0');
+      this.$router.push('/update/' + this.path_cur);
     }
   }
 });
@@ -93352,164 +93365,46 @@ var render = function() {
           ])
         : _vm._e(),
       _vm._v(" "),
-      _c("div", { staticClass: "card border-0" }, [
-        _c("div", { staticClass: "card-header d-flex rounded-0" }, [
-          _c("div", { staticClass: "path-header-input" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.path_new,
-                  expression: "path_new"
-                },
-                {
-                  name: "shortkey",
-                  rawName: "v-shortkey.native.focus",
-                  value: ["alt", "n"],
-                  expression: "['alt', 'n']",
-                  modifiers: { native: true, focus: true }
-                }
-              ],
-              attrs: { type: "text" },
-              domProps: { value: _vm.path_new },
-              on: {
-                input: [
-                  function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.path_new = $event.target.value
-                  },
-                  _vm.pathClean
-                ]
-              }
-            }),
-            _vm._v(" "),
-            _c("span", { class: { visible: _vm.path_new == "" } }, [
-              _vm._v(
-                _vm._s(
-                  _vm._f("spaceNbsp")(
-                    _vm.path_new == "" ? "File path..." : _vm.path_new
-                  )
-                )
-              )
-            ])
-          ]),
+      _c(
+        "div",
+        { staticClass: "card border-0" },
+        [
+          _c("path-header-component", { attrs: { mode: "editor" } }),
           _vm._v(" "),
-          _c("div", { staticClass: "path-header-extension flex-grow-1" }, [
-            _vm._v(_vm._s(_vm.path_new == "" ? "" : ".md "))
-          ]),
-          _vm._v(" "),
-          _c("div", [
-            !_vm.createAction
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-sm btn-outline-danger",
-                    staticStyle: { margin: "-3px" },
-                    attrs: { tabindex: "-1" },
-                    on: {
-                      click: function($event) {
-                        return _vm.destroyConfirm()
-                      }
-                    }
-                  },
-                  [_vm._v("Delete")]
-                )
-              : _vm._e(),
-            _vm._v("\n                   \n                "),
+          _c("div", { staticClass: "row no-gutters" }, [
             _c(
-              "button",
+              "div",
               {
-                directives: [
-                  {
-                    name: "shortkey",
-                    rawName: "v-shortkey",
-                    value: ["alt", "i"],
-                    expression: "['alt', 'i']"
-                  }
-                ],
-                staticClass: "btn btn-sm btn-outline-info",
-                staticStyle: { margin: "-3px" },
-                attrs: { tabindex: "-1" },
-                on: {
-                  click: function($event) {
-                    return _vm.editorImagesHide()
-                  },
-                  shortkey: function($event) {
-                    return _vm.editorImagesHide()
-                  }
+                ref: "editorColumn",
+                staticClass: "col-6",
+                style: {
+                  height: _vm.columnHeight + "px",
+                  overflow: "auto",
+                  "border-right": "1px solid #ccc"
                 }
               },
-              [_vm._v("Hide IMG")]
+              [_vm._m(0)]
             ),
-            _vm._v("\n                   \n                "),
+            _vm._v(" "),
             _c(
-              "button",
+              "div",
               {
-                directives: [
-                  {
-                    name: "shortkey",
-                    rawName: "v-shortkey",
-                    value: ["ctrl", "s"],
-                    expression: "['ctrl', 's']"
-                  }
-                ],
-                staticClass: "btn btn-sm",
-                class: {
-                  "btn-success": !_vm.createAction,
-                  "btn-primary": _vm.createAction
-                },
-                staticStyle: { margin: "-3px" },
-                attrs: { tabindex: "-1" },
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    return _vm.save($event)
-                  },
-                  shortkey: function($event) {
-                    return _vm.save()
-                  }
-                }
+                ref: "previewColumn",
+                staticClass: "col-6",
+                style: { height: _vm.columnHeight + "px", overflow: "auto" },
+                on: { scroll: _vm.previewScroll }
               },
-              [_vm._v(_vm._s(_vm.saving ? "Saving..." : "Save file"))]
+              [
+                _c("div", {
+                  staticClass: "markdown-body",
+                  domProps: { innerHTML: _vm._s(_vm.contentMarked) }
+                })
+              ]
             )
           ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "row no-gutters" }, [
-          _c(
-            "div",
-            {
-              ref: "editorColumn",
-              staticClass: "col-6",
-              style: {
-                height: _vm.columnHeight + "px",
-                overflow: "auto",
-                "border-right": "1px solid #ccc"
-              }
-            },
-            [_vm._m(0)]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              ref: "previewColumn",
-              staticClass: "col-6",
-              style: { height: _vm.columnHeight + "px", overflow: "auto" },
-              on: { scroll: _vm.previewScroll }
-            },
-            [
-              _c("div", {
-                staticClass: "markdown-body",
-                domProps: { innerHTML: _vm._s(_vm.contentMarked) }
-              })
-            ]
-          )
-        ])
-      ]),
+        ],
+        1
+      ),
       _vm._v(" "),
       _c(
         "div",
@@ -93645,6 +93540,194 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PathHeader.vue?vue&type=template&id=bb30d286&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PathHeader.vue?vue&type=template&id=bb30d286& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card-header d-flex rounded-0" }, [
+    _c("div", { staticClass: "path-header-input" }, [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.$parent.path_new,
+            expression: "$parent.path_new"
+          },
+          {
+            name: "shortkey",
+            rawName: "v-shortkey.native.focus",
+            value: ["alt", "n"],
+            expression: "['alt', 'n']",
+            modifiers: { native: true, focus: true }
+          }
+        ],
+        attrs: { type: "text" },
+        domProps: { value: _vm.$parent.path_new },
+        on: {
+          focus: function($event) {
+            _vm.mode == "show" ? $event.target.select() : null
+          },
+          change: _vm.pathChange,
+          input: [
+            function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.$parent, "path_new", $event.target.value)
+            },
+            _vm.pathClean
+          ]
+        }
+      }),
+      _vm._v(" "),
+      _c("span", { class: { visible: _vm.$parent.path_new == "" } }, [
+        _vm._v(
+          _vm._s(
+            _vm._f("spaceNbsp")(
+              _vm.$parent.path_new == "" ? "File path..." : _vm.$parent.path_new
+            )
+          )
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "path-header-extension flex-grow-1" }, [
+      _vm._v(_vm._s(_vm.$parent.path_new == "" ? "" : ".md "))
+    ]),
+    _vm._v(" "),
+    _vm.mode == "show"
+      ? _c(
+          "div",
+          [
+            _c(
+              "router-link",
+              {
+                directives: [
+                  {
+                    name: "shortkey",
+                    rawName: "v-shortkey",
+                    value: ["alt", "e"],
+                    expression: "['alt', 'e']"
+                  }
+                ],
+                staticClass: "btn btn-sm",
+                class: {
+                  "btn-success": !_vm.$parent.createAction,
+                  "btn-primary": _vm.$parent.createAction
+                },
+                staticStyle: { margin: "-3px" },
+                attrs: { to: "/update/" + _vm.$parent.path_cur },
+                nativeOn: {
+                  shortkey: function($event) {
+                    return _vm.$parent.edit()
+                  }
+                }
+              },
+              [_vm._v(_vm._s(!_vm.$parent.createAction ? "Edit" : "Create"))]
+            )
+          ],
+          1
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.mode == "editor"
+      ? _c("div", [
+          !_vm.$parent.createAction
+            ? _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm btn-outline-danger",
+                  staticStyle: { margin: "-3px" },
+                  attrs: { tabindex: "-1" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$parent.destroyConfirm()
+                    }
+                  }
+                },
+                [_vm._v("Delete")]
+              )
+            : _vm._e(),
+          _vm._v("\n           \n        "),
+          _c(
+            "button",
+            {
+              directives: [
+                {
+                  name: "shortkey",
+                  rawName: "v-shortkey",
+                  value: ["alt", "i"],
+                  expression: "['alt', 'i']"
+                }
+              ],
+              staticClass: "btn btn-sm btn-outline-info",
+              staticStyle: { margin: "-3px" },
+              attrs: { tabindex: "-1" },
+              on: {
+                click: function($event) {
+                  return _vm.$parent.editorImagesHide()
+                },
+                shortkey: function($event) {
+                  return _vm.$parent.editorImagesHide()
+                }
+              }
+            },
+            [_vm._v("Hide IMG")]
+          ),
+          _vm._v("\n           \n        "),
+          _c(
+            "button",
+            {
+              directives: [
+                {
+                  name: "shortkey",
+                  rawName: "v-shortkey",
+                  value: ["ctrl", "s"],
+                  expression: "['ctrl', 's']"
+                }
+              ],
+              staticClass: "btn btn-sm",
+              class: {
+                "btn-success": !_vm.$parent.createAction,
+                "btn-primary": _vm.$parent.createAction
+              },
+              staticStyle: { margin: "-3px" },
+              attrs: { tabindex: "-1" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.$parent.save($event)
+                },
+                shortkey: function($event) {
+                  return _vm.$parent.save()
+                }
+              }
+            },
+            [_vm._v(_vm._s(_vm.$parent.saving ? "Saving..." : "Save file"))]
+          )
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Show.vue?vue&type=template&id=e124e930&":
 /*!*******************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Show.vue?vue&type=template&id=e124e930& ***!
@@ -93667,131 +93750,52 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _c("div", { staticClass: "card border-0" }, [
-      _c("div", { staticClass: "card-header d-flex rounded-0" }, [
-        _c("div", { staticClass: "path-header-input" }, [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.path_new,
-                expression: "path_new"
-              },
-              {
-                name: "shortkey",
-                rawName: "v-shortkey.native.focus",
-                value: ["alt", "n"],
-                expression: "['alt', 'n']",
-                modifiers: { native: true, focus: true }
-              }
-            ],
-            attrs: { type: "text" },
-            domProps: { value: _vm.path_new },
-            on: {
-              focus: function($event) {
-                return $event.target.select()
-              },
-              change: _vm.pathChange,
-              input: [
-                function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.path_new = $event.target.value
-                },
-                _vm.pathClean
-              ]
-            }
-          }),
-          _vm._v(" "),
-          _c("span", { class: { visible: _vm.path_new == "" } }, [
-            _vm._v(
-              _vm._s(
-                _vm._f("spaceNbsp")(
-                  _vm.path_new == "" ? "File path..." : _vm.path_new
-                )
-              )
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "path-header-extension flex-grow-1" }, [
-          _vm._v(_vm._s(_vm.path_new == "" ? "" : ".md "))
-        ]),
+    _c(
+      "div",
+      { staticClass: "card border-0" },
+      [
+        _c("path-header-component", { attrs: { mode: "show" } }),
         _vm._v(" "),
         _c(
           "div",
+          {
+            ref: "previewColumn",
+            style: { height: _vm.columnHeight + "px", overflow: "auto" }
+          },
           [
-            _c(
-              "router-link",
-              {
-                directives: [
-                  {
-                    name: "shortkey",
-                    rawName: "v-shortkey",
-                    value: ["alt", "e"],
-                    expression: "['alt', 'e']"
-                  }
-                ],
-                staticClass: "btn btn-sm",
-                class: {
-                  "btn-success": !_vm.createAction,
-                  "btn-primary": _vm.createAction
-                },
-                staticStyle: { margin: "-3px" },
-                attrs: { to: "/update/" + this.path },
-                nativeOn: {
-                  shortkey: function($event) {
-                    return _vm.edit()
-                  }
-                }
-              },
-              [_vm._v(_vm._s(!_vm.createAction ? "Edit" : "Create"))]
-            )
+            _c("transition", { attrs: { name: "slide-fade" } }, [
+              _vm.content != ""
+                ? _c("div", {
+                    staticClass: "markdown-body",
+                    domProps: { innerHTML: _vm._s(_vm.contentMarked) }
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.createAction
+                ? _c("div", { staticClass: "markdown-body" }, [
+                    _c("em", [_vm._v("File not found.")]),
+                    _vm._v("   "),
+                    _c(
+                      "a",
+                      {
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            return _vm.edit()
+                          }
+                        }
+                      },
+                      [_vm._v("Create?")]
+                    )
+                  ])
+                : _vm._e()
+            ])
           ],
           1
         )
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          ref: "previewColumn",
-          style: { height: _vm.columnHeight + "px", overflow: "auto" }
-        },
-        [
-          _c("transition", { attrs: { name: "slide-fade" } }, [
-            _vm.content != ""
-              ? _c("div", {
-                  staticClass: "markdown-body",
-                  domProps: { innerHTML: _vm._s(_vm.contentMarked) }
-                })
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.createAction
-              ? _c("div", { staticClass: "markdown-body" }, [
-                  _c("em", [_vm._v("File not found.")]),
-                  _vm._v("   "),
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          return _vm.edit()
-                        }
-                      }
-                    },
-                    [_vm._v("Create?")]
-                  )
-                ])
-              : _vm._e()
-          ])
-        ],
-        1
-      )
-    ])
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = []
@@ -108856,6 +108860,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_9__["default"]({
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('sidebar-component', __webpack_require__(/*! ./components/Sidebar.vue */ "./resources/js/components/Sidebar.vue")["default"]);
+Vue.component('path-header-component', __webpack_require__(/*! ./components/PathHeader.vue */ "./resources/js/components/PathHeader.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -108937,6 +108942,7 @@ if (token) {
 var map = {
 	"./Editor.vue": "./resources/js/components/Editor.vue",
 	"./Index.vue": "./resources/js/components/Index.vue",
+	"./PathHeader.vue": "./resources/js/components/PathHeader.vue",
 	"./Show.vue": "./resources/js/components/Show.vue",
 	"./Sidebar.vue": "./resources/js/components/Sidebar.vue"
 };
@@ -109114,6 +109120,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Index_vue_vue_type_template_id_bb962f12___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Index_vue_vue_type_template_id_bb962f12___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/PathHeader.vue":
+/*!************************************************!*\
+  !*** ./resources/js/components/PathHeader.vue ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _PathHeader_vue_vue_type_template_id_bb30d286___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PathHeader.vue?vue&type=template&id=bb30d286& */ "./resources/js/components/PathHeader.vue?vue&type=template&id=bb30d286&");
+/* harmony import */ var _PathHeader_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PathHeader.vue?vue&type=script&lang=js& */ "./resources/js/components/PathHeader.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _PathHeader_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PathHeader_vue_vue_type_template_id_bb30d286___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PathHeader_vue_vue_type_template_id_bb30d286___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/PathHeader.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/PathHeader.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/PathHeader.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PathHeader_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./PathHeader.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PathHeader.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PathHeader_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/PathHeader.vue?vue&type=template&id=bb30d286&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/PathHeader.vue?vue&type=template&id=bb30d286& ***!
+  \*******************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PathHeader_vue_vue_type_template_id_bb30d286___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./PathHeader.vue?vue&type=template&id=bb30d286& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PathHeader.vue?vue&type=template&id=bb30d286&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PathHeader_vue_vue_type_template_id_bb30d286___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PathHeader_vue_vue_type_template_id_bb30d286___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
