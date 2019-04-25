@@ -18,6 +18,7 @@ Route::group(['middleware' => []], function () {
     Route::group(['prefix' => 'api', 'namespace' => 'API'], function () {
         // File
         Route::get('/file', 'FileController@list')->name('file.list');
+        Route::get('/file/search', 'FileController@search')->name('file.search');
         Route::post('/file/attach', 'FileController@attachmentUpload')->name('file.attachment.upload');
         Route::get('/file/{path}', 'FileController@show')->name('file.show')->where('path', '(.*)');
         Route::post('/file/{path}', 'FileController@save')->name('file.save')->where('path', '(.*)');

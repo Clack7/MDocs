@@ -114,3 +114,57 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
 
+.search-input {
+  transition: color 0.2s ease;
+}
+.search-autocomplete {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+
+  a {
+    display: block;
+    background: #F8F9FA;
+    border: 1px solid #DFE0E1;
+    border-width: 0 1px 1px 0;
+    color: #555;
+    padding: 7px 15px;
+    line-height: 1.3;
+
+    div {
+      display:block;
+      font-size:1rem;
+      color: #000;
+      margin: 0 0 3px;
+
+      span {
+        color: #999;
+        font-size: 0.8rem;
+      }
+    }
+
+    &:hover, &.active {
+      background: white;
+      text-decoration: none;
+    }
+
+    &.active div {
+      color: $success;
+    }
+
+    p {
+      display:block;
+      font-size: 0.9rem;
+      margin: 0;
+
+    }
+
+    div em, p em {
+      font-style: normal;
+      display: inline-block;
+      padding:1px 2px;
+      margin: -1px -2px;
+      background: #FFFCE0;
+    }
+  }
+}

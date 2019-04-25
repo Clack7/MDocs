@@ -104,6 +104,7 @@ const router = new VueRouter({
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
+Vue.component('search-component', require('./components/Search.vue').default);
 Vue.component('sidebar-component', require('./components/Sidebar.vue').default);
 Vue.component('path-header-component', require('./components/PathHeader.vue').default);
 

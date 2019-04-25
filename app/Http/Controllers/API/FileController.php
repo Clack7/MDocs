@@ -37,6 +37,45 @@ class FileController extends Controller
         return ['files' => array_values($list)];
     }
 
+    public function search(Request $request)
+    {
+        $files = $this->list()['files'];
+
+        $result = [];
+        $query = trim($request->query->get('query', ''));
+        if (!empty($query)) {
+            $query = mb_strtolower($query);
+            foreach ($files as $file) {
+                $add = false;
+                $match = [];
+
+                // Check file name
+                $test = explode('/', $file['path']);
+                if (strpos(strtolower(end($test)), $query) !== false) {
+                    $add = true;
+                }
+
+                // Check file content
+                $lines = file($this->pathFile($file['path']));
+                foreach ($lines as $key => $line) {
+                    if (strpos(strtolower($line), $query) !== false) {
+                        $add = true;
+                        $match[] = ($key + 1) . '. ' . $line;
+                    }
+                }
+
+                if ($add) {
+                    $result[] = [
+                        'path' => $file['path'],
+                        'match' => $match,
+                    ];
+                }
+            }
+        }
+
+        return ['result' => $result];
+    }
+
     public function show($path)
     {
         $pathFile = $this->dir . '/' . $path . '.md';
