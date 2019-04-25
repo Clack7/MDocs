@@ -25556,39 +25556,16 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    var that = this; // Vim save command
+    var that = this; // Load editor
 
-    ace.config.loadModule("ace/keyboard/vim", function (m) {
-      var VimApi = m.CodeMirror.Vim;
-      VimApi.defineEx("write", "w", function (cm, input) {
-        that.save();
-      });
-    }); // Editor init
-
-    this.editor = ace.edit("editor", {
-      theme: "ace/theme/chrome",
-      mode: "ace/mode/markdown",
-      wrap: true,
-      // minLines: 5,
-      // maxLines: 30,
-      value: this.content,
-      autoScrollEditorIntoView: true,
-      fontFamily: 'Monaco',
-      fontSize: '16px',
-      showLineNumbers: false,
-      showGutter: false,
-      enableBasicAutocompletion: true,
-      enableLiveAutocompletion: true,
-      enableSnippets: true,
-      enableEmmet: true
-    });
-    this.editor.setKeyboardHandler("ace/keyboard/vim");
-    this.editor.resize();
-    this.editor.on("change", function (e) {
-      that.update(that.editor.getValue(), true);
-    });
-    this.editor.getSession().on('changeScrollTop', function (scroll, b, c, d) {
-      that.editorScroll(scroll);
+    this.editor = MDocs.editor.load(this.$refs.editorHolder, {
+      onSave: this.save,
+      onChange: function onChange() {
+        that.update(that.editor.getValue(), true);
+      },
+      onScroll: function onScroll(scroll) {
+        that.editorScroll(scroll);
+      }
     }); // Load content
 
     if (this.path_cur != '') {
@@ -25621,6 +25598,7 @@ __webpack_require__.r(__webpack_exports__);
     this.$refs.editorColumn.onpaste = this.handlePaste;
   },
   beforeDestroy: function beforeDestroy() {
+    MDocs.editor.unload();
     window.removeEventListener('resize', this.adjustWindowHeight);
   },
   methods: {
@@ -30630,7 +30608,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n#editor[data-v-1dbb5118] {\n    position: absolute; /* Added */\n    top: 0;\n    right: 0;\n    bottom: 0;\n    left: 0;\n    margin: 0;\n    /*height: auto !important;*/\n}\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\n    position: fixed;\n    z-index: 9998;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .5);\n    display: table;\n    transition: opacity .3s ease;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\n    position: fixed;\n    z-index: 9998;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .5);\n    display: table;\n    transition: opacity .3s ease;\n}\n", ""]);
 
 // exports
 
@@ -93502,7 +93480,12 @@ var render = function() {
                   "border-right": "1px solid #ccc"
                 }
               },
-              [_vm._m(0)]
+              [
+                _c("div", {
+                  ref: "editorHolder",
+                  staticStyle: { position: "relative", height: "100%" }
+                })
+              ]
             ),
             _vm._v(" "),
             _c(
@@ -93546,7 +93529,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(1),
+                _vm._m(0),
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _c("strong", [_vm._v(_vm._s(_vm.path_cur))]),
@@ -93586,16 +93569,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticStyle: { position: "relative", height: "100%" } },
-      [_c("pre", { attrs: { id: "editor" } })]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -108991,7 +108964,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ace-builds/src-noconflict/ext-language_tools */ "./node_modules/ace-builds/src-noconflict/ext-language_tools.js");
 /* harmony import */ var ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _extra_snippets__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./extra/snippets */ "./resources/js/extra/snippets.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var _extra_editor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./extra/editor */ "./resources/js/extra/editor.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -109090,12 +109064,15 @@ ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_7___defaul
 
     callback(null, _extra_snippets__WEBPACK_IMPORTED_MODULE_8__["default"]);
   }
-}); // Shortkey
+}); // Load editor handler
+
+
+window.MDocs.editor = _extra_editor__WEBPACK_IMPORTED_MODULE_9__["default"]; // Shortkey
 
 Vue.use(__webpack_require__(/*! vue-shortkey */ "./node_modules/vue-shortkey/dist/index.js")); // Router
 
 
-Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_9__["default"]);
+Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_10__["default"]);
 var routes = [];
 
 _.forEach(UtilConfig.spaRoutes, function (value, key) {
@@ -109105,7 +109082,7 @@ _.forEach(UtilConfig.spaRoutes, function (value, key) {
   });
 });
 
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_9__["default"]({
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_10__["default"]({
   mode: 'history',
   routes: routes // short for `routes: routes`
 
@@ -109661,6 +109638,98 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Sidebar_vue_vue_type_template_id_81fbb27e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/extra/editor.js":
+/*!**************************************!*\
+  !*** ./resources/js/extra/editor.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * Editor init and config
+ */
+/* harmony default export */ __webpack_exports__["default"] = ({
+  instance: null,
+  element: null,
+  holder: null,
+  onSave: null,
+  onChange: null,
+  onScroll: null,
+  vimApi: null,
+  load: function load(parent, options) {
+    var that = this;
+    this.onSave = options.onSave;
+    this.onChange = options.onChange;
+    this.onScroll = options.onScroll;
+
+    if (this.instance === null) {
+      // Create element
+      this.element = document.createElement('pre');
+      this.element.id = 'mdEditor';
+      parent.appendChild(this.element); // Vim save command
+
+      ace.config.loadModule("ace/keyboard/vim", function (m) {
+        that.vimApi = m.CodeMirror.Vim;
+        that.vimApi.defineEx("write", "w", function (cm, input) {
+          that.onSave();
+        });
+      }); // Init ace editor
+
+      this.instance = ace.edit("mdEditor", {
+        theme: "ace/theme/chrome",
+        mode: "ace/mode/markdown",
+        wrap: true,
+        // minLines: 5,
+        // maxLines: 30,
+        value: '',
+        autoScrollEditorIntoView: true,
+        fontFamily: 'Monaco',
+        fontSize: '16px',
+        showLineNumbers: false,
+        showGutter: false,
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+        enableSnippets: true,
+        enableEmmet: true
+      }); // Editor init
+
+      this.instance.setKeyboardHandler("ace/keyboard/vim");
+      this.instance.resize();
+      this.instance.on("change", function (e) {
+        that.onChange();
+      });
+      this.instance.getSession().on('changeScrollTop', function (scroll) {
+        that.onScroll(scroll);
+      }); // Create holder
+
+      this.holder = document.createElement('div');
+      this.holder.className = 'd-none';
+      document.body.appendChild(this.holder);
+    } else {
+      parent.appendChild(this.element);
+      this.instance.resize();
+    }
+
+    return this.instance;
+  },
+  unload: function unload() {
+    this.vimApi.exitInsertMode(this.instance.state.cm);
+
+    this.onSave = function () {};
+
+    this.onChange = function () {};
+
+    this.onScroll = function () {};
+
+    this.instance.setValue('', -1);
+    this.holder.appendChild(this.element);
+  }
+});
 
 /***/ }),
 

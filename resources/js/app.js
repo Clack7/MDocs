@@ -34,21 +34,21 @@ renderer.listitem = function(text, task) {
 	return '<li' + (task ? ' class="task-list-item"' : '') + '>' + text + '</li>\n';
 };
 marked.setOptions({
-		renderer: renderer
+	renderer: renderer
 });
 // Emojis
 import emoji from 'node-emoji';
 // Add filter
 Vue.filter('marked', function(input) {
-		const replacer = (match) => emoji.emojify(match);
-		input = input.replace(/(:.*:)/g, replacer);
-		return marked(input, {
-				gfm: true,
-				breaks: true,
-				highlight: function(code) {
-						return hljs.highlightAuto(code).value;
-				}
-		})
+	const replacer = (match) => emoji.emojify(match);
+	input = input.replace(/(:.*:)/g, replacer);
+	return marked(input, {
+		gfm: true,
+		breaks: true,
+		highlight: function(code) {
+			return hljs.highlightAuto(code).value;
+		}
+	})
 });
 
 // Ace
@@ -63,7 +63,7 @@ snippetManager.addCompleter({
 		// console.log('prefix', prefix);
 		if (prefix.length < 2 || prefix.charAt(0) != ':') { callback(null, []); return }
 		callback(null, emoji.search(prefix.substring(1)).slice(0,10).map(function(emo) {
-				return { caption: emo.emoji + ' :' + emo.key + ':', value: emo.emoji, score: 1, meta: 'emoji' };
+			return { caption: emo.emoji + ' :' + emo.key + ':', value: emo.emoji, score: 1, meta: 'emoji' };
 		}));
 	}
 });
@@ -77,6 +77,9 @@ snippetManager.addCompleter({
 		callback(null, snippets);
 	}
 });
+// Load editor handler
+import editor from './extra/editor';
+window.MDocs.editor = editor;
 
 // Shortkey
 Vue.use(require('vue-shortkey'));
@@ -86,11 +89,11 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 let routes = [];
 _.forEach(UtilConfig.spaRoutes, function(value, key) {
-		routes.push({ path: key, component: require('./components/' + value + '.vue').default });
+	routes.push({ path: key, component: require('./components/' + value + '.vue').default });
 });
 const router = new VueRouter({
-		mode: 'history',
-		routes // short for `routes: routes`
+	mode: 'history',
+	routes // short for `routes: routes`
 });
 
 /**

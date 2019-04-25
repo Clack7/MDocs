@@ -11940,6 +11940,17 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   }
 }
 
+#mdEditor {
+  position: absolute;
+  /* Added */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  /*height: auto !important;*/
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 50.5s;

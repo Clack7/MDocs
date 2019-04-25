@@ -5,8 +5,8 @@
             <path-header-component mode="editor"></path-header-component>
             <div class="row no-gutters">
                 <div class="col-6" ref="editorColumn" :style="{ height: columnHeight + 'px', overflow: 'auto', 'border-right': '1px solid #ccc' }">
-                    <div style="position:relative;height:100%;">
-                        <pre id="editor"></pre>
+                    <div style="position:relative;height:100%;" ref="editorHolder">
+                        <!-- <pre id="editor"></pre> -->
                     </div>
                 </div>
                 <div class="col-6" ref="previewColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }" @scroll="previewScroll">
@@ -61,39 +61,15 @@
         mounted() {
             var that = this;
 
-            // Vim save command
-            ace.config.loadModule("ace/keyboard/vim", function(m) {
-                var VimApi = m.CodeMirror.Vim
-                VimApi.defineEx("write", "w", function(cm, input) {
-                    that.save();
-                });
-            });
-            // Editor init
-            this.editor = ace.edit("editor", {
-                theme: "ace/theme/chrome",
-                mode: "ace/mode/markdown",
-                wrap: true,
-                // minLines: 5,
-                // maxLines: 30,
-                value: this.content,
-                autoScrollEditorIntoView: true,
-                fontFamily: 'Monaco',
-                fontSize: '16px',
-                showLineNumbers: false,
-                showGutter: false,
-
-                enableBasicAutocompletion: true,
-                enableLiveAutocompletion: true,
-                enableSnippets: true,
-                enableEmmet: true
-            });
-            this.editor.setKeyboardHandler("ace/keyboard/vim");
-            this.editor.resize();
-            this.editor.on("change", function(e) {
-                that.update(that.editor.getValue(), true);
-            });
-            this.editor.getSession().on('changeScrollTop', function(scroll, b, c, d) {
-                that.editorScroll(scroll);
+            // Load editor
+            this.editor = MDocs.editor.load(this.$refs.editorHolder, {
+                onSave: this.save,
+                onChange: function() {
+                    that.update(that.editor.getValue(), true);
+                },
+                onScroll: function(scroll) {
+                    that.editorScroll(scroll);
+                }
             });
 
             // Load content
@@ -124,6 +100,7 @@
             this.$refs.editorColumn.onpaste = this.handlePaste;
         },
         beforeDestroy() {
+            MDocs.editor.unload();
             window.removeEventListener('resize', this.adjustWindowHeight);
         },
         methods: {
@@ -312,15 +289,6 @@
 </script>
 
 <style scoped>
-#editor {
-    position: absolute; /* Added */
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: 0;
-    /*height: auto !important;*/
-}
 /* Confirm modal */
 .modal-mask {
     position: fixed;
