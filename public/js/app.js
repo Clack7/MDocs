@@ -25534,6 +25534,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -25550,7 +25552,8 @@ __webpack_require__.r(__webpack_exports__);
       onScrollPreviewTO: null,
       error: '',
       createAction: true,
-      showModal: false
+      showModal: false,
+      imagesSmall: true
     };
   },
   mounted: function mounted() {
@@ -25724,6 +25727,9 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
       });
+    },
+    editorImagesToggle: function editorImagesToggle() {
+      this.imagesSmall = !this.imagesSmall;
     },
     editorScroll: function editorScroll(scroll) {
       if (!this.onScrollEditor) {
@@ -25913,6 +25919,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
 //
 //
 //
@@ -32515,7 +32523,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\n    position: fixed;\n    z-index: 9998;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .5);\n    display: table;\n    transition: opacity .3s ease;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\n    position: fixed;\n    z-index: 9998;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .5);\n    display: table;\n    transition: opacity .3s ease;\n}\n", ""]);
 
 // exports
 
@@ -95347,21 +95355,6 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    {
-      directives: [
-        {
-          name: "shortkey",
-          rawName: "v-shortkey",
-          value: ["alt", "c"],
-          expression: "['alt', 'c']"
-        }
-      ],
-      on: {
-        shortkey: function($event) {
-          return _vm.cancel()
-        }
-      }
-    },
     [
       _vm.error != ""
         ? _c("div", { staticClass: "alert alert-danger m-0 rounded-0" }, [
@@ -95406,6 +95399,7 @@ var render = function() {
               [
                 _c("div", {
                   staticClass: "markdown-body",
+                  class: { "images-small": _vm.imagesSmall },
                   domProps: { innerHTML: _vm._s(_vm.contentMarked) }
                 })
               ]
@@ -95471,8 +95465,11 @@ var render = function() {
             ]
           )
         ]
-      )
-    ]
+      ),
+      _vm._v(" "),
+      _c("gallery-component", { attrs: { refContainer: "previewColumn" } })
+    ],
+    1
   )
 }
 var staticRenderFns = [
@@ -95725,14 +95722,40 @@ var render = function() {
               attrs: { tabindex: "-1" },
               on: {
                 click: function($event) {
-                  return _vm.$parent.editorImagesHide()
+                  return _vm.$parent.editorImagesToggle()
                 },
                 shortkey: function($event) {
-                  return _vm.$parent.editorImagesHide()
+                  return _vm.$parent.editorImagesToggle()
                 }
               }
             },
-            [_vm._v("Hide IMG")]
+            [_vm._v("Toggle IMG")]
+          ),
+          _vm._v("\n           \n        "),
+          _c(
+            "button",
+            {
+              directives: [
+                {
+                  name: "shortkey",
+                  rawName: "v-shortkey",
+                  value: ["alt", "c"],
+                  expression: "['alt', 'c']"
+                }
+              ],
+              staticClass: "btn btn-sm btn-outline-secondary",
+              staticStyle: { margin: "-3px" },
+              attrs: { tabindex: "-1" },
+              on: {
+                click: function($event) {
+                  return _vm.$parent.cancel()
+                },
+                shortkey: function($event) {
+                  return _vm.$parent.cancel()
+                }
+              }
+            },
+            [_vm._v("Cancel")]
           ),
           _vm._v("\n           \n        "),
           _c(

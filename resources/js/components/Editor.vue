@@ -1,5 +1,5 @@
 <template>
-    <div v-shortkey="['alt', 'c']" @shortkey="cancel()">
+    <div>
         <div class="alert alert-danger m-0 rounded-0" v-if="error != ''">{{ error }}</div>
         <div class="card border-0">
             <path-header-component mode="editor"></path-header-component>
@@ -10,7 +10,7 @@
                     </div>
                 </div>
                 <div class="col-6" ref="previewColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }" @scroll="previewScroll">
-                    <div v-html="contentMarked" class="markdown-body"></div>
+                    <div v-html="contentMarked" class="markdown-body" :class="{ 'images-small': imagesSmall }"></div>
                 </div>
             </div>
         </div>
@@ -35,6 +35,8 @@
                 </div>
             </div>
         </div>
+
+        <gallery-component refContainer="previewColumn"></gallery-component>
     </div>
 </template>
 
@@ -55,7 +57,8 @@
                 onScrollPreviewTO: null,
                 error: '',
                 createAction: true,
-                showModal: false
+                showModal: false,
+                imagesSmall: true
             };
         },
         mounted() {
@@ -217,6 +220,9 @@
                         }
                     }
                 });
+            },
+            editorImagesToggle() {
+                this.imagesSmall = !this.imagesSmall;
             },
             editorScroll(scroll) {
                 if (!this.onScrollEditor) {

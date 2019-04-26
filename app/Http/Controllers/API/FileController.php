@@ -162,7 +162,7 @@ class FileController extends Controller
         }
 
         // Replace content usage
-        $content = str_replace('/a/' . urlencode($pathCur) . ':', '/a/' . urlencode($pathNew) . ':', $content);
+        $content = str_replace('/a/' . $this->pathEncode($pathCur) . ':', '/a/' . $this->pathEncode($pathNew) . ':', $content);
 
         // Add not reference files
         $title = "\n\n\n--\n\n**Attachments:**";
@@ -170,7 +170,7 @@ class FileController extends Controller
         $parts[1] = isset($parts[1]) ? $parts[1] : '';
         foreach ($keys as $key) {
             if (strpos($content, $key) === false) {
-                $url = '/a/' . urlencode($pathNew) . ':' . $key;
+                $url = '/a/' . $this->pathEncode($pathNew) . ':' . $key;
                 $parts[1] .= "\n - [X] [$url]($url \"Uncheck to delete\")";
             }
         }
@@ -183,7 +183,7 @@ class FileController extends Controller
 
     public function attachmentShow($path, $key)
     {
-        $filePath = $this->dir . '/' . urldecode($path) . '.md_' . $key;
+        $filePath = $this->dir . '/' . $this->pathDecode($path) . '.md_' . $key;
         return response()->file($filePath);
     }
 
@@ -210,7 +210,7 @@ class FileController extends Controller
         \File::put($this->dir . '/' . $savePath . '.md_' . $key, base64_decode($base64));
 
         return response()->json(['url' => route('file.attachment.show', [
-            'path' => urlencode($savePath),
+            'path' => $this->pathEncode($savePath),
             'key' => $key,
         ], false)], 201);
     }
@@ -247,6 +247,16 @@ class FileController extends Controller
     private function pathFile($path)
     {
         return $this->dir . '/' . trim(str_replace('..', '', $path), '/.') . '.md';
+    }
+
+    private function pathEncode($path)
+    {
+        return implode('/', array_map('rawurlencode', explode('/', $path)));
+    }
+
+    private function pathDecode($path)
+    {
+        return implode('/', array_map('rawurldecode', explode('/', $path)));
     }
 
     private function removeEmptyDir($pathFile)

@@ -11,7 +11,9 @@
         <div v-if="mode == 'editor'">
             <button v-if="!$parent.createAction" tabindex="-1" class="btn btn-sm btn-outline-danger" @click="$parent.destroyConfirm()" style="margin: -3px">Delete</button>
             &nbsp;&nbsp;&nbsp;
-            <button tabindex="-1" class="btn btn-sm btn-outline-info" @click="$parent.editorImagesHide()" style="margin: -3px"  v-shortkey="['alt', 'i']" @shortkey="$parent.editorImagesHide()">Hide IMG</button>
+            <button tabindex="-1" class="btn btn-sm btn-outline-info" @click="$parent.editorImagesToggle()" style="margin: -3px"  v-shortkey="['alt', 'i']" @shortkey="$parent.editorImagesToggle()">Toggle IMG</button>
+            &nbsp;&nbsp;&nbsp;
+            <button tabindex="-1" class="btn btn-sm btn-outline-secondary" @click="$parent.cancel()" style="margin: -3px"  v-shortkey="['alt', 'c']" @shortkey="$parent.cancel()">Cancel</button>
             &nbsp;&nbsp;&nbsp;
             <button tabindex="-1" class="btn btn-sm" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }" style="margin: -3px" @click.prevent="$parent.save" v-shortkey="['ctrl', 's']" @shortkey="$parent.save()">{{ $parent.saving ? 'Saving...' : 'Save file' }}</button>
         </div>

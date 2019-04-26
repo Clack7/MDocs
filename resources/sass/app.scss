@@ -85,6 +85,10 @@
     padding: 15px;
   }
 }
+// Small images on preview
+.images-small img {
+    height:50px !important;
+}
 
 // Editor
 #mdEditor {
