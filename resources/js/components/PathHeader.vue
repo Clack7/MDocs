@@ -26,21 +26,30 @@
         },
         mounted() {
             this.pathClean();
+            this.pathTitle();
+        },
+        beforeDestroy() {
+            document.title = MDocs.name;
         },
         methods: {
             pathClean() {
                 this.$parent.path_new = this.$parent.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
             },
             pathChange() {
+                this.pathTitle();
                 if (this.mode != 'show') {
                     return;
                 }
                 if (this.$parent.path_new == '') {
+                    this.pathTitle();
                     this.$parent.path_new = this.$parent.path_cur;
                     return;
                 }
                 this.$parent.$router.push('/' + this.$parent.path_new);
             },
+            pathTitle() {
+                document.title = (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ' + MDocs.name);
+            }
         },
         filters: {
             spaceNbsp(text) {

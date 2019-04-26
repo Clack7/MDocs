@@ -25881,22 +25881,32 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.pathClean();
+    this.pathTitle();
+  },
+  beforeDestroy: function beforeDestroy() {
+    document.title = MDocs.name;
   },
   methods: {
     pathClean: function pathClean() {
       this.$parent.path_new = this.$parent.path_new.replace(new RegExp(MDocs.char_regex, 'g'), '');
     },
     pathChange: function pathChange() {
+      this.pathTitle();
+
       if (this.mode != 'show') {
         return;
       }
 
       if (this.$parent.path_new == '') {
+        this.pathTitle();
         this.$parent.path_new = this.$parent.path_cur;
         return;
       }
 
       this.$parent.$router.push('/' + this.$parent.path_new);
+    },
+    pathTitle: function pathTitle() {
+      document.title = this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ' + MDocs.name;
     }
   },
   filters: {
@@ -94056,7 +94066,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "nav",
-    { staticClass: "col-md-2 d-none d-md-block bg-light sidebar" },
+    { staticClass: "col-md-3 col-lg-2 d-none d-md-block bg-light sidebar" },
     [
       _c("div", { staticClass: "sidebar-sticky" }, [
         _c(

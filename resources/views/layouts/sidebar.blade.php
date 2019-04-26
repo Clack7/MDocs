@@ -23,7 +23,7 @@
 <body>
     <div id="app">
         <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0">
-            <router-link class="navbar-brand col-sm-3 col-md-2 mr-0" to="/">{{ config('app.name', 'Laravel') }}</router-link>
+            <router-link class="navbar-brand col-md-3 col-lg-2 mr-0" to="/">{{ config('app.name', 'Laravel') }}</router-link>
             <search-component></search-component>
             <ul class="navbar-nav px-3">
                 <li class="nav-item text-nowrap">
@@ -47,6 +47,7 @@
             spaRoutes: {!! json_encode(config('app.spa.routes')) !!},
         };
         window.MDocs = {
+            name: '{{ config('app.name', 'Laravel') }}',
             char_regex: '{{ config('mdocs.char_regex') }}'
         };
     </script>
