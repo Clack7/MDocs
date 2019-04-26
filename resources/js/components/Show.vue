@@ -10,6 +10,7 @@
                 </transition>
             </div>
         </div>
+        <gallery-component refContainer="previewColumn"></gallery-component>
     </div>
 </template>
 

@@ -96,11 +96,15 @@ const router = new VueRouter({
 	routes // short for `routes: routes`
 });
 
+// Gallery
+import blueimp from 'blueimp-gallery/js/blueimp-gallery.min.js';
+window.blueimp = { Gallery: blueimp };
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
  * components and automatically register them with their "basename".
- *
+ *http://mdocs.local/a/Personajes:5cbf50d93fa4c.png
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
@@ -110,6 +114,7 @@ const router = new VueRouter({
 Vue.component('search-component', require('./components/Search.vue').default);
 Vue.component('sidebar-component', require('./components/Sidebar.vue').default);
 Vue.component('path-header-component', require('./components/PathHeader.vue').default);
+Vue.component('gallery-component', require('./components/Gallery.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

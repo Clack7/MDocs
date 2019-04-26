@@ -10662,6 +10662,378 @@ a.text-dark:focus {
   }
 }
 
+/*
+ * blueimp Gallery CSS
+ * https://github.com/blueimp/Gallery
+ *
+ * Copyright 2013, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * https://opensource.org/licenses/MIT
+ */
+
+.blueimp-gallery,
+.blueimp-gallery > .slides > .slide > .slide-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  /* Prevent artifacts in Mozilla Firefox: */
+  -moz-backface-visibility: hidden;
+}
+
+.blueimp-gallery > .slides > .slide > .slide-content {
+  margin: auto;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  opacity: 1;
+}
+
+.blueimp-gallery {
+  position: fixed;
+  z-index: 999999;
+  overflow: hidden;
+  background: #000;
+  background: rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  display: none;
+  direction: ltr;
+  touch-action: none;
+}
+
+.blueimp-gallery-carousel {
+  position: relative;
+  z-index: auto;
+  margin: 1em auto;
+  /* Set the carousel width/height ratio to 16/9: */
+  padding-bottom: 56.25%;
+  box-shadow: 0 0 10px #000;
+  touch-action: pan-y;
+}
+
+.blueimp-gallery-display {
+  display: block;
+  opacity: 1;
+}
+
+.blueimp-gallery > .slides {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.blueimp-gallery-carousel > .slides {
+  position: absolute;
+}
+
+.blueimp-gallery > .slides > .slide {
+  position: relative;
+  float: left;
+  height: 100%;
+  text-align: center;
+  transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.blueimp-gallery,
+.blueimp-gallery > .slides > .slide > .slide-content {
+  transition: opacity 0.2s linear;
+}
+
+.blueimp-gallery > .slides > .slide-loading {
+  background: url(/images/vendor/blueimp-gallery/loading.gif?05992d3434d3589b38a3a5431842d38f) center no-repeat;
+  background-size: 64px 64px;
+}
+
+.blueimp-gallery > .slides > .slide-loading > .slide-content {
+  opacity: 0;
+}
+
+.blueimp-gallery > .slides > .slide-error {
+  background: url(/images/vendor/blueimp-gallery/error.png?90901890fbf9b379405f47a23313e63b) center no-repeat;
+}
+
+.blueimp-gallery > .slides > .slide-error > .slide-content {
+  display: none;
+}
+
+.blueimp-gallery > .prev,
+.blueimp-gallery > .next {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  width: 40px;
+  height: 40px;
+  margin-top: -23px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 60px;
+  font-weight: 100;
+  line-height: 30px;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 0 0 2px #000;
+  text-align: center;
+  background: #222;
+  background: rgba(0, 0, 0, 0.5);
+  box-sizing: content-box;
+  border: 3px solid #fff;
+  border-radius: 23px;
+  opacity: 0.5;
+  cursor: pointer;
+  display: none;
+}
+
+.blueimp-gallery > .next {
+  left: auto;
+  right: 15px;
+}
+
+.blueimp-gallery > .close,
+.blueimp-gallery > .title {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  margin: 0 40px 0 0;
+  font-size: 20px;
+  line-height: 30px;
+  color: #fff;
+  text-shadow: 0 0 2px #000;
+  opacity: 0.8;
+  display: none;
+}
+
+.blueimp-gallery > .close {
+  padding: 15px;
+  right: 15px;
+  left: auto;
+  margin: -15px;
+  font-size: 30px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.blueimp-gallery > .play-pause {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  width: 15px;
+  height: 15px;
+  background: url(/images/vendor/blueimp-gallery/play-pause.png?a012413b54276e2eefd145c7aec60f93) 0 0 no-repeat;
+  cursor: pointer;
+  opacity: 0.5;
+  display: none;
+}
+
+.blueimp-gallery-playing > .play-pause {
+  background-position: -15px 0;
+}
+
+.blueimp-gallery > .prev:hover,
+.blueimp-gallery > .next:hover,
+.blueimp-gallery > .close:hover,
+.blueimp-gallery > .title:hover,
+.blueimp-gallery > .play-pause:hover {
+  color: #fff;
+  opacity: 1;
+}
+
+.blueimp-gallery-controls > .prev,
+.blueimp-gallery-controls > .next,
+.blueimp-gallery-controls > .close,
+.blueimp-gallery-controls > .title,
+.blueimp-gallery-controls > .play-pause {
+  display: block;
+  /* Fix z-index issues (controls behind slide element) on Android: */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.blueimp-gallery-single > .prev,
+.blueimp-gallery-left > .prev,
+.blueimp-gallery-single > .next,
+.blueimp-gallery-right > .next,
+.blueimp-gallery-single > .play-pause {
+  display: none;
+}
+
+.blueimp-gallery > .slides > .slide > .slide-content,
+.blueimp-gallery > .prev,
+.blueimp-gallery > .next,
+.blueimp-gallery > .close,
+.blueimp-gallery > .play-pause {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Replace PNGs with SVGs for capable browsers (excluding IE<9) */
+
+body:last-child .blueimp-gallery > .slides > .slide-error {
+  background-image: url(/images/vendor/blueimp-gallery/error.svg?19ee6b7e6642d75d6144b0c8209c93d6);
+}
+
+body:last-child .blueimp-gallery > .play-pause {
+  width: 20px;
+  height: 20px;
+  background-size: 40px 20px;
+  background-image: url(/images/vendor/blueimp-gallery/play-pause.svg?21dfa3149b274acb9c1819d342a6a169);
+}
+
+body:last-child .blueimp-gallery-playing > .play-pause {
+  background-position: -20px 0;
+}
+
+/* IE7 fixes */
+
+* + html .blueimp-gallery > .slides > .slide {
+  min-height: 300px;
+}
+
+* + html .blueimp-gallery > .slides > .slide > .slide-content {
+  position: relative;
+}
+
+/*
+ * blueimp Gallery Indicator CSS
+ * https://github.com/blueimp/Gallery
+ *
+ * Copyright 2013, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * https://opensource.org/licenses/MIT
+ */
+
+.blueimp-gallery > .indicator {
+  position: absolute;
+  top: auto;
+  right: 15px;
+  bottom: 15px;
+  left: 15px;
+  margin: 0 40px;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+  line-height: 10px;
+  display: none;
+}
+
+.blueimp-gallery > .indicator > li {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin: 6px 3px 0 3px;
+  box-sizing: content-box;
+  border: 1px solid transparent;
+  background: #ccc;
+  background: rgba(255, 255, 255, 0.25) center no-repeat;
+  border-radius: 5px;
+  box-shadow: 0 0 2px #000;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.blueimp-gallery > .indicator > li:hover,
+.blueimp-gallery > .indicator > .active {
+  background-color: #fff;
+  border-color: #fff;
+  opacity: 1;
+}
+
+.blueimp-gallery > .indicator > li:after {
+  opacity: 0;
+  display: block;
+  position: absolute;
+  content: "";
+  top: -5em;
+  width: 75px;
+  height: 75px;
+  transition: opacity 400ms ease-out, -webkit-transform 600ms ease-out;
+  transition: transform 600ms ease-out, opacity 400ms ease-out;
+  transition: transform 600ms ease-out, opacity 400ms ease-out, -webkit-transform 600ms ease-out;
+  -webkit-transform: translateX(-50%) translateY(0) translateZ(0px);
+          transform: translateX(-50%) translateY(0) translateZ(0px);
+  pointer-events: none;
+}
+
+.blueimp-gallery > .indicator > li:hover:after {
+  opacity: 1;
+  border-radius: 50%;
+  background: inherit;
+  -webkit-transform: translateX(-50%) translateY(-5px) translateZ(0px);
+          transform: translateX(-50%) translateY(-5px) translateZ(0px);
+}
+
+.blueimp-gallery > .indicator > .active:after {
+  display: none;
+}
+
+.blueimp-gallery-controls > .indicator {
+  display: block;
+  /* Fix z-index issues (controls behind slide element) on Android: */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.blueimp-gallery-single > .indicator {
+  display: none;
+}
+
+.blueimp-gallery > .indicator {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* IE7 fixes */
+
+* + html .blueimp-gallery > .indicator > li {
+  display: inline;
+}
+
+.blueimp-gallery > .indicator > li {
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  border-radius: 0;
+}
+
+.blueimp-gallery > .indicator > li:after {
+  top: -75px;
+  margin-left: 12px;
+}
+
+.blueimp-gallery > .indicator > li:after,
+.blueimp-gallery > .indicator > li:hover:after {
+  transition: none;
+  border-radius: 0;
+}
+
+.blueimp-gallery > .prev,
+.blueimp-gallery > .next {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  text-shadow: none;
+  color: #fff !important;
+  opacity: 0.8;
+}
+
+.blueimp-gallery > .prev:hover,
+.blueimp-gallery > .next:hover {
+  opacity: 1;
+}
+
+.blueimp-gallery,
+.blueimp-gallery > .slides > .slide > .slide-content {
+  transition: opacity 0.2s ease-in-out;
+}
+
 body {
   font-size: 0.875rem;
 }
@@ -11932,6 +12304,10 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 .markdown-body .task-list-item input {
   margin: 0 0.2em 0.25em -1.3em;
   vertical-align: middle;
+}
+
+.markdown-body img {
+  cursor: pointer;
 }
 
 @media (max-width: 767px) {

@@ -9,6 +9,43 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+// Blueimp gallery
+@import '~blueimp-gallery/css/blueimp-gallery';
+@import '~blueimp-gallery/css/blueimp-gallery-indicator';
+.blueimp-gallery > .indicator > li {
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  border-radius: 0;
+}
+.blueimp-gallery > .indicator > li:after {
+  top:-75px;
+  margin-left:12px
+}
+.blueimp-gallery > .indicator > li:after, .blueimp-gallery > .indicator > li:hover:after {
+  transition: none;
+  border-radius: 0;
+}
+.blueimp-gallery > .prev, .blueimp-gallery > .next {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  text-shadow: none;
+  color: #fff !important;
+  opacity: 0.8;
+}
+.blueimp-gallery > .prev:hover, .blueimp-gallery > .next:hover {
+  opacity: 1;
+}
+.blueimp-gallery,
+.blueimp-gallery > .slides > .slide > .slide-content {
+  -webkit-transition: opacity 0.2s ease-in-out;
+     -moz-transition: opacity 0.2s ease-in-out;
+      -ms-transition: opacity 0.2s ease-in-out;
+       -o-transition: opacity 0.2s ease-in-out;
+          transition: opacity 0.2s ease-in-out;
+}
+
 // Sidebar layout
 @import 'sidebar';
 
@@ -37,6 +74,10 @@
   .task-list-item input {
     margin: 0 .2em .25em -1.3em;
     vertical-align: middle;
+  }
+
+  img {
+    cursor: pointer;
   }
 }
 @media (max-width: 767px) {
