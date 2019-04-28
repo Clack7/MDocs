@@ -50,7 +50,7 @@
                 this.$parent.$router.push('/' + this.$parent.path_new);
             },
             pathTitle() {
-                document.title = (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ' + MDocs.name);
+                document.title = (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ') + MDocs.name;
             }
         },
         filters: {

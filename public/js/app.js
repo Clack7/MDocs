@@ -25900,7 +25900,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      content: "# Markdown Guide\n\n![The Ultimate Guide to Markdown](http://blog.ghost.org/content/images/2015/03/markdown-guide-1.jpg \"=x300\")\n\n## Basic Markdown Formatting\n\n### Headings\n\n    # This is an <h1> tag\n    ## This is an <h2> tag\n    ### This is an <h3> tag\n    #### This is an <h4> tag\n    ##### This is an <h5> tag\n    ###### This is an <h6> tag\n\n### Emphasis\n\n:smiley: :smiley: :smiley: :smiley:\n\n    *This text will be italic*\n    _This will also be italic_\n\n    **This text will be bold**\n    __This will also be bold__\n\n    _You **can** combine them_\n\nResult:\n\n*This text will be italic*\n\n_This will also be italic_\n\n**This text will be bold**\n\n__This will also be bold__\n\n_You **can** combine them_\n\n### Lists\n\n**Inordered:**\n\n    * Milk\n    * Bread\n        * Wholegrain\n    * Butter\n\nResult:\n\n* Milk\n* Bread\n    * Wholegrain\n* Butter\n\n**Ordered:**\n\n    1. Tidy the kitchen\n    2. Prepare ingredients\n    3. Cook delicious things\n\nResult:\n\n1. Tidy the kitchen\n2. Prepare ingredients\n3. Cook delicious things\n\n### Images\n\n    ![Alt Text](url)\n\nResult:\n\n![m'lady](http://i.imgur.com/v8IVDka.jpg)\n\n### Links\n\n    [link](http://example.com)\n\nResult:\n\n[link](http://example.com)\n\n### Blockquotes\n\n    As Kanye West said:\n\n    > We're living the future so\n    > the present is our past.\n\nResult:\n\nAs Kanye West said:\n> We're living the future so\n> the present is our past.\n\n### Horizontal Rules\n\n    ---\n\nResult:\n\n---\n\n### Code Snippets\n\n    Indenting by 4 spaces will turn an entire paragraph into a code-block.\n\nResult:\n\n    .my-link {\n        text-decoration: underline;\n    }\n\n### Reference Lists & Titles\n\n    **The quick brown [fox][1], jumped over the lazy [dog][2].**\n\n    [1]: https://en.wikipedia.org/wiki/Fox \"Wikipedia: Fox\"\n    [2]: https://en.wikipedia.org/wiki/Dog \"Wikipedia: Dog\"\n\nResult:\n\n**The quick brown [fox][1], jumped over the lazy [dog][2].**\n\n[1]: https://en.wikipedia.org/wiki/Fox \"Wikipedia: Fox\"\n[2]: https://en.wikipedia.org/wiki/Dog \"Wikipedia: Dog\"\n\n### Escaping\n\n    \\*literally\\*\n\nResult:\n\n\\*literally\\*\n\n### Embedding HTML\n\n    <button class=\"button-save large\">Big Fat Button</button>\n\nResult:\n\n<button class=\"button-save large\">Big Fat Button</button>\n\n## Advanced Markdown\n\nNote: Some syntax which is not standard to native Markdown. They're extensions of the language.\n\n### Strike-throughs\n\n    ~~deleted words~~\n\nResult:\n\n~~deleted words~~\n\n### Highlights\n\nWork in [Ghost](https://ghost.org/):\n\n    ==oooh fancy==\n\nResult:\n\n==oooh fancy==\n\n### Automatic Links\n\n    https://ghost.org\n\nResult:\n\nhttps://ghost.org\n\n### Markdown Footnotes\n\nWork in [Ghost](https://ghost.org/):\n\n    The quick brown fox[^1] jumped over the lazy dog[^2].\n\n    [^1]: Foxes are red\n    [^2]: Dogs are usually not red\n\nResult:\n\nThe quick brown fox[^1] jumped over the lazy dog[^2].\n\n[^1]: Foxes are red\n[^2]: Dogs are usually not red\n\n## GitHub Flavored Markdown\n\n### Syntax Highlighting\n\n    ```javascript\n    function fancyAlert(arg) {\n      if(arg) {\n        $.facebox({div:'#foo'})\n      }\n    }\n    ```\n\nResult:\n\n```javascript\nfunction fancyAlert(arg) {\n  if(arg) {\n    $.facebox({div:'#foo'})\n  }\n}\n```\n\n### Task Lists\n\n    - [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported\n    - [x] list syntax required (any unordered or ordered list supported)\n    - [x] this is a complete item\n    - [ ] this is an incomplete item\n\nResult:\n\n- [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported\n- [x] list syntax required (any unordered or ordered list supported)\n- [x] this is a complete item\n- [ ] this is an incomplete item\n\n### Tables\n\nYou can create tables by assembling a list of words and dividing them with hyphens `-` (for the first row), and then separating each column with a pipe `|`:\n\nFirst Header | Second Header\n------------ | -------------\nContent from cell 1 | Content from cell 2\nContent in the first column | Content in the second column\n\n### SHA references\n\nAny reference to a commit\u2019s SHA-1 hash will be automatically converted into a link to that commit on GitHub.\n\n    16c999e8c71134401a78d4d46435517b2271d6ac\n    mojombo@16c999e8c71134401a78d4d46435517b2271d6ac\n    mojombo/github-flavored-markdown@16c999e8c71134401a78d4d46435517b2271d6ac\n\n### Issue references within a repository\n\nAny number that refers to an Issue or Pull Request will be automatically converted into a link.\n\n    #1\n    mojombo#1\n    mojombo/github-flavored-markdown#1\n\n### Username @mentions\n\nTyping an `@` symbol, followed by a username, will notify that person to come and view the comment. This is called an \u201C@mention\u201D, because you\u2019re mentioning the individual. You can also @mention teams within an organization.\n\n### Emoji\n\nGitHub supports emoji! Check out the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/).\n\n## References\n\n* http://blog.ghost.org/markdown/\n* https://guides.github.com/features/mastering-markdown/"
+      content: "# Markdown Guide\n\n![The Ultimate Guide to Markdown](http://blog.ghost.org/content/images/2015/03/markdown-guide-1.jpg \"=x300\")\n\n## Basic Markdown Formatting\n\n### Headings\n\n    # This is an <h1> tag\n    ## This is an <h2> tag\n    ### This is an <h3> tag\n    #### This is an <h4> tag\n    ##### This is an <h5> tag\n    ###### This is an <h6> tag\n\n### Emphasis\n\n:smiley: :smiley: :smiley: :smiley:\n\n    *This text will be italic*\n    _This will also be italic_\n\n    **This text will be bold**\n    __This will also be bold__\n\n    _You **can** combine them_\n\nResult:\n\n*This text will be italic*\n\n_This will also be italic_\n\n**This text will be bold**\n\n__This will also be bold__\n\n_You **can** combine them_\n\n### Lists\n\n**Inordered:**\n\n    * Milk\n    * Bread\n        * Wholegrain\n    * Butter\n\nResult:\n\n* Milk\n* Bread\n    * Wholegrain\n* Butter\n\n**Ordered:**\n\n    1. Tidy the kitchen\n    2. Prepare ingredients\n    3. Cook delicious things\n\nResult:\n\n1. Tidy the kitchen\n2. Prepare ingredients\n3. Cook delicious things\n\n### Images\n\n    ![Alt Text](url)\n\nResult:\n\n![m'lady](http://i.imgur.com/v8IVDka.jpg)\n\n### Links\n\n    [link](http://example.com)\n\nResult:\n\n[link](http://example.com)\n\n### Blockquotes\n\n    As Kanye West said:\n\n    > We're living the future so\n    > the present is our past.\n\nResult:\n\nAs Kanye West said:\n> We're living the future so\n> the present is our past.\n\n### Horizontal Rules\n\n    ---\n\nResult:\n\n---\n\n### Code Snippets\n\n    Indenting by 4 spaces will turn an entire paragraph into a code-block.\n\nResult:\n\n    .my-link {\n        text-decoration: underline;\n    }\n\n### Reference Lists & Titles\n\n    **The quick brown [fox][1], jumped over the lazy [dog][2].**\n\n    [1]: https://en.wikipedia.org/wiki/Fox \"Wikipedia: Fox\"\n    [2]: https://en.wikipedia.org/wiki/Dog \"Wikipedia: Dog\"\n\nResult:\n\n**The quick brown [fox][1], jumped over the lazy [dog][2].**\n\n[1]: https://en.wikipedia.org/wiki/Fox \"Wikipedia: Fox\"\n[2]: https://en.wikipedia.org/wiki/Dog \"Wikipedia: Dog\"\n\n### Escaping\n\n    \\*literally\\*\n\nResult:\n\n\\*literally\\*\n\n### Embedding HTML\n\n    <button class=\"button-save large\">Big Fat Button</button>\n\nResult:\n\n<button class=\"button-save large\">Big Fat Button</button>\n\n## Advanced Markdown\n\nNote: Some syntax which is not standard to native Markdown. They're extensions of the language.\n\n### Strike-throughs\n\n    ~~deleted words~~\n\nResult:\n\n~~deleted words~~\n\n### Highlights\n\nWork in [Ghost](https://ghost.org/):\n\n    ==oooh fancy==\n\nResult:\n\n==oooh fancy==\n\n### Automatic Links\n\n    https://ghost.org\n\nResult:\n\nhttps://ghost.org\n\n### Markdown Footnotes\n\nWork in [Ghost](https://ghost.org/):\n\n    The quick brown fox[^1] jumped over the lazy dog[^2].\n\n    [^1]: Foxes are red\n    [^2]: Dogs are usually not red\n\nResult:\n\nThe quick brown fox[^1] jumped over the lazy dog[^2].\n\n[^1]: Foxes are red\n[^2]: Dogs are usually not red\n\n## GitHub Flavored Markdown\n\n### Syntax Highlighting\n\n    ```javascript\n    function fancyAlert(arg) {\n      if(arg) {\n        $.facebox({div:'#foo'})\n      }\n    }\n    ```\n\nResult:\n\n```javascript\nfunction fancyAlert(arg) {\n  if(arg) {\n    $.facebox({div:'#foo'})\n  }\n}\n```\n\n### Task Lists\n\n    - [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported\n    - [x] list syntax required (any unordered or ordered list supported)\n    - [x] this is a complete item\n    - [ ] this is an incomplete item\n\nResult:\n\n- [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported\n- [x] list syntax required (any unordered or ordered list supported)\n- [x] this is a complete item\n- [ ] this is an incomplete item\n\n### Tables\n\nYou can create tables by assembling a list of words and dividing them with hyphens `-` (for the first row), and then separating each column with a pipe `|`:\n\n```plaintext\nFirst Header | Second Header\n------------ | -------------\nContent from cell 1 | Content from cell 2\nContent in the first column | Content in the second column\n```\n\nResult:\n\nFirst Header | Second Header\n------------ | -------------\nContent from cell 1 | Content from cell 2\nContent in the first column | Content in the second column\n\n### SHA references\n\nAny reference to a commit\u2019s SHA-1 hash will be automatically converted into a link to that commit on GitHub.\n\n    16c999e8c71134401a78d4d46435517b2271d6ac\n    mojombo@16c999e8c71134401a78d4d46435517b2271d6ac\n    mojombo/github-flavored-markdown@16c999e8c71134401a78d4d46435517b2271d6ac\n\n### Issue references within a repository\n\nAny number that refers to an Issue or Pull Request will be automatically converted into a link.\n\n    #1\n    mojombo#1\n    mojombo/github-flavored-markdown#1\n\n### Username @mentions\n\nTyping an `@` symbol, followed by a username, will notify that person to come and view the comment. This is called an \u201C@mention\u201D, because you\u2019re mentioning the individual. You can also @mention teams within an organization.\n\n### Emoji\n\nGitHub supports emoji! Check out the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/).\n\n## References\n\n* http://blog.ghost.org/markdown/\n* https://guides.github.com/features/mastering-markdown/"
     };
   },
   mounted: function mounted() {
@@ -25973,7 +25973,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$parent.$router.push('/' + this.$parent.path_new);
     },
     pathTitle: function pathTitle() {
-      document.title = this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ' + MDocs.name;
+      document.title = (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ') + MDocs.name;
     }
   },
   filters: {
@@ -110936,10 +110936,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _extra_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./extra/util */ "./resources/js/extra/util.js");
 /* harmony import */ var marked__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
 /* harmony import */ var marked__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(marked__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var highlight_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! highlight.js */ "./node_modules/highlight.js/lib/index.js");
-/* harmony import */ var highlight_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(highlight_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var node_emoji__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! node-emoji */ "./node_modules/node-emoji/index.js");
-/* harmony import */ var node_emoji__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(node_emoji__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var node_emoji__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! node-emoji */ "./node_modules/node-emoji/index.js");
+/* harmony import */ var node_emoji__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(node_emoji__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var highlight_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! highlight.js */ "./node_modules/highlight.js/lib/index.js");
+/* harmony import */ var highlight_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(highlight_js__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var ace_builds_src_noconflict_ace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ace-builds/src-noconflict/ace */ "./node_modules/ace-builds/src-noconflict/ace.js");
 /* harmony import */ var ace_builds_src_noconflict_ace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(ace_builds_src_noconflict_ace__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var ace_builds_webpack_resolver__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ace-builds/webpack-resolver */ "./node_modules/ace-builds/webpack-resolver.js");
@@ -110964,7 +110964,6 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 
 Vue.use(_extra_util__WEBPACK_IMPORTED_MODULE_0__["default"], UtilConfig); // Marked
-
 
  // Image size
 
@@ -110994,19 +110993,24 @@ marked__WEBPACK_IMPORTED_MODULE_1___default.a.setOptions({
   renderer: renderer
 }); // Emojis
 
+
  // Add filter
 
 Vue.filter('marked', function (input) {
   var replacer = function replacer(match) {
-    return node_emoji__WEBPACK_IMPORTED_MODULE_3___default.a.emojify(match);
+    return node_emoji__WEBPACK_IMPORTED_MODULE_2___default.a.emojify(match);
   };
 
   input = input.replace(/(:.*:)/g, replacer);
   return marked__WEBPACK_IMPORTED_MODULE_1___default()(input, {
     gfm: true,
     breaks: true,
-    highlight: function highlight(code) {
-      return highlight_js__WEBPACK_IMPORTED_MODULE_2___default.a.highlightAuto(code).value;
+    highlight: function highlight(code, lang) {
+      if (typeof highlight_js__WEBPACK_IMPORTED_MODULE_3___default.a.getLanguage(lang) == 'undefined') {
+        lang = 'plaintext';
+      }
+
+      return highlight_js__WEBPACK_IMPORTED_MODULE_3___default.a.highlight(lang, code).value;
     }
   });
 }); // Ace
@@ -111026,7 +111030,7 @@ ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_7___defaul
       return;
     }
 
-    callback(null, node_emoji__WEBPACK_IMPORTED_MODULE_3___default.a.search(prefix.substring(1)).slice(0, 10).map(function (emo) {
+    callback(null, node_emoji__WEBPACK_IMPORTED_MODULE_2___default.a.search(prefix.substring(1)).slice(0, 10).map(function (emo) {
       return {
         caption: emo.emoji + ' :' + emo.key + ':',
         value: emo.emoji,
@@ -112720,7 +112724,48 @@ ace.define("ace/snippets", ["require", "exports", "module", "ace/lib/oop", "ace/
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+var today = new Date();
 var snippets = [{
+  score: 3,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "-** Bold",
+  // optional, snippet that can be inseted instead of value
+  snippet: "**${1:Text}** ${0}",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 3,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "-_ Italic",
+  // optional, snippet that can be inseted instead of value
+  snippet: "_${1:Text}_ ${0}",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "-Task List",
+  // optional, snippet that can be inseted instead of value
+  snippet: "- [ ] ${0}",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "-Date",
+  // optional, snippet that can be inseted instead of value
+  snippet: today.getUTCFullYear() + '/' + ('0' + (today.getUTCMonth() + 1)).slice(-2) + '/' + ('0' + today.getUTCDate()).slice(-2),
+  // short description
+  meta: "MDocs"
+}, {
   score: 2,
   // string used for filtering
   // value: ".obj",
@@ -112757,7 +112802,7 @@ var snippets = [{
   // optional, allows to display a caption different from value
   caption: "-Objetive Header",
   // optional, snippet that can be inseted instead of value
-  snippet: "## ${1:000}. ${2:title} <small style=\"float:right;\">${3:2019}/${4:00}/${5:00}</small>",
+  snippet: "## ${1:000}. ${2:title} <small style=\"float:right;\">${3:" + today.getUTCFullYear() + "}/${4:" + ('0' + (today.getUTCMonth() + 1)).slice(-2) + "}/${5:" + ('0' + today.getUTCDate()).slice(-2) + "}</small>",
   // short description
   meta: "MDocs"
 }];

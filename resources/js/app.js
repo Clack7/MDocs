@@ -13,7 +13,6 @@ Vue.use(Util, UtilConfig);
 
 // Marked
 import marked from 'marked';
-import hljs from 'highlight.js';
 // Image size
 const renderer = new marked.Renderer();
 function sanitizeMarkedImage(str) {
@@ -38,6 +37,7 @@ marked.setOptions({
 });
 // Emojis
 import emoji from 'node-emoji';
+import hljs from 'highlight.js';
 // Add filter
 Vue.filter('marked', function(input) {
 	const replacer = (match) => emoji.emojify(match);
@@ -45,8 +45,11 @@ Vue.filter('marked', function(input) {
 	return marked(input, {
 		gfm: true,
 		breaks: true,
-		highlight: function(code) {
-			return hljs.highlightAuto(code).value;
+		highlight: function(code, lang) {
+			if (typeof hljs.getLanguage(lang) == 'undefined') {
+				lang = 'plaintext';
+			}
+			return hljs.highlight(lang, code).value;
 		}
 	})
 });
