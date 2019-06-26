@@ -74,6 +74,11 @@
   .task-list-item input {
     margin: 0 .2em .25em -1.3em;
     vertical-align: middle;
+    outline: 1px solid #0ccf10;
+
+    &:checked {
+      outline: 1px solid #e0dddd;
+    }
   }
 
   img {

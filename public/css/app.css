@@ -12304,6 +12304,11 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 .markdown-body .task-list-item input {
   margin: 0 0.2em 0.25em -1.3em;
   vertical-align: middle;
+  outline: 1px solid #0ccf10;
+}
+
+.markdown-body .task-list-item input:checked {
+  outline: 1px solid #e0dddd;
 }
 
 .markdown-body img {
