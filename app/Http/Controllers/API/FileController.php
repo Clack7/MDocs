@@ -136,6 +136,38 @@ class FileController extends Controller
         return response()->json(['path' => $pathNew], $pathCur == '' ? 201 : 200);
     }
 
+    public function toggleCheckbox(Request $request)
+    {
+        $pathCur     = $this->pathClean($request->request->get('path'));
+        $pathCurFile = $this->pathFile($pathCur);
+        $checkIndex  = $request->request->get('index');
+        if (!\File::isFile($pathCurFile) || !is_numeric($checkIndex)) {
+            abort(404, 'File not found.');
+        }
+
+        // Find and replace check state
+        $content = \File::get($pathCurFile);
+        $lines = explode("\n", $content);
+        $index = 0;
+        foreach ($lines as $k => $line) {
+            if (preg_match('/\s*- \[([ xX])\] /', $line, $match)) {
+                if ($index == $checkIndex) {
+                    $checked = $match[1] == ' ';
+                    $line = str_replace($match[0], str_replace('[' . $match[1] . ']', $match[1] == ' ' ? '[X]' : '[ ]', $match[0]), $line);
+                    $lines[$k] = $line;
+                    break;
+                }
+                $index++;
+            }
+        }
+        $content = implode("\n", $lines);
+
+        // Save
+        \File::put($pathCurFile, $content);
+
+        return response()->json(['content' => $content], 200);
+    }
+
     private function attachmentMove($pathCur, $pathNew, &$content)
     {
         $pathCurFile = $this->pathFile($pathCur);

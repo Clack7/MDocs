@@ -79,6 +79,10 @@
     &:checked {
       outline: 1px solid #e0dddd;
     }
+
+    &.task-list-progress {
+      outline: 1px solid #42adff;
+    }
   }
 
   img {

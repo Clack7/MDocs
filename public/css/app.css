@@ -12311,6 +12311,10 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   outline: 1px solid #e0dddd;
 }
 
+.markdown-body .task-list-item input.task-list-progress {
+  outline: 1px solid #42adff;
+}
+
 .markdown-body img {
   cursor: pointer;
 }

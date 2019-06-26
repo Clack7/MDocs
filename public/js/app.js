@@ -26139,7 +26139,8 @@ __webpack_require__.r(__webpack_exports__);
       createAction: false,
       error: '',
       create: 0,
-      columnHeight: 100
+      columnHeight: 100,
+      inputProgress: false
     };
   },
   mounted: function mounted() {
@@ -26160,6 +26161,37 @@ __webpack_require__.r(__webpack_exports__);
     });
     window.addEventListener('resize', this.adjustWindowHeight);
     this.adjustWindowHeight();
+    var that = this,
+        $previewColumn = $(this.$refs.previewColumn);
+    $previewColumn.on('dblclick', '.task-list-item', function (e) {
+      if (that.inputProgress) {
+        return;
+      }
+
+      e.preventDefault();
+      e.stopPropagation();
+      var input = $(this).find('input:first');
+      $previewColumn.find('.task-list-item > input').each(function (idx) {
+        if (this === input[0]) {
+          input.addClass('task-list-progress');
+          that.inputProgress = true;
+          axios.post('/api/file/toggle', {
+            path: that.path_cur,
+            index: idx
+          }).then(function (_ref) {
+            var data = _ref.data;
+            input.removeClass('task-list-progress');
+            that.inputProgress = false;
+            that.content = data.content;
+            that.update();
+          })["catch"](function (error) {
+            input.removeClass('task-list-progress');
+            that.inputProgress = false;
+            Vue.handleAxiosError(error);
+          });
+        }
+      });
+    });
   },
   beforeDestroy: function beforeDestroy() {
     window.removeEventListener('resize', this.adjustWindowHeight);
