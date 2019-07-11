@@ -77,7 +77,56 @@ const snippets = [
         // short description
         meta: "MDocs"
     },
-
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "-Flowchart",
+        // optional, snippet that can be inseted instead of value
+        snippet:
+"``` graph ${1:TD}\n\
+    ${2:Start} --> ${3:Continue}\n\
+```\n",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "-Sequence Diagram",
+        // optional, snippet that can be inseted instead of value
+        snippet:
+"``` sequenceDiagram\n\
+    Alice->>John: Hello John, how are you?\n\
+    John-->>Alice: Great!\n\
+```\n",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "-Gantt",
+        // optional, snippet that can be inseted instead of value
+        snippet:
+"``` gantt\n\
+    title A Gantt Diagram\n\
+    dateFormat  YYYY-MM-DD\n\
+    section Section\n\
+    A task           :a1, 2014-01-01, 30d\n\
+    Another task     :after a1  , 20d\n\
+    section Another\n\
+    Task in sec      :2014-01-12  , 12d\n\
+    another task      : 24d\n\
+```\n",
+        // short description
+        meta: "MDocs"
+    },
     {
         score: 1,
         // string used for filtering

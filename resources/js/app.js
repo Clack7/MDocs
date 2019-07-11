@@ -32,6 +32,60 @@ renderer.image = function (src, title, alt) {
 renderer.listitem = function(text, task) {
 	return '<li' + (task ? ' class="task-list-item"' : '') + '>' + text + '</li>\n';
 };
+// Mermaid code block
+import mermaid from 'mermaid';
+window.mermaid = mermaid;
+mermaid.initialize({
+	themeCSS: ".label foreignObject { overflow: visible; }"
+  // theme: 'forest',
+  // gantt: { axisFormatter: [
+  //   ['%Y-%m-%d', (d) => {
+  //     return d.getDay() === 1
+  //   }]
+  // ] }
+});
+let mermaidCounter = 0;
+renderer.code = function(code, infostring, escaped) {
+	var lang = (infostring || '').match(/\S*/)[0];
+
+	if ([
+		'graph TD',
+		'graph TB',
+		'graph BT',
+		'graph RL',
+		'graph LR',
+		'sequenceDiagram',
+		'gantt',
+	].indexOf(infostring) >= 0) {
+		mermaidCounter++;
+		let graphSvg = '<div class="alert alert-warning">Graph Parse Error</div>';
+		try {
+			graphSvg = mermaid.render('mermaid_' + mermaidCounter, infostring + "\n" + code);
+		} catch (e) { /*console.log(e);*/ }
+		return '<div class="graph-container">' + graphSvg + '</div>';
+	}
+
+	if (this.options.highlight) {
+		var out = this.options.highlight(code, lang);
+		if (out != null && out !== code) {
+			escaped = true;
+			code = out;
+		}
+	}
+
+	if (!lang) {
+		return '<pre><code>'
+			+ (escaped ? code : escape(code, true))
+			+ '</code></pre>';
+	}
+
+	return '<pre><code class="'
+		+ this.options.langPrefix
+		+ escape(lang, true)
+		+ '">'
+		+ (escaped ? code : escape(code, true))
+		+ '</code></pre>\n';
+};
 marked.setOptions({
 	renderer: renderer
 });
