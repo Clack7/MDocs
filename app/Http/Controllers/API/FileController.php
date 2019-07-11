@@ -10,10 +10,12 @@ use Illuminate\Validation\Rule;
 class FileController extends Controller
 {
     private $dir;
+    private $draftPath;
 
     public function __construct()
     {
         $this->dir = config('mdocs.dir');
+        $this->draftPath = $this->dir . '/.draft.json';
     }
 
     public function list()
@@ -78,12 +80,20 @@ class FileController extends Controller
 
     public function show($path)
     {
-        $pathFile = $this->dir . '/' . $path . '.md';
-        if (!\File::isFile($pathFile)) {
-            abort(404, 'File not found.');
+        // Find content
+        $content = '';
+        if ($path != '@empty') {
+            $pathFile = $this->dir . '/' . $path . '.md';
+            if (!\File::isFile($pathFile)) {
+                abort(404, 'File not found.');
+            }
+            $content = \File::get($pathFile);
+            $draft = $this->getDraft($path);
+        } else {
+            $draft = $this->getDraft('');
         }
 
-        return ['content' => \File::get($pathFile)];
+        return ['content' => $content, 'draft' => $draft];
     }
 
     public function save($path, Request $request)
@@ -133,7 +143,73 @@ class FileController extends Controller
         // Save
         \File::put($pathNewFile, $content);
 
+        // Remove draft
+        $this->removeDraft($pathCur);
+
         return response()->json(['path' => $pathNew], $pathCur == '' ? 201 : 200);
+    }
+
+    public function saveDraft(Request $request)
+    {
+        $pathCur = $this->pathClean($request->request->get('path_cur'));
+        $content = trim($request->request->get('content'));
+        $this->putDraft($pathCur, $content);
+
+        return response()->json(['result' => 1], 201);
+    }
+
+    public function putDraft($path, $content)
+    {
+        $list = $this->getDraft();
+        foreach ($list as $key => $val) {
+            if ($val['path'] == $path) {
+                unset($list[$key]);
+                break;
+            }
+        }
+        $list[] = [
+            'path' => $path,
+            'content' => $content,
+        ];
+        $list = array_values($list);
+
+        \File::put($this->draftPath, json_encode($list));
+    }
+
+    public function getDraft($path = null)
+    {
+        $list = [];
+        if (\File::exists($this->draftPath)) {
+            $json = json_decode(\File::get($this->draftPath), true);
+            if (is_array($json))  {
+                $list = $json;
+            }
+        }
+
+        if ($path !== null) {
+            $path = $this->pathClean($path);
+            foreach ($list as $l) {
+                if (isset($l['path']) && $l['path'] == $path) {
+                    return $l['content'];
+                }
+            }
+            return null;
+        }
+
+        return $list;
+    }
+
+    public function removeDraft($path)
+    {
+        $list = $this->getDraft();
+        foreach ($list as $key => $val) {
+            if ($val['path'] == $path) {
+                unset($list[$key]);
+                break;
+            }
+        }
+        $list = array_values($list);
+        \File::put($this->draftPath, json_encode($list));
     }
 
     public function toggleCheckbox(Request $request)

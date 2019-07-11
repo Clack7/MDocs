@@ -12,6 +12,13 @@
                 <div class="col-6" ref="previewColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }" @scroll="previewScroll">
                     <div v-html="contentMarked" class="markdown-body" :class="{ 'images-small': imagesSmall }"></div>
                 </div>
+                <div style="position: absolute;bottom:5px;right:10px;text-align: right;">
+                    <!-- <a href="#" v-if="draftContent != null && draftContent != ''" style="display:inline-block;font-size: 12px;position: relative;top:3px;" class="text-muted">Remove</a>&nbsp; -->
+                    <a @click="loadDraft" href="#" v-if="draftContent != null && draftContent != ''" style="display:inline-block;font-size: 12px;position: relative;top:3px;">Load Draft</a>&nbsp;
+                    <div class="spinner-border spinner-border-sm text-primary fade-opacity" :class="{ 'fade-opacity-show': draftSaving > 0 }">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -58,17 +65,27 @@
                 error: '',
                 createAction: true,
                 showModal: false,
-                imagesSmall: true
+                imagesSmall: true,
+                draftSaving: 0,
+                draftContent: null,
             };
         },
         mounted() {
             var that = this;
 
             // Load editor
+            var draftDebounce = _.debounce(function () {
+                that.saveDraft();
+            }, 1000), draftSave = false;
             this.editor = MDocs.editor.load(this.$refs.editorHolder, {
                 onSave: this.save,
                 onChange: function() {
                     that.update(that.editor.getValue(), true);
+                    if (draftSave) {
+                        draftDebounce();
+                    }  else {
+                        draftSave = true;
+                    }
                 },
                 onScroll: function(scroll) {
                     that.editorScroll(scroll);
@@ -76,13 +93,14 @@
             });
 
             // Load content
-            if (this.path_cur != '') {
+            this.createAction = this.path_cur == '';
+            // if (this.path_cur != '') {
                 this.content = 'Loading...';
-                axios.get('/api/file/' + this.path_cur)
+                axios.get('/api/file/' + (this.path_cur == '' ? '@empty' : this.path_cur))
                     .then((response) => {
                         this.update(response.data.content, false);
+                        this.draftContent = response.data.draft;
                         this.saving = false;
-                        this.createAction = false;
                     }).catch((error) => {
                         if (error.response.status == 404 && error.response.data.message == 'File not found.') {
                             this.saving = false;
@@ -93,10 +111,10 @@
                         }
                         Vue.handleAxiosError(error);
                     });
-            } else {
-                this.update('', false);
-                this.saving = false;
-            }
+            // } else {
+            //     this.update('', false);
+            //     this.saving = false;
+            // }
 
             window.addEventListener('resize', this.adjustWindowHeight);
             this.adjustWindowHeight();
@@ -269,8 +287,29 @@
                         Vue.handleAxiosError(error);
                     });
             },
+            saveDraft() {
+                this.draftSaving++;
+                var draftSavingMinus = function(that) {
+                    setTimeout(function() {
+                        that.draftSaving--;
+                    }, 1500);
+                };
+                axios.post('/api/file/draft', { path_cur: this.path_cur, content: this.content })
+                    .then(({ data }) => {
+                        draftSavingMinus(this);
+                    }).catch((error) => {
+                        draftSavingMinus(this);
+                        this.error = error.response.data.message;
+                        Vue.handleAxiosError(error);
+                    });
+            },
+            loadDraft() {
+                if (this.draftContent !== null && this.draftContent != '') {
+                    this.update(this.draftContent, false);
+                }
+            },
             cancel() {
-                this.$router.push('/' + this.$route.params.path);
+                this.$router.push('/' + (typeof this.$route.params.path == 'undefined' ? '' : this.$route.params.path));
             },
             destroyConfirm() {
                 if (this.saving) {

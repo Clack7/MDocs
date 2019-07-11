@@ -131,6 +131,22 @@
   opacity: 0;
 }
 
+.fade-opacity {
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+  // // -ms-transition: opacity 0.4s ease-in;
+  // // -moz-transition: opacity 0.4s ease-in;
+  // // -webkit-transition: opacity 0.4s ease-in;
+
+  &.fade-opacity-show {
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
+  //   // -ms-transition: opacity 0.4s ease-out;
+  //   // -moz-transition: opacity 0.4s ease-out;
+  //   // -webkit-transition: opacity 0.4s ease-out;
+  }
+}
+
 // Header file path
 .path-header-input {
   position:relative;

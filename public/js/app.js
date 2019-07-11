@@ -25536,6 +25536,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -25553,7 +25560,9 @@ __webpack_require__.r(__webpack_exports__);
       error: '',
       createAction: true,
       showModal: false,
-      imagesSmall: true
+      imagesSmall: true,
+      draftSaving: 0,
+      draftContent: null
     };
   },
   mounted: function mounted() {
@@ -25561,40 +25570,51 @@ __webpack_require__.r(__webpack_exports__);
 
     var that = this; // Load editor
 
+    var draftDebounce = _.debounce(function () {
+      that.saveDraft();
+    }, 1000),
+        draftSave = false;
+
     this.editor = MDocs.editor.load(this.$refs.editorHolder, {
       onSave: this.save,
       onChange: function onChange() {
         that.update(that.editor.getValue(), true);
+
+        if (draftSave) {
+          draftDebounce();
+        } else {
+          draftSave = true;
+        }
       },
       onScroll: function onScroll(scroll) {
         that.editorScroll(scroll);
       }
     }); // Load content
 
-    if (this.path_cur != '') {
-      this.content = 'Loading...';
-      axios.get('/api/file/' + this.path_cur).then(function (response) {
-        _this.update(response.data.content, false);
+    this.createAction = this.path_cur == ''; // if (this.path_cur != '') {
 
+    this.content = 'Loading...';
+    axios.get('/api/file/' + (this.path_cur == '' ? '@empty' : this.path_cur)).then(function (response) {
+      _this.update(response.data.content, false);
+
+      _this.draftContent = response.data.draft;
+      _this.saving = false;
+    })["catch"](function (error) {
+      if (error.response.status == 404 && error.response.data.message == 'File not found.') {
         _this.saving = false;
-        _this.createAction = false;
-      })["catch"](function (error) {
-        if (error.response.status == 404 && error.response.data.message == 'File not found.') {
-          _this.saving = false;
 
-          _this.update('');
+        _this.update('');
 
-          _this.path_cur = '';
-        } else {
-          _this.error = 'Server error: ' + error.response.data.message;
-        }
+        _this.path_cur = '';
+      } else {
+        _this.error = 'Server error: ' + error.response.data.message;
+      }
 
-        Vue.handleAxiosError(error);
-      });
-    } else {
-      this.update('', false);
-      this.saving = false;
-    }
+      Vue.handleAxiosError(error);
+    }); // } else {
+    //     this.update('', false);
+    //     this.saving = false;
+    // }
 
     window.addEventListener('resize', this.adjustWindowHeight);
     this.adjustWindowHeight();
@@ -25792,8 +25812,36 @@ __webpack_require__.r(__webpack_exports__);
         Vue.handleAxiosError(error);
       });
     },
+    saveDraft: function saveDraft() {
+      var _this3 = this;
+
+      this.draftSaving++;
+
+      var draftSavingMinus = function draftSavingMinus(that) {
+        setTimeout(function () {
+          that.draftSaving--;
+        }, 1500);
+      };
+
+      axios.post('/api/file/draft', {
+        path_cur: this.path_cur,
+        content: this.content
+      }).then(function (_ref3) {
+        var data = _ref3.data;
+        draftSavingMinus(_this3);
+      })["catch"](function (error) {
+        draftSavingMinus(_this3);
+        _this3.error = error.response.data.message;
+        Vue.handleAxiosError(error);
+      });
+    },
+    loadDraft: function loadDraft() {
+      if (this.draftContent !== null && this.draftContent != '') {
+        this.update(this.draftContent, false);
+      }
+    },
     cancel: function cancel() {
-      this.$router.push('/' + this.$route.params.path);
+      this.$router.push('/' + (typeof this.$route.params.path == 'undefined' ? '' : this.$route.params.path));
     },
     destroyConfirm: function destroyConfirm() {
       if (this.saving) {
@@ -25803,18 +25851,18 @@ __webpack_require__.r(__webpack_exports__);
       $('#destroyModal').modal('show');
     },
     destroyFile: function destroyFile() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.saving = true;
-      axios["delete"]('/api/file/' + this.path_cur).then(function (_ref3) {
-        var data = _ref3.data;
+      axios["delete"]('/api/file/' + this.path_cur).then(function (_ref4) {
+        var data = _ref4.data;
 
-        _this3.$router.push('/' + _this3.path_cur);
+        _this4.$router.push('/' + _this4.path_cur);
 
-        _this3.$root.$emit('filesChange');
+        _this4.$root.$emit('filesChange');
       })["catch"](function (error) {
-        _this3.saving = false;
-        _this3.error = error.response.data.message;
+        _this4.saving = false;
+        _this4.error = error.response.data.message;
         Vue.handleAxiosError(error);
       });
     }
@@ -32555,7 +32603,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
 
 // exports
 
@@ -141874,6 +141922,50 @@ var render = function() {
                   class: { "images-small": _vm.imagesSmall },
                   domProps: { innerHTML: _vm._s(_vm.contentMarked) }
                 })
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticStyle: {
+                  position: "absolute",
+                  bottom: "5px",
+                  right: "10px",
+                  "text-align": "right"
+                }
+              },
+              [
+                _vm.draftContent != null && _vm.draftContent != ""
+                  ? _c(
+                      "a",
+                      {
+                        staticStyle: {
+                          display: "inline-block",
+                          "font-size": "12px",
+                          position: "relative",
+                          top: "3px"
+                        },
+                        attrs: { href: "#" },
+                        on: { click: _vm.loadDraft }
+                      },
+                      [_vm._v("Load Draft")]
+                    )
+                  : _vm._e(),
+                _vm._v(" \n                "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "spinner-border spinner-border-sm text-primary fade-opacity",
+                    class: { "fade-opacity-show": _vm.draftSaving > 0 }
+                  },
+                  [
+                    _c("span", { staticClass: "sr-only" }, [
+                      _vm._v("Loading...")
+                    ])
+                  ]
+                )
               ]
             )
           ])

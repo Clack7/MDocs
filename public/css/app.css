@@ -12369,6 +12369,16 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   opacity: 0;
 }
 
+.fade-opacity {
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+}
+
+.fade-opacity.fade-opacity-show {
+  opacity: 1;
+  transition: opacity 0.4s ease-out;
+}
+
 .path-header-input {
   position: relative;
 }
