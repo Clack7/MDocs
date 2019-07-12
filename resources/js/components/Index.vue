@@ -10,7 +10,7 @@
             return {
                 content: `# Markdown Guide
 
-![The Ultimate Guide to Markdown](http://blog.ghost.org/content/images/2015/03/markdown-guide-1.jpg "=x300")
+[The Ultimate Guide to Markdown](https://gist.github.com/cuonggt/9b7d08a597b167299f0d)
 
 ## Basic Markdown Formatting
 
@@ -24,8 +24,6 @@
     ###### This is an <h6> tag
 
 ### Emphasis
-
-:smiley: :smiley: :smiley: :smiley:
 
     *This text will be italic*
     _This will also be italic_

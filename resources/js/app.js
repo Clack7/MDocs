@@ -45,9 +45,8 @@ mermaid.initialize({
   // ] }
 });
 let mermaidCounter = 0;
+let rendererCode = renderer.code;
 renderer.code = function(code, infostring, escaped) {
-	var lang = (infostring || '').match(/\S*/)[0];
-
 	if ([
 		'graph TD',
 		'graph TB',
@@ -65,27 +64,8 @@ renderer.code = function(code, infostring, escaped) {
 		return '<div class="graph-container">' + graphSvg + '</div>';
 	}
 
-	if (this.options.highlight) {
-		var out = this.options.highlight(code, lang);
-		if (out != null && out !== code) {
-			escaped = true;
-			code = out;
-		}
-	}
-
-	if (!lang) {
-		return '<pre><code>'
-			+ (escaped ? code : escape(code, true))
-			+ '</code></pre>';
-	}
-
-	return '<pre><code class="'
-		+ this.options.langPrefix
-		+ escape(lang, true)
-		+ '">'
-		+ (escaped ? code : escape(code, true))
-		+ '</code></pre>\n';
-};
+	return rendererCode.apply(renderer, [code, infostring, escaped]);
+}
 marked.setOptions({
 	renderer: renderer
 });
@@ -100,6 +80,7 @@ Vue.filter('marked', function(input) {
 		gfm: true,
 		breaks: true,
 		highlight: function(code, lang) {
+			console.log(1, lang, 2, code)
 			if (typeof hljs.getLanguage(lang) == 'undefined') {
 				lang = 'plaintext';
 			}
