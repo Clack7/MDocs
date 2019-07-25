@@ -12416,6 +12416,89 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   color: #999;
 }
 
+.toc-open {
+  position: absolute;
+  top: 60px;
+  right: 25px;
+  z-index: 9999;
+}
+
+.toc-open > div {
+  width: 15px;
+  height: 15px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  max-height: calc(100% - 70px);
+  overflow: hidden;
+  opacity: 0.5;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.toc-open > div > div {
+  display: none;
+  width: 100%;
+  padding: 10px 15px 10px;
+}
+
+.toc-open > div h6 {
+  font-weight: bold;
+  text-align: center;
+}
+
+.toc-open > div ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.toc-open > div ul ul {
+  margin-left: 15px;
+}
+
+.toc-open > div ul a {
+  display: block;
+  font-size: 15px;
+}
+
+.toc-open > div ul a span {
+  color: #aaa;
+  display: inline-block;
+  position: relative;
+  top: -1px;
+}
+
+.toc-open > div ul a:hover {
+  text-decoration: none;
+}
+
+.toc-open > div ul a:hover span {
+  color: #333;
+}
+
+.toc-open:hover {
+  top: 40px;
+  right: 5px;
+  padding: 20px 20px 50px 50px;
+}
+
+.toc-open:hover > div {
+  background-color: #F7F7F7;
+  overflow-y: auto;
+  overflow-x: visible;
+  min-width: 300px;
+  width: auto;
+  max-width: 600px;
+  height: auto;
+  border-radius: 0px;
+  opacity: 1;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.toc-open:hover > div > div {
+  display: block;
+}
+
 /*.markdown-body {
   color: white;
   h1, h2 {

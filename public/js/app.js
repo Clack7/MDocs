@@ -26177,6 +26177,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -26188,7 +26196,8 @@ __webpack_require__.r(__webpack_exports__);
       error: '',
       create: 0,
       columnHeight: 100,
-      inputProgress: false
+      inputProgress: false,
+      tocItems: []
     };
   },
   mounted: function mounted() {
@@ -26250,6 +26259,21 @@ __webpack_require__.r(__webpack_exports__);
     },
     update: function update() {
       this.contentMarked = this.$options.filters['marked'](this.content);
+      var that = this;
+      setTimeout(function () {
+        var headers = $(that.$refs.previewColumn).find('h1, h2, h3, h4, h5, h6');
+        that.tocItems = [];
+        headers.each(function () {
+          that.tocItems.push({
+            to: '#' + $(this).attr('id'),
+            level: this.tagName.charAt(1) - 1,
+            name: $(this).text()
+          });
+        });
+      }, 200);
+    },
+    scrollMeTo: function scrollMeTo(to) {
+      $(this.$refs.previewColumn).scrollTop($(this.$refs.previewColumn).scrollTop() + $(to).offset().top - 110);
     },
     edit: function edit() {
       this.$router.push('/update/' + this.path_cur);
@@ -142534,6 +142558,42 @@ var render = function() {
         { staticClass: "card border-0" },
         [
           _c("path-header-component", { attrs: { mode: "show" } }),
+          _vm._v(" "),
+          _vm.tocItems.length > 0
+            ? _c("div", { staticClass: "toc-open" }, [
+                _c("div", [
+                  _c("div", [
+                    _c("h5", [_vm._v("Table of contents")]),
+                    _vm._v(" "),
+                    _c(
+                      "ul",
+                      _vm._l(_vm.tocItems, function(item) {
+                        return _c("li", [
+                          _c(
+                            "a",
+                            {
+                              style: { "margin-left": item.level * 12 + "px" },
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.scrollMeTo(item.to)
+                                }
+                              }
+                            },
+                            [
+                              _c("span", [_vm._v("•")]),
+                              _vm._v(" " + _vm._s(item.name))
+                            ]
+                          )
+                        ])
+                      }),
+                      0
+                    )
+                  ])
+                ])
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _c(
             "div",

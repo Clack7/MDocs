@@ -3,6 +3,14 @@
         <div class="alert alert-danger m-0 rounded-0" v-if="error != ''">{{ error }}</div>
         <div class="card border-0">
             <path-header-component mode="show"></path-header-component>
+            <div class="toc-open" v-if="tocItems.length > 0"><div><div>
+                <h5>Table of contents</h5>
+                <ul>
+                    <li v-for="item in tocItems">
+                        <a :style="{ 'margin-left': (item.level * 12) + 'px' }" href="#" @click.prevent="scrollMeTo(item.to)"><span>&bullet;</span> {{ item.name }}</a>
+                    </li>
+                </ul>
+            </div></div></div>
             <div ref="previewColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }">
                 <transition name="slide-fade">
                     <div v-html="contentMarked" class="markdown-body" v-if="content != ''"></div>
@@ -27,6 +35,7 @@
                 create: 0,
                 columnHeight: 100,
                 inputProgress: false,
+                tocItems: [],
             };
         },
         mounted() {
@@ -82,6 +91,22 @@
             },
             update() {
                 this.contentMarked = this.$options.filters['marked'](this.content);
+
+                var that = this;
+                setTimeout(function() {
+                    var headers = $(that.$refs.previewColumn).find('h1, h2, h3, h4, h5, h6');
+                    that.tocItems = [];
+                    headers.each(function() {
+                        that.tocItems.push({
+                            to: '#' + $(this).attr('id'),
+                            level: this.tagName.charAt(1) - 1,
+                            name: $(this).text()
+                        });
+                    })
+                }, 200);
+            },
+            scrollMeTo(to) {
+                $(this.$refs.previewColumn).scrollTop($(this.$refs.previewColumn).scrollTop() + $(to).offset().top - 110);
             },
             edit() {
                 this.$router.push('/update/' + this.path_cur);

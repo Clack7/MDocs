@@ -180,6 +180,93 @@
   color:#999;
 }
 
+$toc-content-width-out: 300px;
+$toc-content-width-in: $toc-content-width-out - 4px;
+.toc-open {
+  position:absolute;
+  top:60px;
+  right:25px;
+  z-index: 9999;
+
+  > div {
+    width:15px;
+    height:15px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    max-height: calc(100% - 70px);
+    overflow: hidden;
+    opacity: 0.5;
+
+    transition: opacity 0.1s ease-in-out;
+
+    > div {
+      display: none;
+      width: 100%;
+      padding:10px 15px 10px;
+    }
+
+    h6 {
+      font-weight: bold;
+      text-align: center;
+    }
+
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+
+      ul {
+        margin-left: 15px;
+      }
+
+      a {
+        display: block;
+        font-size: 15px;
+
+        span {
+          color:#aaa;
+          display: inline-block;
+          position:relative;
+          top:-1px;
+        }
+
+        &:hover {
+          text-decoration: none;
+
+          span {
+            color:#333;
+          }
+        }
+
+      }
+    }
+  }
+
+  &:hover {
+    top:40px;
+    right: 5px;
+    padding:20px 20px 50px 50px;
+
+    > div {
+      background-color: #F7F7F7;
+      overflow-y: auto;
+      overflow-x: visible;
+      min-width: 300px;
+      width: auto;
+      max-width: 600px;
+      height: auto;
+      border-radius: 0px;
+      opacity: 1;
+      border: 1px solid rgba(0, 0, 0, 0.125);
+
+      > div {
+        display: block;
+      }
+    }
+  }
+}
+
 // Darkly adjust
 /*.markdown-body {
   color: white;
