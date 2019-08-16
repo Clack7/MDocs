@@ -26327,6 +26327,17 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         Vue.handleAxiosError(error);
       });
+    },
+    formatPath: function formatPath(path) {
+      path = path.split('/').reverse();
+      var parts = [],
+          i;
+
+      for (i in path) {
+        parts.push('<span class="sidebar-path-level-' + Math.min(parseInt(i) + 1, 3) + '">' + path[i] + (i > 0 ? '&nbsp;&#x2F;&nbsp;' : '') + '</span>');
+      }
+
+      return parts.reverse().join('');
     }
   }
 });
@@ -142676,15 +142687,12 @@ var render = function() {
               "li",
               { staticClass: "nav-item" },
               [
-                _c(
-                  "router-link",
-                  {
-                    staticClass: "nav-link",
-                    class: { active: file.path == _vm.$route.params.path },
-                    attrs: { to: "/" + file.path }
-                  },
-                  [_vm._v(_vm._s(file.path))]
-                )
+                _c("router-link", {
+                  staticClass: "nav-link",
+                  class: { active: file.path == _vm.$route.params.path },
+                  attrs: { to: "/" + file.path },
+                  domProps: { innerHTML: _vm._s(_vm.formatPath(file.path)) }
+                })
               ],
               1
             )

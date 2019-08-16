@@ -3,7 +3,7 @@
         <div class="sidebar-sticky">
             <ul class="nav flex-column">
                 <li v-for="file in files" class="nav-item">
-                    <router-link class="nav-link":to="'/' + file.path" :class="{ active: file.path == $route.params.path }">{{ file.path }}</router-link>
+                    <router-link class="nav-link":to="'/' + file.path" :class="{ active: file.path == $route.params.path }" v-html="formatPath(file.path)"></router-link>
                 </li>
             </ul>
         </div>
@@ -31,6 +31,14 @@
                     }).catch((error) => {
                         Vue.handleAxiosError(error);
                     });
+            },
+            formatPath(path) {
+                path = path.split('/').reverse();
+                var parts = [], i;
+                for (i in path) {
+                    parts.push('<span class="sidebar-path-level-' + Math.min(parseInt(i) + 1, 3) + '">' + path[i] + (i > 0 ? '&nbsp;&#x2F;&nbsp;' : '') + '</span>');
+                }
+                return parts.reverse().join('');
             }
         }
     }

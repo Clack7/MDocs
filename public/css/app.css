@@ -11099,6 +11099,18 @@ body {
   border-right: 1px solid #DFE0E1;
 }
 
+.sidebar-path-level-1 {
+  opacity: 1;
+}
+
+.sidebar-path-level-2 {
+  opacity: 0.5;
+}
+
+.sidebar-path-level-3 {
+  opacity: 0.4;
+}
+
 .sidebar .nav-link:hover .feather,
 .sidebar .nav-link.active .feather {
   color: inherit;
