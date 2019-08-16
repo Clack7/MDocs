@@ -1,6 +1,6 @@
 <template>
     <div class="w-100 position-relative">
-        <input ref="searchInput" v-model="query" @input="search()" :class="{ 'text-success': loading }" class="search-input form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" v-shortkey.native.focus="['alt', 'f']" v-on:keydown.down="resultFocus(true)" v-on:keydown.tab.prevent="resultFocus(true)" v-on:keydown.up="resultFocus(false)" v-on:keydown.enter="goFocus()">
+        <input ref="searchInput" v-model="query" @input="search()" :class="{ 'text-success': loading }" class="search-input form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" v-shortkey.native.focus="['alt', 'f']" v-on:keydown.down="resultFocus(true, $event)" v-on:keydown.tab.prevent="resultFocus(true, $event)" v-on:keydown.up="resultFocus(false, $event)" v-on:keydown.enter="goFocus()">
         <div class="search-autocomplete" v-if="showResults">
             <a href="#" v-for="(result, index) in results" :key="index" @click.prevent="go(result.path)" :class="{ active: focusIndex == index }">
                 <div v-html="highlightQuery(result.path) + '<span>.md</span>'"></div>
@@ -51,6 +51,9 @@
                         })
                     }).then((response) => {
                         this.results = response.data.result;
+                        if (this.results.length > 0) {
+                            this.focusIndex = 0;
+                        }
                         this.loading = false;
                     }).catch((error) => {
                         if (error.message == undefined) {
@@ -61,7 +64,10 @@
                         Vue.handleAxiosError(error);
                     });
             },
-            resultFocus(positive) {
+            resultFocus(positive, event) {
+                if (event.shiftKey) {
+                    positive = !positive;
+                }
                 if (this.results.length == 0) {
                     this.focusIndex = null;
                     return;

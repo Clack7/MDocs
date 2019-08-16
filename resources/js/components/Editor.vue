@@ -137,7 +137,7 @@
                         that.editorImagesHide();
                         axios.post('/api/file/attach', { path: that.path_cur, base64: base64Image })
                             .then(({ data }) => {
-                                that.editor.session.insert(that.editor.getCursorPosition(), '![img](' + data.url + ')')
+                                that.editor.session.insert(that.editor.getCursorPosition(), '![img](' + data.url + ' "=x300")')
                             }).catch((error) => {
                                 that.error = error.response.data.message;
                                 Vue.handleAxiosError(error);

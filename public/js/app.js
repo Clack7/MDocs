@@ -25640,7 +25640,7 @@ __webpack_require__.r(__webpack_exports__);
             base64: base64Image
           }).then(function (_ref) {
             var data = _ref.data;
-            that.editor.session.insert(that.editor.getCursorPosition(), '![img](' + data.url + ')');
+            that.editor.session.insert(that.editor.getCursorPosition(), '![img](' + data.url + ' "=x300")');
           })["catch"](function (error) {
             that.error = error.response.data.message;
             Vue.handleAxiosError(error);
@@ -26097,6 +26097,11 @@ __webpack_require__.r(__webpack_exports__);
         })
       }).then(function (response) {
         _this.results = response.data.result;
+
+        if (_this.results.length > 0) {
+          _this.focusIndex = 0;
+        }
+
         _this.loading = false;
       })["catch"](function (error) {
         if (error.message == undefined) {
@@ -26108,7 +26113,11 @@ __webpack_require__.r(__webpack_exports__);
         Vue.handleAxiosError(error);
       });
     },
-    resultFocus: function resultFocus(positive) {
+    resultFocus: function resultFocus(positive, event) {
+      if (event.shiftKey) {
+        positive = !positive;
+      }
+
       if (this.results.length == 0) {
         this.focusIndex = null;
         return;
@@ -142458,7 +142467,7 @@ var render = function() {
             ) {
               return null
             }
-            return _vm.resultFocus(true)
+            return _vm.resultFocus(true, $event)
           },
           function($event) {
             if (
@@ -142468,7 +142477,7 @@ var render = function() {
               return null
             }
             $event.preventDefault()
-            return _vm.resultFocus(true)
+            return _vm.resultFocus(true, $event)
           },
           function($event) {
             if (
@@ -142477,7 +142486,7 @@ var render = function() {
             ) {
               return null
             }
-            return _vm.resultFocus(false)
+            return _vm.resultFocus(false, $event)
           },
           function($event) {
             if (
