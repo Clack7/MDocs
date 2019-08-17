@@ -16,27 +16,27 @@ import marked from 'marked';
 // Image size
 const renderer = new marked.Renderer();
 function sanitizeMarkedImage(str) {
-	return str.replace(/&<"/g, function (m) {
-		if (m === "&") return "&amp;"
-		if (m === "<") return "&lt;"
-		return "&quot;"
-	})
+    return str.replace(/&<"/g, function (m) {
+        if (m === "&") return "&amp;"
+        if (m === "<") return "&lt;"
+        return "&quot;"
+    })
 }
 renderer.image = function (src, title, alt) {
-	const exec = /=\s*(\d*)\s*x\s*(\d*)\s*$/.exec(title)
-	let res = '<img src="' + sanitizeMarkedImage(src) + '" alt="' + sanitizeMarkedImage(alt)
-	if (exec && exec[1]) res += '" width="' + exec[1]
-	if (exec && exec[2]) res += '" height="' + exec[2]
-	return res + '">'
+    const exec = /=\s*(\d*)\s*x\s*(\d*)\s*$/.exec(title)
+    let res = '<img src="' + sanitizeMarkedImage(src) + '" alt="' + sanitizeMarkedImage(alt)
+    if (exec && exec[1]) res += '" width="' + exec[1]
+    if (exec && exec[2]) res += '" height="' + exec[2]
+    return res + '">'
 }
 renderer.listitem = function(text, task) {
-	return '<li' + (task ? ' class="task-list-item"' : '') + '>' + text + '</li>\n';
+    return '<li' + (task ? ' class="task-list-item"' : '') + '>' + text + '</li>\n';
 };
 // Mermaid code block
 import mermaid from 'mermaid';
 window.mermaid = mermaid;
 mermaid.initialize({
-	themeCSS: ".label foreignObject { overflow: visible; }"
+    themeCSS: ".label foreignObject { overflow: visible; }"
   // theme: 'forest',
   // gantt: { axisFormatter: [
   //   ['%Y-%m-%d', (d) => {
@@ -47,74 +47,156 @@ mermaid.initialize({
 let mermaidCounter = 0;
 let rendererCode = renderer.code;
 renderer.code = function(code, infostring, escaped) {
-	if ([
-		'graph TD',
-		'graph TB',
-		'graph BT',
-		'graph RL',
-		'graph LR',
-		'sequenceDiagram',
-		'gantt',
-	].indexOf(infostring) >= 0) {
-		mermaidCounter++;
-		let graphSvg = '<div class="alert alert-warning">Graph Parse Error</div>';
-		try {
-			graphSvg = mermaid.render('mermaid_' + mermaidCounter, infostring + "\n" + code);
-		} catch (e) { /*console.log(e);*/ }
-		return '<div class="graph-container">' + graphSvg + '</div>';
-	}
+    if ([
+        'graph TD',
+        'graph TB',
+        'graph BT',
+        'graph RL',
+        'graph LR',
+        'sequenceDiagram',
+        'gantt',
+    ].indexOf(infostring) >= 0) {
+        mermaidCounter++;
+        let graphSvg = '<div class="alert alert-warning">Graph Parse Error</div>';
+        try {
+            graphSvg = mermaid.render('mermaid_' + mermaidCounter, infostring + "\n" + code);
+        } catch (e) { /*console.log(e);*/ }
+        return '<div class="graph-container">' + graphSvg + '</div>';
+    }
 
-	return rendererCode.apply(renderer, [code, infostring, escaped]);
+    return rendererCode.apply(renderer, [code, infostring, escaped]);
 }
 marked.setOptions({
-	renderer: renderer
+    renderer: renderer
 });
 // Emojis
 import emoji from 'node-emoji';
 import hljs from 'highlight.js';
 // Add filter
 Vue.filter('marked', function(input) {
-	const replacer = (match) => emoji.emojify(match);
-	input = input.replace(/(:.*:)/g, replacer);
-	return marked(input, {
-		gfm: true,
-		breaks: true,
-		highlight: function(code, lang) {
-			console.log(1, lang, 2, code)
-			if (typeof hljs.getLanguage(lang) == 'undefined') {
-				lang = 'plaintext';
-			}
-			return hljs.highlight(lang, code).value;
-		}
-	})
+    const replacer = (match) => emoji.emojify(match);
+    input = input.replace(/(:.*:)/g, replacer);
+    return marked(input, {
+        gfm: true,
+        breaks: true,
+        highlight: function(code, lang) {
+            console.log(1, lang, 2, code)
+            if (typeof hljs.getLanguage(lang) == 'undefined') {
+                lang = 'plaintext';
+            }
+            return hljs.highlight(lang, code).value;
+        }
+    })
 });
 
 // Ace
+window.MDocs = { files: [], editor: null };
 import ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/webpack-resolver';
 import './extra/ext-emmet.js';
 import snippetManager from 'ace-builds/src-noconflict/ext-language_tools';
 snippetManager.setCompleters(null);
 snippetManager.addCompleter({
-	identifierRegexps: [/[a-zA-Z_0-9\$\:\-\u00A2-\uFFFF]/], // added : to start
-	getCompletions: function(editor, session, pos, prefix, callback) {
-		// console.log('prefix', prefix);
-		if (prefix.length < 2 || prefix.charAt(0) != ':') { callback(null, []); return }
-		callback(null, emoji.search(prefix.substring(1)).slice(0,10).map(function(emo) {
-			return { caption: emo.emoji + ' :' + emo.key + ':', value: emo.emoji, score: 1, meta: 'emoji' };
-		}));
-	}
+    identifierRegexps: [/[a-zA-Z_0-9\$\:\-\u00A2-\uFFFF/]/], // added : to start, and / slash
+    getCompletions: function(editor, session, pos, prefix, callback) {
+        // console.log('prefix', prefix);
+        if (prefix.length < 2 || prefix.charAt(0) != ':') { callback(null, []); return }
+        callback(null, emoji.search(prefix.substring(1)).slice(0,10).map(function(emo) {
+            return { caption: emo.emoji + ' :' + emo.key + ':', value: emo.emoji, score: 1, meta: 'emoji' };
+        }));
+    }
 });
 // Snippets
 import snippets from './extra/snippets';
 snippetManager.addCompleter({
-	// identifierRegexps: [/[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/], // added . to start
-	getCompletions: function(editor, session, pos, prefix, callback) {
-		// console.log('prefix', prefix);
-		if (/*prefix.length < 2 || */prefix.charAt(0) != '-') { callback(null, []); return }
-		callback(null, snippets);
-	}
+    // identifierRegexps: [/[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/], // added . to start
+    getCompletions: function(editor, session, pos, prefix, callback) {
+        // console.log('prefix', prefix);
+        if (/*prefix.length < 2 || */prefix.charAt(0) != '-') { callback(null, []); return }
+        callback(null, snippets);
+    }
 });
+// Autocomplete paths
+function getRelativePath(fPath, tPath) {
+    fPath = fPath.split('/'); // from
+    fPath.pop(); // remove current from
+    tPath = tPath.split('/'); // to
+    var current = tPath.pop(); // save current to
+    var rPath = tPath.slice(0); // relative
+    var i, o;
+    for (i in fPath) {
+        // find first non-matching dir
+        if (fPath[i] === tPath[i]) {
+            // ignore this directory
+            rPath.shift();
+        } else {
+            // get number of remaining dirs to from
+            var remaining = fPath.length - i;
+            for (o = 0; o < remaining; o++) {
+                rPath.unshift('..');
+            }
+            break;
+        }
+    }
+    rPath.push(current); // readd current to
+    return './' + rPath.join('/');
+}
+// var testRelativePath = [
+//  ['a', 'b', './b'],
+//  ['a/b/c', 'a/b/d', './d'],
+//  ['a/b/c', 'a/b/c/d', './c/d'],
+//  ['a/b/c', 'd/e/f/d', './../../d/e/f/d'],
+//  ['d/e/f/d', 'a/b/c', './../../../a/b/c'],
+//  ['a/b/c', 'a/f/d', './../f/d'],
+// ];
+// for (var t in testRelativePath) {
+//  console.log(testRelativePath[t][0], testRelativePath[t][1], testRelativePath[t][2], getRelativePath(testRelativePath[t][0], testRelativePath[t][1]) == testRelativePath[t][2]);
+// }
+function rawurlencode(url) {
+    url = (url + '')
+    // Tilde should be allowed unescaped in future versions of PHP (as reflected below),
+    // but if you want to reflect current
+    // PHP behavior, you would need to add ".replace(/~/g, '%7E');" to the following.
+    return encodeURIComponent(url)
+        .replace(/!/g, '%21')
+        .replace(/'/g, '%27')
+        .replace(/\(/g, '%28')
+        .replace(/\)/g, '%29')
+        .replace(/\*/g, '%2A');
+}
+snippetManager.addCompleter({
+    // identifierRegexps: [/[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/], // added . to start
+    getCompletions: function(editor, session, pos, prefix, callback) {
+        // Check files list
+        if (window.MDocs.files.length < 1) {
+            callback(null, []); return;
+        }
+        // Check prefix
+        if (prefix.charAt(0) != '/') {
+            callback(null, []); return;
+        }
+        // Check available route path
+        var list = [], i, parts, path = null;
+        try {
+            path = app.$route.params.path;
+        } catch (e) { console.log(e); };
+        if (path == null) {
+            callback(null, []); return;
+        }
+        // Display list
+        for (i in window.MDocs.files) {
+            parts = window.MDocs.files[i].path.split('/');
+            list.push({
+                caption: '/' + window.MDocs.files[i].path,
+                value: '[' + parts[parts.length - 1] + '](' + rawurlencode(getRelativePath(path, window.MDocs.files[i].path)).replace(/%2F/g, '/') + ')',
+                score: 1,
+                meta: 'MDocs'
+            });
+        }
+        callback(null, list);
+    }
+});
+
 // Load editor handler
 import editor from './extra/editor';
 window.MDocs.editor = editor;
@@ -127,11 +209,11 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 let routes = [];
 _.forEach(UtilConfig.spaRoutes, function(value, key) {
-	routes.push({ path: key, component: require('./components/' + value + '.vue').default });
+    routes.push({ path: key, component: require('./components/' + value + '.vue').default });
 });
 const router = new VueRouter({
-	mode: 'history',
-	routes // short for `routes: routes`
+    mode: 'history',
+    routes // short for `routes: routes`
 });
 
 // Gallery
@@ -160,9 +242,9 @@ Vue.component('gallery-component', require('./components/Gallery.vue').default);
  */
 
 const app = new Vue({
-	el: '#app',
-	router,
-	data: {
-		loader: false
-	}
+    el: '#app',
+    router,
+    data: {
+        loader: false
+    }
 });

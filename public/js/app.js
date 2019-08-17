@@ -26401,6 +26401,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/api/file').then(function (response) {
         _this2.files = response.data.files;
+        MDocs.files = response.data.files;
       })["catch"](function (error) {
         Vue.handleAxiosError(error);
       });
@@ -157784,14 +157785,18 @@ Vue.filter('marked', function (input) {
   });
 }); // Ace
 
+window.MDocs = {
+  files: [],
+  editor: null
+};
 
 
 
 
 ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_8___default.a.setCompleters(null);
 ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_8___default.a.addCompleter({
-  identifierRegexps: [/[a-zA-Z_0-9\$\:\-\u00A2-\uFFFF]/],
-  // added : to start
+  identifierRegexps: [/[a-zA-Z_0-9\$\:\-\u00A2-\uFFFF/]/],
+  // added : to start, and / slash
   getCompletions: function getCompletions(editor, session, pos, prefix, callback) {
     // console.log('prefix', prefix);
     if (prefix.length < 2 || prefix.charAt(0) != ':') {
@@ -157823,6 +157828,109 @@ ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_8___defaul
     }
 
     callback(null, _extra_snippets__WEBPACK_IMPORTED_MODULE_9__["default"]);
+  }
+}); // Autocomplete paths
+
+function getRelativePath(fPath, tPath) {
+  fPath = fPath.split('/'); // from
+
+  fPath.pop(); // remove current from
+
+  tPath = tPath.split('/'); // to
+
+  var current = tPath.pop(); // save current to
+
+  var rPath = tPath.slice(0); // relative
+
+  var i, o;
+
+  for (i in fPath) {
+    // find first non-matching dir
+    if (fPath[i] === tPath[i]) {
+      // ignore this directory
+      rPath.shift();
+    } else {
+      // get number of remaining dirs to from
+      var remaining = fPath.length - i;
+
+      for (o = 0; o < remaining; o++) {
+        rPath.unshift('..');
+      }
+
+      break;
+    }
+  }
+
+  rPath.push(current); // readd current to
+
+  return './' + rPath.join('/');
+} // var testRelativePath = [
+//  ['a', 'b', './b'],
+//  ['a/b/c', 'a/b/d', './d'],
+//  ['a/b/c', 'a/b/c/d', './c/d'],
+//  ['a/b/c', 'd/e/f/d', './../../d/e/f/d'],
+//  ['d/e/f/d', 'a/b/c', './../../../a/b/c'],
+//  ['a/b/c', 'a/f/d', './../f/d'],
+// ];
+// for (var t in testRelativePath) {
+//  console.log(testRelativePath[t][0], testRelativePath[t][1], testRelativePath[t][2], getRelativePath(testRelativePath[t][0], testRelativePath[t][1]) == testRelativePath[t][2]);
+// }
+
+
+function rawurlencode(url) {
+  url = url + ''; // Tilde should be allowed unescaped in future versions of PHP (as reflected below),
+  // but if you want to reflect current
+  // PHP behavior, you would need to add ".replace(/~/g, '%7E');" to the following.
+
+  return encodeURIComponent(url).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\*/g, '%2A');
+}
+
+ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_8___default.a.addCompleter({
+  // identifierRegexps: [/[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/], // added . to start
+  getCompletions: function getCompletions(editor, session, pos, prefix, callback) {
+    // Check files list
+    if (window.MDocs.files.length < 1) {
+      callback(null, []);
+      return;
+    } // Check prefix
+
+
+    if (prefix.charAt(0) != '/') {
+      callback(null, []);
+      return;
+    } // Check available route path
+
+
+    var list = [],
+        i,
+        parts,
+        path = null;
+
+    try {
+      path = app.$route.params.path;
+    } catch (e) {
+      console.log(e);
+    }
+
+    ;
+
+    if (path == null) {
+      callback(null, []);
+      return;
+    } // Display list
+
+
+    for (i in window.MDocs.files) {
+      parts = window.MDocs.files[i].path.split('/');
+      list.push({
+        caption: '/' + window.MDocs.files[i].path,
+        value: '[' + parts[parts.length - 1] + '](' + rawurlencode(getRelativePath(path, window.MDocs.files[i].path)).replace(/%2F/g, '/') + ')',
+        score: 1,
+        meta: 'MDocs'
+      });
+    }
+
+    callback(null, list);
   }
 }); // Load editor handler
 

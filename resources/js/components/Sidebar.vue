@@ -28,6 +28,7 @@
                 axios.get('/api/file')
                     .then((response) => {
                         this.files = response.data.files;
+                        MDocs.files = response.data.files;
                     }).catch((error) => {
                         Vue.handleAxiosError(error);
                     });
