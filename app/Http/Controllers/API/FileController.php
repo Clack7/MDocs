@@ -297,6 +297,9 @@ class FileController extends Controller
 
     public function attachmentShow($path, $key, $ext)
     {
+        if (strpos(pathinfo($path, PATHINFO_BASENAME), 'new-file') !== false) {
+            $path = pathinfo($path, PATHINFO_BASENAME);
+        }
         $filePath = $this->dir . '/' . $this->pathDecode($path) . '.md_' . $key . '.' . $ext;
         if (!\File::exists($filePath)) {
             abort(400, 'File not found.');
