@@ -41,6 +41,14 @@
                 </main>
             </div>
         </div>
+
+        <div class="loader-overlay" :class="{ 'loader-overlay-show': $root.$data.loader }">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="spinner-border"  style="width: 4rem; height: 4rem;">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         window.UtilConfig = {

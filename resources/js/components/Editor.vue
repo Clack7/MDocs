@@ -8,6 +8,10 @@
                     <div style="position:relative;height:100%;" ref="editorHolder">
                         <!-- <pre id="editor"></pre> -->
                     </div>
+                    <div class="editor-bottom-actions">
+                        <a @click="selectionDownloadUrl" href="#" v-if="selection.youtubeThumbnail">Youtube Thumbnail</a>
+                        <a @click="selectionDownloadUrl" href="#" v-if="selection.downloadUrl">Download Selection</a>
+                    </div>
                 </div>
                 <div class="col-6" ref="previewColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }" @scroll="previewScroll">
                     <div v-html="contentMarked" class="markdown-body" :class="{ 'images-small': imagesSmall }"></div>
@@ -68,6 +72,14 @@
                 imagesSmall: true,
                 draftSaving: 0,
                 draftContent: null,
+                selection: {
+                    downloadUrl: false,
+                    youtubeThumbnail: false,
+                },
+                regex: {
+                    url: /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/,
+                    youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/
+                }
             };
         },
         mounted() {
@@ -91,6 +103,21 @@
                     that.editorScroll(scroll);
                 }
             });
+            this.editor.selection.on("changeSelection", function(a, b, c) {
+                that.selection.downloadUrl = false;
+                that.selection.youtubeThumbnail = false;
+                var text = _.trim(that.editor.getSelectedText());
+                if (text != '') {
+                    if (that.regex.youtube.test(text)) {
+                        that.selection.youtubeThumbnail = true;
+                        return;
+                    }
+                    if (that.regex.url.test(text)) {
+                        that.selection.downloadUrl = true;
+                        return;
+                    }
+                }
+            })
 
             // Load content
             this.createAction = this.path_cur == '';
@@ -216,7 +243,6 @@
                         if (match != null) {
                             for (let a in match) {
                                 idx = str[i].indexOf(match[a]);
-                                console.log(match[a].substr(-2, 1));
                                 if (match[a].substr(-2, 1) == '"') {
                                     end = -3;
                                     while (end < 0) {
@@ -328,7 +354,39 @@
                         this.error = error.response.data.message;
                         Vue.handleAxiosError(error);
                     });
-            }
+            },
+            selectionDownloadUrl() {
+                if (Vue.loaderActive()) {
+                    return;
+                }
+
+                var that = this;
+                var text = that.editor.getSelectedText();
+                var range = that.editor.selection.getRange();
+                var textClean = _.trim(text);
+                var doDownload = function(url) {
+                    Vue.loaderShow();
+                    axios.post('/api/file/attach-url', { path: that.path_cur, url: url })
+                        .then(({ data }) => {
+                            Vue.loaderHide();
+                            that.editor.session.replace(range, text.replace(textClean, '![img](' + data.url + ' "=x300")'));
+                        }).catch((error) => {
+                            Vue.loaderHide();
+                            that.error = error.response.data.message;
+                            Vue.handleAxiosError(error);
+                        });
+                };
+                if (textClean != '') {
+                    if (that.regex.youtube.test(textClean)) {
+                        var code = textClean.match(that.regex.youtube)[5];
+                        doDownload('https://img.youtube.com/vi/' + code + '/maxresdefault.jpg');
+                        return;
+                    }
+                    if (that.regex.url.test(textClean)) {
+                        doDownload(textClean);
+                    }
+                }
+            },
         }
     }
 </script>

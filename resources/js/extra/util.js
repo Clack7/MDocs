@@ -26,6 +26,18 @@ export default {
             console.log(error.config);
         }
 
+        Vue.loaderShow = function () {
+          app.__vue__.$root.$data.loader = true;
+        }
+
+        Vue.loaderHide = function () {
+          app.__vue__.$root.$data.loader = false;
+        }
+
+        Vue.loaderActive = function () {
+          return app.__vue__.$root.$data.loader;
+        }
+
         // 2. add a global asset
         // Vue.directive('my-directive', {
         //     bind (el, binding, vnode, oldVnode) {

@@ -161,5 +161,8 @@ Vue.component('gallery-component', require('./components/Gallery.vue').default);
 
 const app = new Vue({
 	el: '#app',
-	router
+	router,
+	data: {
+		loader: false
+	}
 });

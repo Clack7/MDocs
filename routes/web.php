@@ -30,6 +30,7 @@ Route::group(['middleware' => []], function () {
         Route::get('/file/search', 'FileController@search')->name('file.search');
         Route::post('/file/draft', 'FileController@saveDraft')->name('file.draft');
         Route::post('/file/attach', 'FileController@attachmentUpload')->name('file.attachment.upload');
+        Route::post('/file/attach-url', 'FileController@attachmentUploadUrl')->name('file.attachment.upload-url');
         Route::post('/file/toggle', 'FileController@toggleCheckbox')->name('file.toggle');
         Route::get('/file/{path}', 'FileController@show')->name('file.show')->where('path', '(.*)');
         Route::post('/file/{path}', 'FileController@save')->name('file.save')->where('path', '(.*)');

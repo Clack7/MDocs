@@ -12352,6 +12352,38 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   /*height: auto !important;*/
 }
 
+.editor-bottom-actions {
+  position: absolute;
+  bottom: 5px;
+  right: 20px;
+}
+
+.editor-bottom-actions > a {
+  display: inline-block;
+  font-size: 12px;
+  position: relative;
+  top: 3px;
+  margin-left: 10px;
+}
+
+.loader-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(250, 250, 250, 0.4);
+  z-index: 99999;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s ease-out;
+}
+
+.loader-overlay.loader-overlay-show {
+  visibility: visible;
+  opacity: 1;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 50.5s;

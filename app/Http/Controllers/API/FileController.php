@@ -322,15 +322,62 @@ class FileController extends Controller
         $base64 = substr($base64, strlen($start));
 
         // Save file
-        // @TODO check available uniquid
-        $key = uniqid() . '.png';
         $savePath = (empty($path) ? 'new-file' : $path);
-        $filePath = $this->dir . '/' . $savePath . '.md_' . $key;
+        $savePath = $this->dir . '/' . $savePath . '.md';
+        $filePath = $this->getAttachmentPath($savePath, 'png');
         \File::put($filePath, base64_decode($base64));
 
         return response()->json([
             'url' => $this->attachmentUrl($filePath)
         ], 201);
+    }
+
+    public function attachmentUploadUrl(Request $request)
+    {
+        $path = $this->pathClean($request->request->get('path'));
+        $pathFile = $this->pathFile($path);
+        // Check file exists
+        if (!empty($path) && !is_file($pathFile)) {
+            abort(400, 'Invalid file path.');
+        }
+
+        // Parse Check Url valid Mime
+        $url = $request->request->get('url');
+        $headers = get_headers($url);
+        $validMimes = [
+            'image/jpeg' => 'jpg',
+            'image/gif'  => 'gif',
+            'image/png'  => 'png',
+        ];
+        foreach ($headers as $header) {
+            $header = strtolower($header);
+            if (strpos($header, 'content-type') !== false) {
+                $mime = trim(explode(':', $header)[1]);
+                if (isset($validMimes[$mime])) {
+                    // Set path, download and save file contents
+                    $savePath = (empty($path) ? 'new-file' : $path);
+                    $savePath = $this->dir . '/' . $savePath . '.md';
+                    $filePath = $this->getAttachmentPath($savePath, $validMimes[$mime]);
+                    $contents = file_get_contents($url);
+                    \File::put($filePath, $contents);
+                    return response()->json([
+                        'url' => $this->attachmentUrl($filePath)
+                    ], 201);
+                } else {
+                    abort(400, 'Invalid mime type: ' . $mime);
+                }
+            }
+        }
+
+        abort(400, 'Invalid url.');
+    }
+
+    private function getAttachmentPath($pathFile, $ext)
+    {
+        do {
+            $filePath = $pathFile . '_' . uniqid() . '.' . $ext;
+        } while (file_exists($filePath));
+        return $filePath;
     }
 
     public function delete($path)

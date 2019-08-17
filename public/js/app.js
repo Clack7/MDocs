@@ -25543,6 +25543,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -25562,7 +25566,15 @@ __webpack_require__.r(__webpack_exports__);
       showModal: false,
       imagesSmall: true,
       draftSaving: 0,
-      draftContent: null
+      draftContent: null,
+      selection: {
+        downloadUrl: false,
+        youtubeThumbnail: false
+      },
+      regex: {
+        url: /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/,
+        youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/
+      }
     };
   },
   mounted: function mounted() {
@@ -25588,6 +25600,24 @@ __webpack_require__.r(__webpack_exports__);
       },
       onScroll: function onScroll(scroll) {
         that.editorScroll(scroll);
+      }
+    });
+    this.editor.selection.on("changeSelection", function (a, b, c) {
+      that.selection.downloadUrl = false;
+      that.selection.youtubeThumbnail = false;
+
+      var text = _.trim(that.editor.getSelectedText());
+
+      if (text != '') {
+        if (that.regex.youtube.test(text)) {
+          that.selection.youtubeThumbnail = true;
+          return;
+        }
+
+        if (that.regex.url.test(text)) {
+          that.selection.downloadUrl = true;
+          return;
+        }
       }
     }); // Load content
 
@@ -25720,7 +25750,6 @@ __webpack_require__.r(__webpack_exports__);
           if (match != null) {
             for (var a in match) {
               idx = str[i].indexOf(match[a]);
-              console.log(match[a].substr(-2, 1));
 
               if (match[a].substr(-2, 1) == '"') {
                 end = -3;
@@ -25865,6 +25894,45 @@ __webpack_require__.r(__webpack_exports__);
         _this4.error = error.response.data.message;
         Vue.handleAxiosError(error);
       });
+    },
+    selectionDownloadUrl: function selectionDownloadUrl() {
+      if (Vue.loaderActive()) {
+        return;
+      }
+
+      var that = this;
+      var text = that.editor.getSelectedText();
+      var range = that.editor.selection.getRange();
+
+      var textClean = _.trim(text);
+
+      var doDownload = function doDownload(url) {
+        Vue.loaderShow();
+        axios.post('/api/file/attach-url', {
+          path: that.path_cur,
+          url: url
+        }).then(function (_ref5) {
+          var data = _ref5.data;
+          Vue.loaderHide();
+          that.editor.session.replace(range, text.replace(textClean, '![img](' + data.url + ' "=x300")'));
+        })["catch"](function (error) {
+          Vue.loaderHide();
+          that.error = error.response.data.message;
+          Vue.handleAxiosError(error);
+        });
+      };
+
+      if (textClean != '') {
+        if (that.regex.youtube.test(textClean)) {
+          var code = textClean.match(that.regex.youtube)[5];
+          doDownload('https://img.youtube.com/vi/' + code + '/maxresdefault.jpg');
+          return;
+        }
+
+        if (that.regex.url.test(textClean)) {
+          doDownload(textClean);
+        }
+      }
     }
   }
 });
@@ -32647,7 +32715,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
 
 // exports
 
@@ -141948,7 +142016,31 @@ var render = function() {
                 _c("div", {
                   ref: "editorHolder",
                   staticStyle: { position: "relative", height: "100%" }
-                })
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "editor-bottom-actions" }, [
+                  _vm.selection.youtubeThumbnail
+                    ? _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: { click: _vm.selectionDownloadUrl }
+                        },
+                        [_vm._v("Youtube Thumbnail")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.selection.downloadUrl
+                    ? _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: { click: _vm.selectionDownloadUrl }
+                        },
+                        [_vm._v("Download Selection")]
+                      )
+                    : _vm._e()
+                ])
               ]
             ),
             _vm._v(" "),
@@ -157781,7 +157873,10 @@ Vue.component('gallery-component', __webpack_require__(/*! ./components/Gallery.
 
 var app = new Vue({
   el: '#app',
-  router: router
+  router: router,
+  data: {
+    loader: false
+  }
 });
 
 /***/ }),
@@ -159565,6 +159660,18 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       console.log(error.config);
+    };
+
+    Vue.loaderShow = function () {
+      app.__vue__.$root.$data.loader = true;
+    };
+
+    Vue.loaderHide = function () {
+      app.__vue__.$root.$data.loader = false;
+    };
+
+    Vue.loaderActive = function () {
+      return app.__vue__.$root.$data.loader;
     }; // 2. add a global asset
     // Vue.directive('my-directive', {
     //     bind (el, binding, vnode, oldVnode) {
