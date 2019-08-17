@@ -12,7 +12,16 @@
 */
 
 Route::group(['middleware' => []], function () {
-    Route::get('/a/{path}:{key}', 'API\FileController@attachmentShow')->name('file.attachment.show')->where('path', '([^:]*)');
+    // File http read
+    foreach (['/update', '/create', ''] as $prefix) {
+        $r = Route::get($prefix . '/{path}.md_{key}.{ext}', 'API\FileController@attachmentShow')
+            ->where('path', '(.*)')
+            ->where('key', '[a-zA-Z0-9]{13}')
+            ->where('ext', '[a-z]+');
+        if ($prefix == '') {
+            $r->name('file.attachment.show');
+        }
+    }
 
     // API routes
     Route::group(['prefix' => 'api', 'namespace' => 'API'], function () {

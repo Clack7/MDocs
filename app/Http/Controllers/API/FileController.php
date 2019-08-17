@@ -254,7 +254,7 @@ class FileController extends Controller
         foreach ($lines as $k => $line) {
             if (preg_match('/^ - \[ \] \[([^\]]+)\]\([^\]]+ "Uncheck to delete"\)/', $line, $match)) {
                 unset($lines[$k]);
-                $key = explode(':', $match[1])[1];
+                $key = explode('.md_', $match[1])[1];
                 unlink($pathCurFile . '_' . $key);
             }
         }
@@ -264,13 +264,19 @@ class FileController extends Controller
         $attachments = glob($pathCurFile . '_*');
         $keys = [];
         foreach ($attachments as $at) {
-            \File::move($at, str_replace($pathCurFile, $pathNewFile, $at));
-            $key = explode('_', $at);
-            $keys[] = end($key);
+            if (preg_match('/[a-z0-9]{10}\.[a-zA-Z0-9]+$/', $at)) {
+                \File::move($at, str_replace($pathCurFile, $pathNewFile, $at));
+                $key = explode('.md_', $at);
+                $keys[] = $key[1];
+            }
         }
 
         // Replace content usage
-        $content = str_replace('/a/' . $this->pathEncode($pathCur) . ':', '/a/' . $this->pathEncode($pathNew) . ':', $content);
+        $content = str_replace(
+            $this->attachmentUrl($pathCur) . '.md_',
+            $this->attachmentUrl($pathNew) . '.md_',
+            $content
+        );
 
         // Add not reference files
         $title = "\n\n\n--\n\n**Attachments:**";
@@ -278,7 +284,7 @@ class FileController extends Controller
         $parts[1] = isset($parts[1]) ? $parts[1] : '';
         foreach ($keys as $key) {
             if (strpos($content, $key) === false) {
-                $url = '/a/' . $this->pathEncode($pathNew) . ':' . $key;
+                $url = $this->attachmentUrl($pathNew) . '.md_' . $key;
                 $parts[1] .= "\n - [X] [$url]($url \"Uncheck to delete\")";
             }
         }
@@ -289,9 +295,12 @@ class FileController extends Controller
         }
     }
 
-    public function attachmentShow($path, $key)
+    public function attachmentShow($path, $key, $ext)
     {
-        $filePath = $this->dir . '/' . $this->pathDecode($path) . '.md_' . $key;
+        $filePath = $this->dir . '/' . $this->pathDecode($path) . '.md_' . $key . '.' . $ext;
+        if (!\File::exists($filePath)) {
+            abort(400, 'File not found.');
+        }
         return response()->file($filePath);
     }
 
@@ -313,27 +322,29 @@ class FileController extends Controller
         $base64 = substr($base64, strlen($start));
 
         // Save file
+        // @TODO check available uniquid
         $key = uniqid() . '.png';
         $savePath = (empty($path) ? 'new-file' : $path);
-        \File::put($this->dir . '/' . $savePath . '.md_' . $key, base64_decode($base64));
+        $filePath = $this->dir . '/' . $savePath . '.md_' . $key;
+        \File::put($filePath, base64_decode($base64));
 
-        return response()->json(['url' => route('file.attachment.show', [
-            'path' => $this->pathEncode($savePath),
-            'key' => $key,
-        ], false)], 201);
+        return response()->json([
+            'url' => $this->attachmentUrl($filePath)
+        ], 201);
     }
 
     public function delete($path)
     {
         $pathFile = $this->dir . '/' . $path . '.md';
         if (\File::isFile($pathFile)) {
-            \File::delete($pathFile);
-
             // Remove attachments
             $attachments = glob($pathFile . '_*');
             foreach ($attachments as $at) {
-                unlink($at);
+                \File::delete($at);
             }
+
+            // Remove real file
+            \File::delete($pathFile);
 
             $this->removeEmptyDir($pathFile);
         }
@@ -360,6 +371,11 @@ class FileController extends Controller
     private function pathEncode($path)
     {
         return implode('/', array_map('rawurlencode', explode('/', $path)));
+    }
+
+    private function attachmentUrl($path)
+    {
+        return './' . rawurlencode(pathinfo($path, PATHINFO_BASENAME));
     }
 
     private function pathDecode($path)
