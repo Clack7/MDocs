@@ -36,7 +36,43 @@ class FileController extends Controller
         }
         ksort($list);
 
-        return ['files' => array_values($list)];
+        // Build tree
+        $tree = [];
+        foreach ($list as $file) {
+            $parts = explode('/', $file['path']);
+            $children =& $tree;
+            $path = [];
+            foreach ($parts as $key => $part) {
+                $path[] = $part;
+                // Check part exists in map and create
+                if (!isset($children[strtolower($part)])) {
+                    $children[strtolower($part)] = [
+                        'name'     => $part,
+                        'path'     => implode('/', $path),
+                        'file'     => false,
+                        'children' => [],
+                    ];
+                }
+
+                // ADd path to last part
+                if ($key == count($parts) - 1) {
+                    $children[strtolower($part)]['file'] = true;
+
+                // Continue in next part
+                } else {
+                    $children =& $children[strtolower($part)]['children'];
+                }
+            }
+        }
+        $treeArrayValues = function($tree) use (&$treeArrayValues) {
+            foreach ($tree as $key => $val) {
+                $tree[$key]['children'] = $treeArrayValues($val['children']);
+            }
+            return array_values($tree);
+        };
+        $tree = $treeArrayValues($tree);
+
+        return ['files' => array_values($list), 'tree' => $tree];
     }
 
     public function search(Request $request)

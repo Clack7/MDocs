@@ -26381,10 +26381,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      files: []
+      files: [],
+      levels: []
     };
   },
   mounted: function mounted() {
@@ -26401,7 +26406,24 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/api/file').then(function (response) {
         _this2.files = response.data.files;
-        MDocs.files = response.data.files;
+        MDocs.files = response.data.files; // Format tree list
+
+        var levels = [];
+
+        function levelFill(list, level) {
+          for (var i in list) {
+            levels.push({
+              name: list[i].name,
+              path: list[i].path,
+              file: list[i].file,
+              level: level + 0
+            });
+            levelFill(list[i].children, level + 1);
+          }
+        }
+
+        levelFill(response.data.tree, 0);
+        _this2.levels = levels;
       })["catch"](function (error) {
         Vue.handleAxiosError(error);
       });
@@ -26416,6 +26438,9 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return parts.reverse().join('');
+    },
+    levelName: function levelName(file) {
+      return ('<span class="sidebar-level-marker ' + (this.$route.params.path.indexOf(file.path) == 0 ? 'active' : '') + '">&raquo;</span>').repeat(file.level + 1) + '<span class="sidebar-path-level-' + (!file.file ? '1' : '1') + '">' + file.name + '</span>';
     }
   }
 });
@@ -142784,17 +142809,36 @@ var render = function() {
         _c(
           "ul",
           { staticClass: "nav flex-column" },
-          _vm._l(_vm.files, function(file) {
+          _vm._l(_vm.levels, function(file) {
             return _c(
               "li",
               { staticClass: "nav-item" },
               [
-                _c("router-link", {
-                  staticClass: "nav-link",
-                  class: { active: file.path == _vm.$route.params.path },
-                  attrs: { to: "/" + file.path },
-                  domProps: { innerHTML: _vm._s(_vm.formatPath(file.path)) }
-                })
+                !file.file
+                  ? _c("span", {
+                      staticClass: "nav-link disabled",
+                      class: {
+                        "child-active":
+                          _vm.$route.params.path.indexOf(file.path) == 0 &&
+                          file.path != _vm.$route.params.path
+                      },
+                      domProps: { innerHTML: _vm._s(_vm.levelName(file)) }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                file.file
+                  ? _c("router-link", {
+                      staticClass: "nav-link",
+                      class: {
+                        active: file.path == _vm.$route.params.path,
+                        "child-active":
+                          _vm.$route.params.path.indexOf(file.path) == 0 &&
+                          file.path != _vm.$route.params.path
+                      },
+                      attrs: { to: "/" + file.path },
+                      domProps: { innerHTML: _vm._s(_vm.levelName(file)) }
+                    })
+                  : _vm._e()
               ],
               1
             )

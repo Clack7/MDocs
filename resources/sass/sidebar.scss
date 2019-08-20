@@ -12,16 +12,6 @@ body {
  * Sidebar
  */
 
-.sidebar {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100; /* Behind the navbar */
-  padding: 48px 0 0; /* Height of navbar */
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-}
-
 .sidebar-sticky {
   position: relative;
   top: 0;
@@ -38,29 +28,94 @@ body {
   }
 }
 
-.sidebar .nav-link {
-  font-weight: 500;
-  color: #333;
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100; /* Behind the navbar */
+  padding: 48px 0 0; /* Height of navbar */
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+
+  .nav-item {
+    width: 100%;
+  }
+
+  .nav-link {
+    font-weight: 500;
+    color: #333;
+    padding: 0.15rem 0.5rem 0.15rem 0.5rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 0.9rem;
+    border-top: 1px solid #f3f3f3;
+    border-bottom: 1px solid #f3f3f3;
+
+    &.child-active {
+      border-top-color: #BADBFF;
+      border-bottom-color: #BADBFF;
+    }
+
+    .sidebar-level-marker {
+      display: inline-block;
+      width:9px;
+      opacity: 0.25;
+      font-size: 0.5rem;
+      line-height: 1.6;
+      position: relative;
+      top:-2px;
+
+      &.active {
+        opacity:0.7;
+        color: #007bff;
+        font-weight: bold;
+      }
+    }
+
+    .feather {
+      margin-right: 4px;
+      color: #999;
+    }
+
+    &:hover {
+      background: #fdfdfd;
+      border-right: 1px solid #DFE0E1;
+    }
+
+    &.active {
+      color: #007bff;
+      background: white;
+      border-right: 0 none;
+      // border-right: 1px solid #DFE0E1;
+      // outline: 1px solid #DFE0E1;
+    }
+
+    &.disabled {
+      background: #f0f0f0;
+      padding-top: 0.1rem;
+      padding-bottom: 0.1rem;
+      font-size: 0.7rem;
+      border-top: 1px solid #eaeaea;
+      border-bottom: 1px solid #eaeaea;
+
+      .sidebar-level-marker {
+        line-height:0.7rem;
+        top:-1px;
+      }
+
+      &.child-active {
+        border-top-color: #BADBFF;
+        border-bottom-color: #BADBFF;
+      }
+    }
+  }
 }
 
-.sidebar .nav-link .feather {
-  margin-right: 4px;
-  color: #999;
-}
-
-.sidebar .nav-link.active {
-  color: #007bff;
-  background: white;
-  border-right: 1px solid #DFE0E1;
-  outline: 1px solid #DFE0E1;
-}
-.sidebar .nav-link:hover {
-  background: #f3f3f3;
-  border-right: 1px solid #DFE0E1;
-}
 .sidebar-path-level-1 { opacity: 1; }
 .sidebar-path-level-2 { opacity: 0.5; }
 .sidebar-path-level-3 { opacity: 0.4; }
+.sidebar-path-level-4 { opacity: 0.25; }
 
 .sidebar .nav-link:hover .feather,
 .sidebar .nav-link.active .feather {
