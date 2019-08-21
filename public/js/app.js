@@ -26274,7 +26274,11 @@ __webpack_require__.r(__webpack_exports__);
       create: 0,
       columnHeight: 100,
       inputProgress: false,
-      tocItems: []
+      tocItems: [],
+      tocExpand: false,
+      tocExpandTO: null,
+      tocShow: false,
+      tocHide: false
     };
   },
   mounted: function mounted() {
@@ -26340,20 +26344,50 @@ __webpack_require__.r(__webpack_exports__);
       setTimeout(function () {
         var headers = $(that.$refs.previewColumn).find('h1, h2, h3, h4, h5, h6');
         that.tocItems = [];
+        var minLevel = 10,
+            curLevel;
+        var items = [];
         headers.each(function () {
-          that.tocItems.push({
+          curLevel = parseInt(this.tagName.charAt(1));
+          minLevel = Math.min(curLevel, minLevel);
+          items.push({
             to: '#' + $(this).attr('id'),
-            level: this.tagName.charAt(1) - 1,
+            level: curLevel,
             name: $(this).text()
           });
         });
+
+        for (var i = 0; i < items.length; i++) {
+          items[i].level -= minLevel;
+        }
+
+        that.tocItems = items;
       }, 200);
     },
     scrollMeTo: function scrollMeTo(to) {
+      var that = this;
+      this.tocHide = true;
+      this.tocShow = false;
+      this.tocExpand = false;
+      setTimeout(function () {
+        that.tocHide = false;
+      }, 500);
       $(this.$refs.previewColumn).scrollTop($(this.$refs.previewColumn).scrollTop() + $(to).offset().top - 110);
     },
     edit: function edit() {
       this.$router.push('/update/' + this.path_cur);
+    },
+    tocToggle: function tocToggle(positive) {
+      clearTimeout(this.tocExpandTO);
+
+      if (positive) {
+        this.tocExpand = true;
+      } else {
+        var that = this;
+        this.tocExpandTO = setTimeout(function () {
+          that.tocExpand = false;
+        }, 250);
+      }
     }
   }
 });
@@ -142697,40 +142731,72 @@ var render = function() {
         [
           _c("path-header-component", { attrs: { mode: "show" } }),
           _vm._v(" "),
-          _vm.tocItems.length > 0
-            ? _c("div", { staticClass: "toc-open" }, [
-                _c("div", [
-                  _c("div", [
-                    _c("h5", [_vm._v("Table of contents")]),
-                    _vm._v(" "),
-                    _c(
-                      "ul",
-                      _vm._l(_vm.tocItems, function(item) {
-                        return _c("li", [
+          _vm.tocItems.length > 0 && !_vm.tocHide
+            ? _c(
+                "div",
+                {
+                  staticClass: "toc-open",
+                  class: { active: _vm.tocShow || _vm.tocExpand },
+                  on: {
+                    mouseenter: function($event) {
+                      _vm.tocShow = true
+                    },
+                    mouseleave: function($event) {
+                      _vm.tocShow = false
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      class: { active: _vm.tocExpand },
+                      on: {
+                        mouseenter: function($event) {
+                          return _vm.tocToggle(true)
+                        },
+                        mouseleave: function($event) {
+                          return _vm.tocToggle(false)
+                        }
+                      }
+                    },
+                    [
+                      _c("span"),
+                      _c("div", [
+                        _c("div", [
                           _c(
-                            "a",
-                            {
-                              style: { "margin-left": item.level * 12 + "px" },
-                              attrs: { href: "#" },
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  return _vm.scrollMeTo(item.to)
-                                }
-                              }
-                            },
-                            [
-                              _c("span", [_vm._v("•")]),
-                              _vm._v(" " + _vm._s(item.name))
-                            ]
+                            "ul",
+                            _vm._l(_vm.tocItems, function(item) {
+                              return _c("li", [
+                                _c("a", {
+                                  style: {
+                                    "font-size": 16 - item.level * 0.5 + "px"
+                                  },
+                                  attrs: { href: "#" },
+                                  domProps: {
+                                    innerHTML: _vm._s(
+                                      "<span class='toc-level-marker'>&middot;</span>".repeat(
+                                        item.level
+                                      ) + item.name
+                                    )
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      $event.preventDefault()
+                                      return _vm.scrollMeTo(item.to)
+                                    }
+                                  }
+                                })
+                              ])
+                            }),
+                            0
                           )
                         ])
-                      }),
-                      0
-                    )
-                  ])
-                ])
-              ])
+                      ])
+                    ]
+                  )
+                ]
+              )
             : _vm._e(),
           _vm._v(" "),
           _c(
