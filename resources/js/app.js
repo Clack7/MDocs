@@ -45,6 +45,14 @@ mermaid.initialize({
   // ] }
 });
 let mermaidCounter = 0;
+import nomnoml from 'nomnoml';
+window.nomnoml = nomnoml;
+let nomnomlDirectives =
+`#fill: #ECECFF; #F0F0FF
+#lineWidth: 1.5
+#fillArrows: true
+#.class: none` // remove bold
+;
 let rendererCode = renderer.code;
 renderer.code = function(code, infostring, escaped) {
     if ([
@@ -55,12 +63,18 @@ renderer.code = function(code, infostring, escaped) {
         'graph LR',
         'sequenceDiagram',
         'gantt',
+        'uml',
     ].indexOf(infostring) >= 0) {
         mermaidCounter++;
         let graphSvg = '<div class="alert alert-warning">Graph Parse Error</div>';
         try {
-            graphSvg = mermaid.render('mermaid_' + mermaidCounter, infostring + "\n" + code);
-        } catch (e) { /*console.log(e);*/ }
+            if (infostring == 'uml') {
+                graphSvg = nomnoml.renderSvg(nomnomlDirectives + "\n" + code);
+            } else {
+                graphSvg = mermaid.render('mermaid_' + mermaidCounter, infostring + "\n" + code);
+            }
+        } catch (e) { console.log(e); }
+
         return '<div class="graph-container">' + graphSvg + '</div>';
     }
 
@@ -69,6 +83,7 @@ renderer.code = function(code, infostring, escaped) {
 marked.setOptions({
     renderer: renderer
 });
+
 // Emojis
 import emoji from 'node-emoji';
 import hljs from 'highlight.js';
@@ -80,7 +95,6 @@ Vue.filter('marked', function(input) {
         gfm: true,
         breaks: true,
         highlight: function(code, lang) {
-            console.log(1, lang, 2, code)
             if (typeof hljs.getLanguage(lang) == 'undefined') {
                 lang = 'plaintext';
             }

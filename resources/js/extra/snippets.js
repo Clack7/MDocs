@@ -82,6 +82,20 @@ const snippets = [
         // string used for filtering
         // value: ".obj",
         // optional, allows to display a caption different from value
+        caption: "-UML Graph",
+        // optional, snippet that can be inseted instead of value
+        snippet:
+"``` uml\n\
+[${1:Start}]->[${2:Continue}]\n\
+```\n",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
         caption: "-Flowchart",
         // optional, snippet that can be inseted instead of value
         snippet:
