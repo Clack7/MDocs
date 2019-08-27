@@ -207,14 +207,16 @@
   color:#999;
 }
 
-$toc-top-offset: 50px;
-$toc-vertical-expand-offset: 20px;
+$toc-top-offset: 60px;
+$toc-vertical-expand-offset: 10px;
+$toc-marker-additional-width: 1px;
+$toc-marker-additional-height: 60px;
 .toc-open {
   position:absolute;
   top:0px;
   left:0px;
   width:20px;
-  padding:($toc-top-offset - $toc-vertical-expand-offset + 3px) 4px 3px 2px;
+  padding:($toc-top-offset - $toc-vertical-expand-offset + 3px) (4px -  + $toc-marker-additional-width) 3px 2px;
   height:100%;
   z-index: 9999;
 
@@ -226,19 +228,19 @@ $toc-vertical-expand-offset: 20px;
     padding: $toc-vertical-expand-offset 0;
 
     > span {
-      width:14px;
-      height:14px;
+      width:14px + $toc-marker-additional-width;
+      height:14px + $toc-marker-additional-height;
       display: block;
       border-radius: 7px;
       background-color: rgba(0, 0, 0, 0.08);
       border: 1px solid rgba(0, 0, 0, 0.25);
-      margin: 0 0 -14px;
-      opacity: 0.3;
+      margin: 0 0 (-14px - $toc-marker-additional-height);
+      opacity: 0.1;
     }
 
     > div {
-      width:14px;
-      height:14px;
+      width:14px + $toc-marker-additional-width;
+      height:14px + $toc-marker-additional-height;
       border-radius: 7px;
       background-color: rgba(0, 0, 0, 0.08);
       border: 1px solid rgba(0, 0, 0, 0.25);
@@ -282,11 +284,14 @@ $toc-vertical-expand-offset: 20px;
           border-width: 1px 0;
           border-style: solid;
           border-color: #f0f0f0;
+          background:#fafafa;
 
           &:hover {
             text-decoration: none;
             background: #fdfdfd;
             color: #007bff;
+            border-left: 3px solid #007bff88;
+            padding-left:7px;
           }
         }
       }
@@ -296,18 +301,17 @@ $toc-vertical-expand-offset: 20px;
       padding:$toc-vertical-expand-offset 50px 50px 0px;
 
       > div {
-        background-color: #F7F7F7;
+        // background-color: #F7F7F7;
         overflow-y: auto;
         overflow-x: visible;
         min-width: 300px;
         width: auto;
         max-width: 600px;
         height: auto;
-        border-radius: 0px;
         opacity: 1;
-        border: 1px solid rgba(0, 0, 0, 0.125);
+        border: 1px solid #e0e0e0;
 
-        transform: translateX(18px);
+        transform: translateX(17px) translateY(0px);
 
         > div {
           display: block;

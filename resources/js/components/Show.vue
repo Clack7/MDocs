@@ -3,7 +3,7 @@
         <div class="alert alert-danger m-0 rounded-0" v-if="error != ''">{{ error }}</div>
         <div class="card border-0">
             <path-header-component mode="show"></path-header-component>
-            <div class="toc-open" v-if="tocItems.length > 0 && !tocHide" :class="{ 'active': tocShow || tocExpand }" v-on:mouseenter="tocShow = true" v-on:mouseleave="tocShow = false"><div :class="{ 'active': tocExpand }" v-on:mouseenter="tocToggle(true)" v-on:mouseleave="tocToggle(false)"><span></span><div><div>
+            <div class="toc-open" v-if="tocItems.length > 1 && !tocHide" :class="{ 'active': tocShow || tocExpand }" v-on:mouseenter="tocShow = true" v-on:mouseleave="tocShow = false"><div :class="{ 'active': tocExpand }" v-on:mouseenter="tocToggle(true)" v-on:mouseleave="tocToggle(false)"><span></span><div><div>
                 <!-- <h5>Table of contents</h5> -->
                 <ul>
                     <li v-for="item in tocItems">

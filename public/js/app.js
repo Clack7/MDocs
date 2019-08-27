@@ -26434,6 +26434,18 @@ __webpack_require__.r(__webpack_exports__);
       _this.load();
     });
   },
+  computed: {
+    routePath: function routePath() {
+      try {
+        return this.$route.params.path || '';
+      } catch (e) {
+        /*console.log(e);*/
+      }
+
+      ;
+      return '';
+    }
+  },
   methods: {
     load: function load() {
       var _this2 = this;
@@ -26474,7 +26486,7 @@ __webpack_require__.r(__webpack_exports__);
       return parts.reverse().join('');
     },
     levelName: function levelName(file) {
-      return ('<span class="sidebar-level-marker ' + (this.$route.params.path.indexOf(file.path) == 0 ? 'active' : '') + '">&raquo;</span>').repeat(file.level + 1) + '<span class="sidebar-path-level-' + (!file.file ? '1' : '1') + '">' + file.name + '</span>';
+      return ('<span class="sidebar-level-marker ' + (this.routePath.indexOf(file.path) == 0 ? 'active' : '') + '">&raquo;</span>').repeat(file.level + 1) + '<span class="sidebar-path-level-' + (!file.file ? '1' : '1') + '">' + file.name + '</span>';
     }
   }
 });
@@ -158661,7 +158673,7 @@ var render = function() {
         [
           _c("path-header-component", { attrs: { mode: "show" } }),
           _vm._v(" "),
-          _vm.tocItems.length > 0 && !_vm.tocHide
+          _vm.tocItems.length > 1 && !_vm.tocHide
             ? _c(
                 "div",
                 {
@@ -158815,8 +158827,8 @@ var render = function() {
                       staticClass: "nav-link disabled",
                       class: {
                         "child-active":
-                          _vm.$route.params.path.indexOf(file.path) == 0 &&
-                          file.path != _vm.$route.params.path
+                          _vm.routePath.indexOf(file.path) == 0 &&
+                          file.path != _vm.routePath
                       },
                       domProps: { innerHTML: _vm._s(_vm.levelName(file)) }
                     })
@@ -158826,10 +158838,10 @@ var render = function() {
                   ? _c("router-link", {
                       staticClass: "nav-link",
                       class: {
-                        active: file.path == _vm.$route.params.path,
+                        active: file.path == _vm.routePath,
                         "child-active":
-                          _vm.$route.params.path.indexOf(file.path) == 0 &&
-                          file.path != _vm.$route.params.path
+                          _vm.routePath.indexOf(file.path) == 0 &&
+                          file.path != _vm.routePath
                       },
                       attrs: { to: "/" + file.path },
                       domProps: { innerHTML: _vm._s(_vm.levelName(file)) }
@@ -173843,8 +173855,8 @@ window.MDocs = {
 
 ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_9___default.a.setCompleters(null);
 ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_9___default.a.addCompleter({
-  identifierRegexps: [/[a-zA-Z_0-9\$\:\-\u00A2-\uFFFF/]/],
-  // added : to start, and / slash
+  identifierRegexps: [/[a-zA-Z_0-9@\$\:\-\u00A2-\uFFFF/]/],
+  // added : to start, @ for markers and / slash for files
   getCompletions: function getCompletions(editor, session, pos, prefix, callback) {
     // console.log('prefix', prefix);
     if (prefix.length < 2 || prefix.charAt(0) != ':') {
@@ -173870,7 +173882,7 @@ ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_9___defaul
     // console.log('prefix', prefix);
     if (
     /*prefix.length < 2 || */
-    prefix.charAt(0) != '-') {
+    ['-', '@'].indexOf(prefix.charAt(0)) < 0) {
       callback(null, []);
       return;
     }
@@ -175720,6 +175732,36 @@ var snippets = [{
   caption: "-Image",
   // optional, snippet that can be inseted instead of value
   snippet: "![${1:alt}](${2:src})",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "@TODO",
+  // optional, snippet that can be inseted instead of value
+  snippet: "`@TODO`",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "@SEE",
+  // optional, snippet that can be inseted instead of value
+  snippet: "`@SEE`",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "@MORE",
+  // optional, snippet that can be inseted instead of value
+  snippet: "`@MORE`",
   // short description
   meta: "MDocs"
 }, {

@@ -12519,7 +12519,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   top: 0px;
   left: 0px;
   width: 20px;
-  padding: 33px 4px 3px 2px;
+  padding: 53px 3px 3px 2px;
   height: 100%;
   z-index: 9999;
 }
@@ -12529,23 +12529,23 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 }
 
 .toc-open > div {
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 .toc-open > div > span {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 74px;
   display: block;
   border-radius: 7px;
   background-color: rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.25);
-  margin: 0 0 -14px;
-  opacity: 0.3;
+  margin: 0 0 -74px;
+  opacity: 0.1;
 }
 
 .toc-open > div > div {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 74px;
   border-radius: 7px;
   background-color: rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.25);
@@ -12592,31 +12592,32 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   border-width: 1px 0;
   border-style: solid;
   border-color: #f0f0f0;
+  background: #fafafa;
 }
 
 .toc-open > div > div ul a:hover {
   text-decoration: none;
   background: #fdfdfd;
   color: #007bff;
+  border-left: 3px solid #007bff88;
+  padding-left: 7px;
 }
 
 .toc-open > div.active {
-  padding: 20px 50px 50px 0px;
+  padding: 10px 50px 50px 0px;
 }
 
 .toc-open > div.active > div {
-  background-color: #F7F7F7;
   overflow-y: auto;
   overflow-x: visible;
   min-width: 300px;
   width: auto;
   max-width: 600px;
   height: auto;
-  border-radius: 0px;
   opacity: 1;
-  border: 1px solid rgba(0, 0, 0, 0.125);
-  -webkit-transform: translateX(18px);
-          transform: translateX(18px);
+  border: 1px solid #e0e0e0;
+  -webkit-transform: translateX(17px) translateY(0px);
+          transform: translateX(17px) translateY(0px);
 }
 
 .toc-open > div.active > div > div {

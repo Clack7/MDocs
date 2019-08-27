@@ -111,7 +111,7 @@ import './extra/ext-emmet.js';
 import snippetManager from 'ace-builds/src-noconflict/ext-language_tools';
 snippetManager.setCompleters(null);
 snippetManager.addCompleter({
-    identifierRegexps: [/[a-zA-Z_0-9\$\:\-\u00A2-\uFFFF/]/], // added : to start, and / slash
+    identifierRegexps: [/[a-zA-Z_0-9@\$\:\-\u00A2-\uFFFF/]/], // added : to start, @ for markers and / slash for files
     getCompletions: function(editor, session, pos, prefix, callback) {
         // console.log('prefix', prefix);
         if (prefix.length < 2 || prefix.charAt(0) != ':') { callback(null, []); return }
@@ -126,7 +126,7 @@ snippetManager.addCompleter({
     // identifierRegexps: [/[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/], // added . to start
     getCompletions: function(editor, session, pos, prefix, callback) {
         // console.log('prefix', prefix);
-        if (/*prefix.length < 2 || */prefix.charAt(0) != '-') { callback(null, []); return }
+        if (/*prefix.length < 2 || */['-', '@'].indexOf(prefix.charAt(0)) < 0) { callback(null, []); return }
         callback(null, snippets);
     }
 });

@@ -82,6 +82,39 @@ const snippets = [
         // string used for filtering
         // value: ".obj",
         // optional, allows to display a caption different from value
+        caption: "@TODO",
+        // optional, snippet that can be inseted instead of value
+        snippet: "`@TODO`",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "@SEE",
+        // optional, snippet that can be inseted instead of value
+        snippet: "`@SEE`",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "@MORE",
+        // optional, snippet that can be inseted instead of value
+        snippet: "`@MORE`",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
         caption: "-UML Graph",
         // optional, snippet that can be inseted instead of value
         snippet:
