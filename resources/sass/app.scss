@@ -54,6 +54,10 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
+.card {
+  border-radius: 0;
+}
+
 // Highlight JS
 @import '~highlight.js/styles/github';
 // @import '~highlight.js/styles/monokai-sublime'; // darkly
@@ -92,6 +96,66 @@
 @media (max-width: 767px) {
   .markdown-body {
     padding: 15px;
+  }
+}
+// show minimap
+.show-content {
+  width:100%;
+  max-width: 1200px;
+}
+.show-minimap {
+  background: #272B30;
+  width: calc(100% - 1200px);
+
+  .show-minimap-content {
+    background: white;
+    margin: 10px;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity:0;
+    transform: translateX(10px);
+
+    &.active {
+      pointer-events: auto;
+      opacity:1;
+      transform: translateX(0px);
+    }
+
+    .markdown-body {
+      user-select: none;
+      pointer-events: none;
+      width: 1200px;
+      transform-origin: top left;
+      transform: scale(0.1);
+    }
+
+    .show-minimap-scroller {
+      position: absolute;
+      z-index: 999;
+      top:0;
+      bottom: 0;
+      left:0;
+      right:0;
+      cursor: pointer;
+
+      .show-minimap-scroller-top, .show-minimap-scroller-bottom {
+        pointer-events: none;
+        position: absolute;
+        width:100%;
+        background: #272B30;
+        opacity: 0.2;
+        height:40px;
+      }
+      .show-minimap-scroller-top {
+        top:0;
+      }
+      .show-minimap-scroller-bottom {
+        bottom:0;
+      }
+    }
   }
 }
 // Small images on preview

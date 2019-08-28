@@ -1,24 +1,37 @@
 <template>
     <div>
-        <div class="alert alert-danger m-0 rounded-0" v-if="error != ''">{{ error }}</div>
-        <div class="card border-0">
-            <path-header-component mode="show"></path-header-component>
-            <div class="toc-open" v-if="tocItems.length > 1 && !tocHide" :class="{ 'active': tocShow || tocExpand }" v-on:mouseenter="tocShow = true" v-on:mouseleave="tocShow = false"><div :class="{ 'active': tocExpand }" v-on:mouseenter="tocToggle(true)" v-on:mouseleave="tocToggle(false)"><span></span><div><div>
-                <!-- <h5>Table of contents</h5> -->
-                <ul>
-                    <li v-for="item in tocItems">
-                        <a :style="{ 'font-size': (16 - item.level * 0.5) + 'px'  }" href="#" @click.prevent="scrollMeTo(item.to)" v-html="('<span class=\'toc-level-marker\'>&middot;</span>').repeat(item.level) + item.name"></a>
-                    </li>
-                </ul>
-            </div></div></div></div>
-            <div ref="previewColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }">
-                <transition name="slide-fade">
-                    <div v-html="contentMarked" class="markdown-body" v-if="content != ''"></div>
-                    <div v-if="createAction" class="markdown-body"><em>File not found.</em>  &nbsp;<a href="#" @click="edit()">Create?</a></div>
-                </transition>
+        <div class="d-flex">
+            <div class="show-content">
+                <div class="alert alert-danger m-0 rounded-0" v-if="error != ''">{{ error }}</div>
+                <div class="card border-0">
+                    <path-header-component mode="show"></path-header-component>
+                    <div class="toc-open" v-if="tocItems.length > 1 && !tocHide" :class="{ 'active': tocShow || tocExpand }" v-on:mouseenter="tocShow = true" v-on:mouseleave="tocShow = false"><div :class="{ 'active': tocExpand }" v-on:mouseenter="tocToggle(true)" v-on:mouseleave="tocToggle(false)"><span></span><div><div>
+                        <!-- <h5>Table of contents</h5> -->
+                        <ul>
+                            <li v-for="item in tocItems">
+                                <a :style="{ 'font-size': (16 - item.level * 0.5) + 'px'  }" href="#" @click.prevent="scrollMeTo(item.to)" v-html="('<span class=\'toc-level-marker\'>&middot;</span>').repeat(item.level) + item.name"></a>
+                            </li>
+                        </ul>
+                    </div></div></div></div>
+                    <div ref="previewColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }" @scroll="previewScroll">
+                        <transition name="slide-fade">
+                            <div v-html="contentMarked" class="markdown-body" v-if="content != ''"></div>
+                            <div v-if="createAction" class="markdown-body"><em>File not found.</em>  &nbsp;<a href="#" @click="edit()">Create?</a></div>
+                        </transition>
+                    </div>
+                </div>
+                <gallery-component refContainer="previewColumn"></gallery-component>
+            </div>
+            <div class="show-minimap">
+                <div class="show-minimap-content" :style="{ height: minimapHeight + 'px', width: minimapWidth + 'px' }" :class="{ 'active' : content != '' && minimapHeight > 20}">
+                    <div ref="minimapContent" v-html="contentMarked" class="markdown-body"></div>
+                    <div class="show-minimap-scroller" @mousedown="minimapScroll($event.x, $event.y)" @mousemove="$event.buttons == 1 && minimapScroll($event.x, $event.y)">
+                        <div class="show-minimap-scroller-top" :style="{ height: minimapScrollerTop + 'px' }"></div>
+                        <div class="show-minimap-scroller-bottom" :style="{ height: minimapScrollerBottom + 'px' }"></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <gallery-component refContainer="previewColumn"></gallery-component>
     </div>
 </template>
 
@@ -34,6 +47,10 @@
                 error: '',
                 create: 0,
                 columnHeight: 100,
+                minimapHeight: 1,
+                minimapWidth: 1,
+                minimapScrollerTop: 0,
+                minimapScrollerBottom: 0,
                 inputProgress: false,
                 tocItems: [],
                 tocExpand: false,
@@ -92,13 +109,24 @@
         methods: {
             adjustWindowHeight(e) {
                 this.columnHeight = document.documentElement.clientHeight - (this.$refs.previewColumn.getBoundingClientRect().top + document.documentElement.scrollTop + 1);
+                this.adjustMinimapSize();
+            },
+            adjustMinimapSize() {
+                this.minimapHeight = $(this.$refs.minimapContent).outerHeight() * 0.1;
+                this.minimapWidth = $(this.$refs.minimapContent).outerWidth() * 0.1;
+                this.previewScroll();
+            },
+            previewScroll() {
+                this.minimapScrollerTop = this.$refs.previewColumn.scrollTop * 0.1;
+                this.minimapScrollerBottom = (this.$refs.previewColumn.scrollHeight - this.$refs.previewColumn.scrollTop - this.columnHeight) * 0.1;
             },
             update() {
                 this.contentMarked = this.$options.filters['marked'](this.content);
 
                 var that = this;
                 setTimeout(function() {
-                    var headers = $(that.$refs.previewColumn).find('h1, h2, h3, h4, h5, h6');
+                    var $previewColumn = $(that.$refs.previewColumn);
+                    var headers = $previewColumn.find('h1, h2, h3, h4, h5, h6');
                     that.tocItems = [];
                     var minLevel = 10, curLevel;
                     var items = [];
@@ -115,7 +143,18 @@
                         items[i].level -= minLevel;
                     }
                     that.tocItems = items;
+
+                    var imgs = $previewColumn.find('img');
+                    $previewColumn.find('img').on('load', function() {
+                        that.adjustMinimapSize();
+                    });
+
+                    that.adjustMinimapSize();
                 }, 200);
+            },
+            minimapScroll(x, y) {
+                var mm = $(this.$refs.minimapContent);
+                $(this.$refs.previewColumn).scrollTop((y - mm.offset().top) * 10 - this.columnHeight / 2);
             },
             scrollMeTo(to) {
                 var that = this;

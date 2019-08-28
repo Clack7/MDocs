@@ -26262,6 +26262,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -26273,6 +26286,10 @@ __webpack_require__.r(__webpack_exports__);
       error: '',
       create: 0,
       columnHeight: 100,
+      minimapHeight: 1,
+      minimapWidth: 1,
+      minimapScrollerTop: 0,
+      minimapScrollerBottom: 0,
       inputProgress: false,
       tocItems: [],
       tocExpand: false,
@@ -26337,12 +26354,23 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     adjustWindowHeight: function adjustWindowHeight(e) {
       this.columnHeight = document.documentElement.clientHeight - (this.$refs.previewColumn.getBoundingClientRect().top + document.documentElement.scrollTop + 1);
+      this.adjustMinimapSize();
+    },
+    adjustMinimapSize: function adjustMinimapSize() {
+      this.minimapHeight = $(this.$refs.minimapContent).outerHeight() * 0.1;
+      this.minimapWidth = $(this.$refs.minimapContent).outerWidth() * 0.1;
+      this.previewScroll();
+    },
+    previewScroll: function previewScroll() {
+      this.minimapScrollerTop = this.$refs.previewColumn.scrollTop * 0.1;
+      this.minimapScrollerBottom = (this.$refs.previewColumn.scrollHeight - this.$refs.previewColumn.scrollTop - this.columnHeight) * 0.1;
     },
     update: function update() {
       this.contentMarked = this.$options.filters['marked'](this.content);
       var that = this;
       setTimeout(function () {
-        var headers = $(that.$refs.previewColumn).find('h1, h2, h3, h4, h5, h6');
+        var $previewColumn = $(that.$refs.previewColumn);
+        var headers = $previewColumn.find('h1, h2, h3, h4, h5, h6');
         that.tocItems = [];
         var minLevel = 10,
             curLevel;
@@ -26362,7 +26390,16 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         that.tocItems = items;
+        var imgs = $previewColumn.find('img');
+        $previewColumn.find('img').on('load', function () {
+          that.adjustMinimapSize();
+        });
+        that.adjustMinimapSize();
       }, 200);
+    },
+    minimapScroll: function minimapScroll(x, y) {
+      var mm = $(this.$refs.minimapContent);
+      $(this.$refs.previewColumn).scrollTop((y - mm.offset().top) * 10 - this.columnHeight / 2);
     },
     scrollMeTo: function scrollMeTo(to) {
       var that = this;
@@ -158658,134 +158695,188 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _vm.error != ""
-        ? _c("div", { staticClass: "alert alert-danger m-0 rounded-0" }, [
-            _vm._v(_vm._s(_vm.error))
-          ])
-        : _vm._e(),
-      _vm._v(" "),
+  return _c("div", [
+    _c("div", { staticClass: "d-flex" }, [
       _c(
         "div",
-        { staticClass: "card border-0" },
+        { staticClass: "show-content" },
         [
-          _c("path-header-component", { attrs: { mode: "show" } }),
-          _vm._v(" "),
-          _vm.tocItems.length > 1 && !_vm.tocHide
-            ? _c(
-                "div",
-                {
-                  staticClass: "toc-open",
-                  class: { active: _vm.tocShow || _vm.tocExpand },
-                  on: {
-                    mouseenter: function($event) {
-                      _vm.tocShow = true
-                    },
-                    mouseleave: function($event) {
-                      _vm.tocShow = false
-                    }
-                  }
-                },
-                [
-                  _c(
-                    "div",
-                    {
-                      class: { active: _vm.tocExpand },
-                      on: {
-                        mouseenter: function($event) {
-                          return _vm.tocToggle(true)
-                        },
-                        mouseleave: function($event) {
-                          return _vm.tocToggle(false)
-                        }
-                      }
-                    },
-                    [
-                      _c("span"),
-                      _c("div", [
-                        _c("div", [
-                          _c(
-                            "ul",
-                            _vm._l(_vm.tocItems, function(item) {
-                              return _c("li", [
-                                _c("a", {
-                                  style: {
-                                    "font-size": 16 - item.level * 0.5 + "px"
-                                  },
-                                  attrs: { href: "#" },
-                                  domProps: {
-                                    innerHTML: _vm._s(
-                                      "<span class='toc-level-marker'>&middot;</span>".repeat(
-                                        item.level
-                                      ) + item.name
-                                    )
-                                  },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      return _vm.scrollMeTo(item.to)
-                                    }
-                                  }
-                                })
-                              ])
-                            }),
-                            0
-                          )
-                        ])
-                      ])
-                    ]
-                  )
-                ]
-              )
+          _vm.error != ""
+            ? _c("div", { staticClass: "alert alert-danger m-0 rounded-0" }, [
+                _vm._v(_vm._s(_vm.error))
+              ])
             : _vm._e(),
           _vm._v(" "),
           _c(
             "div",
-            {
-              ref: "previewColumn",
-              style: { height: _vm.columnHeight + "px", overflow: "auto" }
-            },
+            { staticClass: "card border-0" },
             [
-              _c("transition", { attrs: { name: "slide-fade" } }, [
-                _vm.content != ""
-                  ? _c("div", {
-                      staticClass: "markdown-body",
-                      domProps: { innerHTML: _vm._s(_vm.contentMarked) }
-                    })
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.createAction
-                  ? _c("div", { staticClass: "markdown-body" }, [
-                      _c("em", [_vm._v("File not found.")]),
-                      _vm._v("   "),
+              _c("path-header-component", { attrs: { mode: "show" } }),
+              _vm._v(" "),
+              _vm.tocItems.length > 1 && !_vm.tocHide
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "toc-open",
+                      class: { active: _vm.tocShow || _vm.tocExpand },
+                      on: {
+                        mouseenter: function($event) {
+                          _vm.tocShow = true
+                        },
+                        mouseleave: function($event) {
+                          _vm.tocShow = false
+                        }
+                      }
+                    },
+                    [
                       _c(
-                        "a",
+                        "div",
                         {
-                          attrs: { href: "#" },
+                          class: { active: _vm.tocExpand },
                           on: {
-                            click: function($event) {
-                              return _vm.edit()
+                            mouseenter: function($event) {
+                              return _vm.tocToggle(true)
+                            },
+                            mouseleave: function($event) {
+                              return _vm.tocToggle(false)
                             }
                           }
                         },
-                        [_vm._v("Create?")]
+                        [
+                          _c("span"),
+                          _c("div", [
+                            _c("div", [
+                              _c(
+                                "ul",
+                                _vm._l(_vm.tocItems, function(item) {
+                                  return _c("li", [
+                                    _c("a", {
+                                      style: {
+                                        "font-size":
+                                          16 - item.level * 0.5 + "px"
+                                      },
+                                      attrs: { href: "#" },
+                                      domProps: {
+                                        innerHTML: _vm._s(
+                                          "<span class='toc-level-marker'>&middot;</span>".repeat(
+                                            item.level
+                                          ) + item.name
+                                        )
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.scrollMeTo(item.to)
+                                        }
+                                      }
+                                    })
+                                  ])
+                                }),
+                                0
+                              )
+                            ])
+                          ])
+                        ]
                       )
-                    ])
-                  : _vm._e()
-              ])
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  ref: "previewColumn",
+                  style: { height: _vm.columnHeight + "px", overflow: "auto" },
+                  on: { scroll: _vm.previewScroll }
+                },
+                [
+                  _c("transition", { attrs: { name: "slide-fade" } }, [
+                    _vm.content != ""
+                      ? _c("div", {
+                          staticClass: "markdown-body",
+                          domProps: { innerHTML: _vm._s(_vm.contentMarked) }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.createAction
+                      ? _c("div", { staticClass: "markdown-body" }, [
+                          _c("em", [_vm._v("File not found.")]),
+                          _vm._v("   "),
+                          _c(
+                            "a",
+                            {
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.edit()
+                                }
+                              }
+                            },
+                            [_vm._v("Create?")]
+                          )
+                        ])
+                      : _vm._e()
+                  ])
+                ],
+                1
+              )
             ],
             1
-          )
+          ),
+          _vm._v(" "),
+          _c("gallery-component", { attrs: { refContainer: "previewColumn" } })
         ],
         1
       ),
       _vm._v(" "),
-      _c("gallery-component", { attrs: { refContainer: "previewColumn" } })
-    ],
-    1
-  )
+      _c("div", { staticClass: "show-minimap" }, [
+        _c(
+          "div",
+          {
+            staticClass: "show-minimap-content",
+            class: { active: _vm.content != "" && _vm.minimapHeight > 20 },
+            style: {
+              height: _vm.minimapHeight + "px",
+              width: _vm.minimapWidth + "px"
+            }
+          },
+          [
+            _c("div", {
+              ref: "minimapContent",
+              staticClass: "markdown-body",
+              domProps: { innerHTML: _vm._s(_vm.contentMarked) }
+            }),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "show-minimap-scroller",
+                on: {
+                  mousedown: function($event) {
+                    return _vm.minimapScroll($event.x, $event.y)
+                  },
+                  mousemove: function($event) {
+                    $event.buttons == 1 && _vm.minimapScroll($event.x, $event.y)
+                  }
+                }
+              },
+              [
+                _c("div", {
+                  staticClass: "show-minimap-scroller-top",
+                  style: { height: _vm.minimapScrollerTop + "px" }
+                }),
+                _vm._v(" "),
+                _c("div", {
+                  staticClass: "show-minimap-scroller-bottom",
+                  style: { height: _vm.minimapScrollerBottom + "px" }
+                })
+              ]
+            )
+          ]
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
