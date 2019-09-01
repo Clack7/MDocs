@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="d-flex">
-            <div class="show-content">
+            <div class="show-content" ref="showContent">
                 <div class="alert alert-danger m-0 rounded-0" v-if="error != ''">{{ error }}</div>
                 <div class="card border-0">
                     <path-header-component mode="show"></path-header-component>
@@ -20,7 +20,6 @@
                         </transition>
                     </div>
                 </div>
-                <gallery-component refContainer="previewColumn"></gallery-component>
             </div>
             <div class="show-minimap">
                 <div class="show-minimap-content" :style="{ height: minimapHeight + 'px', width: minimapWidth + 'px' }" :class="{ 'active' : content != '' && minimapHeight > 20}">
@@ -32,6 +31,7 @@
                 </div>
             </div>
         </div>
+        <gallery-component refContainer="showContent"></gallery-component>
     </div>
 </template>
 
@@ -118,7 +118,7 @@
             },
             previewScroll() {
                 this.minimapScrollerTop = this.$refs.previewColumn.scrollTop * 0.1;
-                this.minimapScrollerBottom = (this.$refs.previewColumn.scrollHeight - this.$refs.previewColumn.scrollTop - this.columnHeight) * 0.1;
+                this.minimapScrollerBottom = Math.max(0, (this.$refs.previewColumn.scrollHeight - this.$refs.previewColumn.scrollTop - this.columnHeight) * 0.1);
             },
             update() {
                 this.contentMarked = this.$options.filters['marked'](this.content);

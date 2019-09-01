@@ -26363,7 +26363,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     previewScroll: function previewScroll() {
       this.minimapScrollerTop = this.$refs.previewColumn.scrollTop * 0.1;
-      this.minimapScrollerBottom = (this.$refs.previewColumn.scrollHeight - this.$refs.previewColumn.scrollTop - this.columnHeight) * 0.1;
+      this.minimapScrollerBottom = Math.max(0, (this.$refs.previewColumn.scrollHeight - this.$refs.previewColumn.scrollTop - this.columnHeight) * 0.1);
     },
     update: function update() {
       this.contentMarked = this.$options.filters['marked'](this.content);
@@ -26460,11 +26460,16 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       files: [],
-      levels: []
+      levels: [],
+      collapsed: []
     };
   },
   mounted: function mounted() {
     var _this = this;
+
+    if (localStorage.sidebarCollapsed) {
+      this.collapsed = localStorage.sidebarCollapsed.split(';');
+    }
 
     this.load();
     this.$root.$on('filesChange', function () {
@@ -26499,7 +26504,8 @@ __webpack_require__.r(__webpack_exports__);
               name: list[i].name,
               path: list[i].path,
               file: list[i].file,
-              level: level + 0
+              level: level + 0,
+              show: 1
             });
             levelFill(list[i].children, level + 1);
           }
@@ -26507,6 +26513,8 @@ __webpack_require__.r(__webpack_exports__);
 
         levelFill(response.data.tree, 0);
         _this2.levels = levels;
+
+        _this2.updateCollapsedShow();
       })["catch"](function (error) {
         Vue.handleAxiosError(error);
       });
@@ -26524,6 +26532,43 @@ __webpack_require__.r(__webpack_exports__);
     },
     levelName: function levelName(file) {
       return ('<span class="sidebar-level-marker ' + (this.routePath.indexOf(file.path) == 0 ? 'active' : '') + '">&raquo;</span>').repeat(file.level + 1) + '<span class="sidebar-path-level-' + (!file.file ? '1' : '1') + '">' + file.name + '</span>';
+    },
+    toggleCollapse: function toggleCollapse(file) {
+      if (file.file) {
+        return;
+      }
+
+      if (this.collapsed.indexOf(file.path) >= 0) {
+        this.collapsed.splice(this.collapsed.indexOf(file.path), 1);
+      } else {
+        this.collapsed.push(file.path);
+      }
+
+      localStorage.sidebarCollapsed = this.collapsed.join(';');
+      this.updateCollapsedShow();
+    },
+    updateCollapsedShow: function updateCollapsedShow() {
+      var i,
+          show,
+          minLevel = 100;
+
+      for (i in this.levels) {
+        if (minLevel >= this.levels[i].level) {
+          show = 1;
+          minLevel = 100;
+        }
+
+        this.levels[i].show = show;
+
+        if (this.collapsed.indexOf(this.levels[i].path) >= 0) {
+          if (this.levels[i].file) {
+            this.collapsed.splice(this.collapsed.indexOf(this.levels[i].path), 1);
+          } else {
+            minLevel = Math.min(minLevel, this.levels[i].level);
+            show = 0;
+          }
+        }
+      }
     }
   }
 });
@@ -158695,12 +158740,11 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "d-flex" }, [
-      _c(
-        "div",
-        { staticClass: "show-content" },
-        [
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "d-flex" }, [
+        _c("div", { ref: "showContent", staticClass: "show-content" }, [
           _vm.error != ""
             ? _c("div", { staticClass: "alert alert-danger m-0 rounded-0" }, [
                 _vm._v(_vm._s(_vm.error))
@@ -158822,61 +158866,62 @@ var render = function() {
               )
             ],
             1
-          ),
-          _vm._v(" "),
-          _c("gallery-component", { attrs: { refContainer: "previewColumn" } })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "show-minimap" }, [
-        _c(
-          "div",
-          {
-            staticClass: "show-minimap-content",
-            class: { active: _vm.content != "" && _vm.minimapHeight > 20 },
-            style: {
-              height: _vm.minimapHeight + "px",
-              width: _vm.minimapWidth + "px"
-            }
-          },
-          [
-            _c("div", {
-              ref: "minimapContent",
-              staticClass: "markdown-body",
-              domProps: { innerHTML: _vm._s(_vm.contentMarked) }
-            }),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "show-minimap-scroller",
-                on: {
-                  mousedown: function($event) {
-                    return _vm.minimapScroll($event.x, $event.y)
-                  },
-                  mousemove: function($event) {
-                    $event.buttons == 1 && _vm.minimapScroll($event.x, $event.y)
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "show-minimap" }, [
+          _c(
+            "div",
+            {
+              staticClass: "show-minimap-content",
+              class: { active: _vm.content != "" && _vm.minimapHeight > 20 },
+              style: {
+                height: _vm.minimapHeight + "px",
+                width: _vm.minimapWidth + "px"
+              }
+            },
+            [
+              _c("div", {
+                ref: "minimapContent",
+                staticClass: "markdown-body",
+                domProps: { innerHTML: _vm._s(_vm.contentMarked) }
+              }),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "show-minimap-scroller",
+                  on: {
+                    mousedown: function($event) {
+                      return _vm.minimapScroll($event.x, $event.y)
+                    },
+                    mousemove: function($event) {
+                      $event.buttons == 1 &&
+                        _vm.minimapScroll($event.x, $event.y)
+                    }
                   }
-                }
-              },
-              [
-                _c("div", {
-                  staticClass: "show-minimap-scroller-top",
-                  style: { height: _vm.minimapScrollerTop + "px" }
-                }),
-                _vm._v(" "),
-                _c("div", {
-                  staticClass: "show-minimap-scroller-bottom",
-                  style: { height: _vm.minimapScrollerBottom + "px" }
-                })
-              ]
-            )
-          ]
-        )
-      ])
-    ])
-  ])
+                },
+                [
+                  _c("div", {
+                    staticClass: "show-minimap-scroller-top",
+                    style: { height: _vm.minimapScrollerTop + "px" }
+                  }),
+                  _vm._v(" "),
+                  _c("div", {
+                    staticClass: "show-minimap-scroller-bottom",
+                    style: { height: _vm.minimapScrollerBottom + "px" }
+                  })
+                ]
+              )
+            ]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("gallery-component", { attrs: { refContainer: "showContent" } })
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -158909,38 +158954,49 @@ var render = function() {
           "ul",
           { staticClass: "nav flex-column" },
           _vm._l(_vm.levels, function(file) {
-            return _c(
-              "li",
-              { staticClass: "nav-item" },
-              [
-                !file.file
-                  ? _c("span", {
-                      staticClass: "nav-link disabled",
-                      class: {
-                        "child-active":
-                          _vm.routePath.indexOf(file.path) == 0 &&
-                          file.path != _vm.routePath
-                      },
-                      domProps: { innerHTML: _vm._s(_vm.levelName(file)) }
-                    })
-                  : _vm._e(),
-                _vm._v(" "),
-                file.file
-                  ? _c("router-link", {
-                      staticClass: "nav-link",
-                      class: {
-                        active: file.path == _vm.routePath,
-                        "child-active":
-                          _vm.routePath.indexOf(file.path) == 0 &&
-                          file.path != _vm.routePath
-                      },
-                      attrs: { to: "/" + file.path },
-                      domProps: { innerHTML: _vm._s(_vm.levelName(file)) }
-                    })
-                  : _vm._e()
-              ],
-              1
-            )
+            return file.show
+              ? _c(
+                  "li",
+                  {
+                    staticClass: "nav-item",
+                    on: {
+                      click: function($event) {
+                        return _vm.toggleCollapse(file)
+                      }
+                    }
+                  },
+                  [
+                    !file.file
+                      ? _c("span", {
+                          staticClass: "nav-link sidebar-parent",
+                          class: {
+                            "child-active":
+                              _vm.routePath.indexOf(file.path) == 0 &&
+                              file.path != _vm.routePath,
+                            "parent-collapsed":
+                              _vm.collapsed.indexOf(file.path) >= 0
+                          },
+                          domProps: { innerHTML: _vm._s(_vm.levelName(file)) }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    file.file
+                      ? _c("router-link", {
+                          staticClass: "nav-link",
+                          class: {
+                            active: file.path == _vm.routePath,
+                            "child-active":
+                              _vm.routePath.indexOf(file.path) == 0 &&
+                              file.path != _vm.routePath
+                          },
+                          attrs: { to: "/" + file.path },
+                          domProps: { innerHTML: _vm._s(_vm.levelName(file)) }
+                        })
+                      : _vm._e()
+                  ],
+                  1
+                )
+              : _vm._e()
           }),
           0
         )

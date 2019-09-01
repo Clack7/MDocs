@@ -16,7 +16,7 @@ body {
   position: relative;
   top: 0;
   height: calc(100vh - 48px);
-  padding-top: .5rem;
+  // padding-top: .5rem;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
@@ -86,27 +86,37 @@ body {
     &.active {
       color: #007bff;
       background: white;
-      border-right: 0 none;
-      // border-right: 1px solid #DFE0E1;
+      // border-right: 0 none;
+      border-right: 1px solid #F3F3F3;
       // outline: 1px solid #DFE0E1;
     }
 
-    &.disabled {
+    &.sidebar-parent {
       background: #f0f0f0;
       padding-top: 0.1rem;
       padding-bottom: 0.1rem;
       font-size: 0.7rem;
       border-top: 1px solid #eaeaea;
       border-bottom: 1px solid #eaeaea;
+      cursor: pointer;
 
       .sidebar-level-marker {
         line-height:0.7rem;
         top:-1px;
       }
 
+      &:hover {
+        background: #f3f3f3;
+      }
+
       &.child-active {
         border-top-color: #BADBFF;
         border-bottom-color: #BADBFF;
+      }
+
+      &.parent-collapsed {
+        font-style: italic;
+        color:#888;
       }
     }
   }

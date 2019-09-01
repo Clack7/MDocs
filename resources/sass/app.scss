@@ -71,12 +71,14 @@
 
   .task-list-item {
     list-style-type: none;
+    margin-left: -16px;
   }
   .task-list-item + .task-list-item {
     margin-top: 3px;
   }
   .task-list-item input {
-    margin: 0 .2em .25em -1.3em;
+    pointer-events: none;
+    margin: 0 0 .25em 0;
     vertical-align: middle;
     outline: 1px solid #0ccf10;
 
