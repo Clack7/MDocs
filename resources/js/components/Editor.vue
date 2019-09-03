@@ -83,6 +83,12 @@
             };
         },
         mounted() {
+            // Remove the md extension from the url
+            if (this.path_cur.match(/\.md$/i) != null) {
+                this.$router.replace('/update/' + this.path_cur.slice(0, -3));
+                return;
+            }
+
             var that = this;
 
             // Load editor

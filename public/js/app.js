@@ -25580,6 +25580,12 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
+    // Remove the md extension from the url
+    if (this.path_cur.match(/\.md$/i) != null) {
+      this.$router.replace('/update/' + this.path_cur.slice(0, -3));
+      return;
+    }
+
     var that = this; // Load editor
 
     var draftDebounce = _.debounce(function () {
@@ -26300,6 +26306,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     var _this = this;
+
+    // Remove the md extension from the url
+    if (this.path_cur.match(/\.md$/i) != null) {
+      this.$router.replace('/' + this.path_cur.slice(0, -3));
+      return;
+    }
 
     axios.get('/api/file/' + this.path_cur).then(function (response) {
       _this.content = response.data.content;
@@ -32869,7 +32881,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
 
 // exports
 
@@ -174037,6 +174049,7 @@ ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_9___defaul
     callback(null, _extra_snippets__WEBPACK_IMPORTED_MODULE_10__["default"]);
   }
 }); // Autocomplete paths
+// Same code as in FileController.php
 
 function getRelativePath(fPath, tPath) {
   fPath = fPath.split('/'); // from
@@ -174053,7 +174066,7 @@ function getRelativePath(fPath, tPath) {
 
   for (i in fPath) {
     // find first non-matching dir
-    if (fPath[i] === tPath[i]) {
+    if (typeof tPath[i] != 'undefined' && fPath[i] === tPath[i]) {
       // ignore this directory
       rPath.shift();
     } else {
@@ -174131,7 +174144,7 @@ ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_9___defaul
       parts = window.MDocs.files[i].path.split('/');
       list.push({
         caption: '/' + window.MDocs.files[i].path,
-        value: '[' + parts[parts.length - 1] + '](' + rawurlencode(getRelativePath(path, window.MDocs.files[i].path)).replace(/%2F/g, '/') + ')',
+        value: '[' + parts[parts.length - 1] + '](' + rawurlencode(getRelativePath(path, window.MDocs.files[i].path)).replace(/%2F/g, '/') + '.md)',
         score: 1,
         meta: 'MDocs'
       });

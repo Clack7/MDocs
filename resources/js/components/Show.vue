@@ -60,6 +60,12 @@
             };
         },
         mounted() {
+            // Remove the md extension from the url
+            if (this.path_cur.match(/\.md$/i) != null) {
+                this.$router.replace('/' + this.path_cur.slice(0, -3));
+                return;
+            }
+
             axios.get('/api/file/' + this.path_cur)
                 .then((response) => {
                     this.content = response.data.content;

@@ -170,6 +170,9 @@ class FileController extends Controller
             // Remove empty dirs
             $this->removeEmptyDir($pathCurFile);
 
+            // Update current and other files relative links
+            $this->linksRelativeUpdate($pathCur, $pathNew, $content);
+
         // Update
         } else {
             // Adjust attachments to a new location
@@ -278,6 +281,82 @@ class FileController extends Controller
         \File::put($pathCurFile, $content);
 
         return response()->json(['content' => $content], 200);
+    }
+
+    private function linksRelativeUpdate($pathCur, $pathNew, &$content)
+    {
+        if ($pathCur == '' || $pathCur == $pathNew) {
+            return;
+        }
+
+        // Loop all files
+        $files = $this->list()['files'];
+        foreach ($files as $file) {
+            // Update self reference
+            if ($file['path'] == $pathNew) {
+                $relativeSelfCur = explode('/', $pathCur);
+                $relativeSelfCur = end($relativeSelfCur);
+                $relativeSelfNew = explode('/', $pathNew);
+                $relativeSelfNew = end($relativeSelfNew);
+                $content = str_replace(
+                    $this->getRelativePath($relativeSelfNew, $relativeSelfCur) . '.md',
+                    $this->getRelativePath($relativeSelfCur, $relativeSelfNew) . '.md',
+                    $content
+                );
+                continue;
+            }
+
+            // Update other links in current file
+            $relativePathOtherCur = $this->getRelativePath($pathCur, $file['path']) . '.md';
+            if (strpos($content, $relativePathOtherCur) !== false) {
+                $relativePathOtherNew = $this->getRelativePath($pathNew, $file['path']) . '.md';
+                $content = str_replace(
+                    $relativePathOtherCur,
+                    $relativePathOtherNew,
+                    $content
+                );
+            }
+
+            // Update other files having current link
+            $otherContent = \File::get($this->pathFile($file['path']));
+            $relativePathCur = $this->getRelativePath($file['path'], $pathCur) . '.md';
+            if (strpos($otherContent, $relativePathCur) !== false) {
+                // Replace the relative link from the content
+                $relativePathNew = $this->getRelativePath($file['path'], $pathNew) . '.md';
+                $otherContent = str_replace(
+                    $relativePathCur,
+                    $relativePathNew,
+                    $otherContent
+                );
+                \File::put($this->pathFile($file['path']), $otherContent);
+            }
+        }
+    }
+
+    // Same code as in app.js
+    private function getRelativePath($fPath, $tPath)
+    {
+        $fPath = explode('/', $fPath); // from
+        array_pop($fPath); // remove current from
+        $tPath = explode('/', $tPath); // to
+        $current = array_pop($tPath); // save current to
+        $rPath = $tPath; // relative
+        foreach ($fPath as $i => $v) {
+            // find first non-matching dir
+            if (isset($tPath[$i]) && $fPath[$i] === $tPath[$i]) {
+                // ignore this directory
+                array_shift($rPath);
+            } else {
+                // get number of remaining dirs to from
+                $remaining = count($fPath) - $i;
+                for ($o = 0; $o < $remaining; $o++) {
+                    array_unshift($rPath, '..');
+                }
+                break;
+            }
+        }
+        $rPath[] = $current; // readd current to
+        return './' . implode('/', $rPath);
     }
 
     private function attachmentMove($pathCur, $pathNew, &$content)

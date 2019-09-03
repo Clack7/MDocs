@@ -131,6 +131,7 @@ snippetManager.addCompleter({
     }
 });
 // Autocomplete paths
+// Same code as in FileController.php
 function getRelativePath(fPath, tPath) {
     fPath = fPath.split('/'); // from
     fPath.pop(); // remove current from
@@ -140,7 +141,7 @@ function getRelativePath(fPath, tPath) {
     var i, o;
     for (i in fPath) {
         // find first non-matching dir
-        if (fPath[i] === tPath[i]) {
+        if (typeof tPath[i] != 'undefined' && fPath[i] === tPath[i]) {
             // ignore this directory
             rPath.shift();
         } else {
@@ -202,7 +203,7 @@ snippetManager.addCompleter({
             parts = window.MDocs.files[i].path.split('/');
             list.push({
                 caption: '/' + window.MDocs.files[i].path,
-                value: '[' + parts[parts.length - 1] + '](' + rawurlencode(getRelativePath(path, window.MDocs.files[i].path)).replace(/%2F/g, '/') + ')',
+                value: '[' + parts[parts.length - 1] + '](' + rawurlencode(getRelativePath(path, window.MDocs.files[i].path)).replace(/%2F/g, '/') + '.md)',
                 score: 1,
                 meta: 'MDocs'
             });
