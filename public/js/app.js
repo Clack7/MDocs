@@ -26374,6 +26374,10 @@ __webpack_require__.r(__webpack_exports__);
       this.previewScroll();
     },
     previewScroll: function previewScroll() {
+      if (typeof this.$refs.previewColumn == 'undefined') {
+        return;
+      }
+
       this.minimapScrollerTop = this.$refs.previewColumn.scrollTop * 0.1;
       this.minimapScrollerBottom = Math.max(0, (this.$refs.previewColumn.scrollHeight - this.$refs.previewColumn.scrollTop - this.columnHeight) * 0.1);
     },
