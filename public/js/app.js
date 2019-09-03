@@ -158089,9 +158089,19 @@ var render = function() {
     "div",
     [
       _vm.error != ""
-        ? _c("div", { staticClass: "alert alert-danger m-0 rounded-0" }, [
-            _vm._v(_vm._s(_vm.error))
-          ])
+        ? _c(
+            "div",
+            {
+              staticClass: "error-alert alert alert-danger m-0 rounded-0",
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  _vm.error = ""
+                }
+              }
+            },
+            [_vm._v(_vm._s(_vm.error))]
+          )
         : _vm._e(),
       _vm._v(" "),
       _c(
@@ -158762,9 +158772,19 @@ var render = function() {
       _c("div", { staticClass: "d-flex" }, [
         _c("div", { ref: "showContent", staticClass: "show-content" }, [
           _vm.error != ""
-            ? _c("div", { staticClass: "alert alert-danger m-0 rounded-0" }, [
-                _vm._v(_vm._s(_vm.error))
-              ])
+            ? _c(
+                "div",
+                {
+                  staticClass: "error-alert alert alert-danger m-0 rounded-0",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.error = ""
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm.error))]
+              )
             : _vm._e(),
           _vm._v(" "),
           _c(
@@ -174009,6 +174029,7 @@ Vue.filter('marked', function (input) {
 }); // Ace
 
 window.MDocs = {
+  name: 'MDocs',
   files: [],
   editor: null
 };

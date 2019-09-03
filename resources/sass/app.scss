@@ -58,6 +58,15 @@
   border-radius: 0;
 }
 
+.error-alert {
+  position: fixed;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  cursor: pointer;
+}
+
 // Highlight JS
 @import '~highlight.js/styles/github';
 // @import '~highlight.js/styles/monokai-sublime'; // darkly

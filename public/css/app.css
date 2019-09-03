@@ -11297,6 +11297,16 @@ body {
   border-radius: 0;
 }
 
+.error-alert {
+  position: fixed;
+  top: 25px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  z-index: 99999;
+  cursor: pointer;
+}
+
 /*
 
 github.com style (c) Vasily Polovnyov <vast@whiteants.net>

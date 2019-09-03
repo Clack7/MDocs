@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="alert alert-danger m-0 rounded-0" v-if="error != ''">{{ error }}</div>
+        <div class="error-alert alert alert-danger m-0 rounded-0" v-if="error != ''" @click.prevent="error = ''">{{ error }}</div>
         <div class="card border-0">
             <path-header-component mode="editor"></path-header-component>
             <div class="row no-gutters">
