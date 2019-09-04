@@ -54,6 +54,7 @@ let nomnomlDirectives =
 #.class: none` // remove bold
 ;
 let rendererCode = renderer.code;
+let graphCache = [];
 renderer.code = function(code, infostring, escaped) {
     if ([
         'graph TD',
@@ -65,6 +66,15 @@ renderer.code = function(code, infostring, escaped) {
         'gantt',
         'uml',
     ].indexOf(infostring) >= 0) {
+        // Return cached if found cached
+        let cacheKey = infostring + '.' + code, i;
+        for (i in graphCache) {
+            if (graphCache[i][0] == cacheKey) {
+                return '<div class="graph-container">' + graphCache[i][1] + '</div>';
+            }
+        }
+
+        // Generate svg graph
         mermaidCounter++;
         let graphSvg = '<div class="alert alert-warning">Graph Parse Error</div>';
         try {
@@ -72,6 +82,12 @@ renderer.code = function(code, infostring, escaped) {
                 graphSvg = nomnoml.renderSvg(nomnomlDirectives + "\n" + code);
             } else {
                 graphSvg = mermaid.render('mermaid_' + mermaidCounter, infostring + "\n" + code);
+            }
+
+            // Save cache
+            graphCache.push([cacheKey, graphSvg]);
+            if (graphCache.length > 30) {
+                graphCache.shift(); // Remove oldest cache
             }
         } catch (e) { console.log(e); }
 

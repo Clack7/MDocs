@@ -173980,9 +173980,21 @@ window.nomnoml = nomnoml__WEBPACK_IMPORTED_MODULE_3___default.a;
 var nomnomlDirectives = "#fill: #ECECFF; #F0F0FF\n#lineWidth: 1.5\n#fillArrows: true\n#.class: none" // remove bold
 ;
 var rendererCode = renderer.code;
+var graphCache = [];
 
 renderer.code = function (code, infostring, escaped) {
   if (['graph TD', 'graph TB', 'graph BT', 'graph RL', 'graph LR', 'sequenceDiagram', 'gantt', 'uml'].indexOf(infostring) >= 0) {
+    // Return cached if found cached
+    var cacheKey = infostring + '.' + code,
+        i;
+
+    for (i in graphCache) {
+      if (graphCache[i][0] == cacheKey) {
+        return '<div class="graph-container">' + graphCache[i][1] + '</div>';
+      }
+    } // Generate svg graph
+
+
     mermaidCounter++;
     var graphSvg = '<div class="alert alert-warning">Graph Parse Error</div>';
 
@@ -173991,6 +174003,13 @@ renderer.code = function (code, infostring, escaped) {
         graphSvg = nomnoml__WEBPACK_IMPORTED_MODULE_3___default.a.renderSvg(nomnomlDirectives + "\n" + code);
       } else {
         graphSvg = mermaid__WEBPACK_IMPORTED_MODULE_2___default.a.render('mermaid_' + mermaidCounter, infostring + "\n" + code);
+      } // Save cache
+
+
+      graphCache.push([cacheKey, graphSvg]);
+
+      if (graphCache.length > 30) {
+        graphCache.shift(); // Remove oldest cache
       }
     } catch (e) {
       console.log(e);
