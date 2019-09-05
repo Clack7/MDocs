@@ -25547,6 +25547,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -25568,12 +25571,16 @@ __webpack_require__.r(__webpack_exports__);
       draftSaving: 0,
       draftContent: null,
       selection: {
+        comment: false,
+        fold: false,
         downloadUrl: false,
-        youtubeThumbnail: false
+        youtubeThumbnail: false,
+        parseGraph: false
       },
       regex: {
         url: /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/,
-        youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/
+        youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
+        graph: /^``` (uml|graph TD|graph TB|graph BT|graph RL|graph LR|sequenceDiagram|gantt)\n(.|\n)+\n```$/
       }
     };
   },
@@ -25609,12 +25616,18 @@ __webpack_require__.r(__webpack_exports__);
       }
     });
     this.editor.selection.on("changeSelection", function (a, b, c) {
+      that.selection.comment = false;
+      that.selection.fold = false;
       that.selection.downloadUrl = false;
       that.selection.youtubeThumbnail = false;
+      that.selection.parseGraph = false;
 
       var text = _.trim(that.editor.getSelectedText());
 
       if (text != '') {
+        that.selection.comment = true;
+        that.selection.fold = true;
+
         if (that.regex.youtube.test(text)) {
           that.selection.youtubeThumbnail = true;
           return;
@@ -25623,6 +25636,10 @@ __webpack_require__.r(__webpack_exports__);
         if (that.regex.url.test(text)) {
           that.selection.downloadUrl = true;
           return;
+        }
+
+        if (that.regex.graph.test(text)) {
+          that.selection.parseGraph = true;
         }
       }
     }); // Load content
@@ -25670,7 +25687,6 @@ __webpack_require__.r(__webpack_exports__);
       var callback = function callback(base64Image) {
         // If there's an image, open it in the browser as a new window :)
         if (base64Image) {
-          that.editorImagesHide();
           axios.post('/api/file/attach', {
             path: that.path_cur,
             base64: base64Image
@@ -25736,49 +25752,37 @@ __webpack_require__.r(__webpack_exports__);
           that.editor.setValue(that.content, -1);
           that.editor.resize();
           that.editor.focus();
-          that.editorImagesHide();
+          that.editorUpdateFolds();
         }, 100);
       }
     },
-    editorImagesHide: function editorImagesHide() {
+    editorUpdateFolds: function editorUpdateFolds() {
       var that = this;
       ace.config.loadModule("ace/range", function (m) {
-        that.editor.session.expandFolds(that.editor.session.getAllFolds());
+        // Expand previous graph folds
+        var expand = [],
+            folds = that.editor.session.getAllFolds(),
+            i;
+
+        for (i in folds) {
+          if (folds[i].placeholder == '..graph..') {
+            expand.push(folds[i]);
+          }
+        }
+
+        that.editor.session.expandFolds(expand); // Find current folds
+
         var str = that.content,
             match,
             idx,
             end;
         str = str.split("\n");
 
-        for (var i in str) {
-          match = str[i].match(/\(data:image\/[^\)]+\)/gi);
+        for (i in str) {
+          match = str[i].match(/^<div class="graph-container">(.*)<\/div>$/);
 
           if (match != null) {
-            for (var a in match) {
-              idx = str[i].indexOf(match[a]);
-
-              if (match[a].substr(-2, 1) == '"') {
-                end = -3;
-
-                while (end < 0) {
-                  end--;
-
-                  if (match[a].substr(end, 1) == '"') {
-                    end--;
-                    break;
-                  } else if (end < -15) {
-                    end = -1;
-                    break;
-                  }
-                }
-
-                end = idx + match[a].length + end;
-              } else {
-                end = idx + match[a].length - 1;
-              }
-
-              that.editor.session.addFold("...", new m.Range(parseInt(i), idx + 12, parseInt(i), end));
-            }
+            that.editor.session.addFold("..graph..", new m.Range(parseInt(i), 29, parseInt(i), str[i].length - 6));
           }
         }
       });
@@ -25901,6 +25905,12 @@ __webpack_require__.r(__webpack_exports__);
         Vue.handleAxiosError(error);
       });
     },
+    selectionComment: function selectionComment() {
+      this.editor.session.replace(this.editor.selection.getRange(), this.commentWrap(this.editor.getSelectedText()));
+    },
+    selectionFold: function selectionFold() {
+      this.editor.session.addFold("...", this.editor.selection.getRange());
+    },
     selectionDownloadUrl: function selectionDownloadUrl() {
       if (Vue.loaderActive()) {
         return;
@@ -25939,6 +25949,75 @@ __webpack_require__.r(__webpack_exports__);
           doDownload(textClean);
         }
       }
+    },
+    selectionParseGraph: function selectionParseGraph() {
+      if (Vue.loaderActive()) {
+        return;
+      }
+
+      var that = this;
+      var text = that.editor.getSelectedText();
+      var range = that.editor.selection.getRange();
+
+      var textClean = _.trim(text);
+
+      if (textClean != '' && that.regex.graph.test(textClean)) {
+        var parsed = this.$options.filters['marked'](textClean);
+        var match = parsed.match(/^<div class="graph-container">(.*)<\/div>$/);
+
+        if (match) {
+          parsed = match[1];
+        } // Find width and height
+
+
+        var h = '',
+            w = '';
+        match = parsed.match(/^<svg width="(\d+)" height="(\d+)" /);
+
+        if (match) {
+          w = match[1];
+          h = match[2];
+        } else {
+          match = parsed.match(/ viewBox="([-0-9\.]+) ([-0-9\.]+) ([0-9\.]+) ([0-9\.]+)"/);
+
+          if (match) {
+            w = Math.floor(match[3]);
+            w = w < 1 ? '' : w;
+            h = Math.floor(match[4]);
+            h = h < 1 ? '' : h; // Replace height and width from main svg element
+
+            match = parsed.match(/^<svg ([^>]+)>/);
+
+            if (match) {
+              match[1] = match[0].replace(/ width="[0-9\.%]*"/, '').replace(/ height="[0-9\.%]*"/, '').replace('<svg', '<svg width="' + w + '" height="' + h + '" ');
+              parsed = parsed.replace(match[0], match[1]);
+            }
+          }
+        }
+
+        Vue.loaderShow();
+        axios.post('/api/file/attach-svg', {
+          path: that.path_cur,
+          svg: parsed
+        }).then(function (_ref6) {
+          var data = _ref6.data;
+          Vue.loaderHide();
+          that.editor.session.replace(range, text.replace(textClean, that.commentWrap(textClean) + "\n" + '![svg](' + data.url + ' "=' + w + 'x' + h + '")')); // resize image only with width
+        })["catch"](function (error) {
+          Vue.loaderHide();
+          that.error = error.response.data.message;
+          Vue.handleAxiosError(error);
+        });
+      }
+    },
+    commentWrap: function commentWrap(text) {
+      var countEnd = (text.match(/-->/g) || []).length;
+
+      if (countEnd > 0) {
+        text = text.split('-->').join('--\\>') + ' (' + countEnd + ' HTML end comment escaped with --\\>)';
+      }
+
+      return '<!-- ' + text + ' -->';
     }
   }
 });
@@ -32885,7 +32964,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
 
 // exports
 
@@ -158129,12 +158208,49 @@ var render = function() {
                 }),
                 _vm._v(" "),
                 _c("div", { staticClass: "editor-bottom-actions" }, [
+                  _vm.selection.comment
+                    ? _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.selectionComment($event)
+                            }
+                          }
+                        },
+                        [_vm._v("Comment Selection")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.selection.fold
+                    ? _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.selectionFold($event)
+                            }
+                          }
+                        },
+                        [_vm._v("Fold Selection")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
                   _vm.selection.youtubeThumbnail
                     ? _c(
                         "a",
                         {
                           attrs: { href: "#" },
-                          on: { click: _vm.selectionDownloadUrl }
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.selectionDownloadUrl($event)
+                            }
+                          }
                         },
                         [_vm._v("Youtube Thumbnail")]
                       )
@@ -158145,9 +158261,30 @@ var render = function() {
                         "a",
                         {
                           attrs: { href: "#" },
-                          on: { click: _vm.selectionDownloadUrl }
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.selectionDownloadUrl($event)
+                            }
+                          }
                         },
                         [_vm._v("Download Selection")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.selection.parseGraph
+                    ? _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.selectionParseGraph($event)
+                            }
+                          }
+                        },
+                        [_vm._v("Parse SVG Graph")]
                       )
                     : _vm._e()
                 ])
@@ -174003,8 +174140,10 @@ renderer.code = function (code, infostring, escaped) {
         graphSvg = nomnoml__WEBPACK_IMPORTED_MODULE_3___default.a.renderSvg(nomnomlDirectives + "\n" + code);
       } else {
         graphSvg = mermaid__WEBPACK_IMPORTED_MODULE_2___default.a.render('mermaid_' + mermaidCounter, infostring + "\n" + code);
-      } // Save cache
+      } // Remove break lines (avoid markdown parse from editor)
 
+
+      graphSvg = graphSvg.split("\n").join(' '); // Save cache
 
       graphCache.push([cacheKey, graphSvg]);
 

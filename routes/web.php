@@ -31,6 +31,7 @@ Route::group(['middleware' => []], function () {
         Route::post('/file/draft', 'FileController@saveDraft')->name('file.draft');
         Route::post('/file/attach', 'FileController@attachmentUpload')->name('file.attachment.upload');
         Route::post('/file/attach-url', 'FileController@attachmentUploadUrl')->name('file.attachment.upload-url');
+        Route::post('/file/attach-svg', 'FileController@attachmentUploadSvg')->name('file.attachment.upload-svg');
         Route::post('/file/toggle', 'FileController@toggleCheckbox')->name('file.toggle');
         Route::get('/file/{path}', 'FileController@show')->name('file.show')->where('path', '(.*)');
         Route::post('/file/{path}', 'FileController@save')->name('file.save')->where('path', '(.*)');

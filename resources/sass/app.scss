@@ -188,9 +188,23 @@
   position:absolute;
   bottom:5px;
   right:20px;
+  z-index: 999;
 
   > a {
-    display:inline-block;font-size: 12px;position: relative;top:3px;margin-left:10px;
+    display:inline-block;
+    font-size: 11px;
+    position: relative;
+    top:3px;
+    margin-left:1px;
+    background: #fafafa;
+    border-radius: 3px;
+    border:1px solid #d6d6d6;
+    padding: 0 3px;
+
+    &:hover {
+      background: #fff;
+      text-decoration: none;
+    }
   }
 }
 .loader-overlay {

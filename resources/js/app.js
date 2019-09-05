@@ -84,6 +84,9 @@ renderer.code = function(code, infostring, escaped) {
                 graphSvg = mermaid.render('mermaid_' + mermaidCounter, infostring + "\n" + code);
             }
 
+            // Remove break lines (avoid markdown parse from editor)
+            graphSvg = graphSvg.split("\n").join(' ');
+
             // Save cache
             graphCache.push([cacheKey, graphSvg]);
             if (graphCache.length > 30) {

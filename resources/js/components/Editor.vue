@@ -9,8 +9,11 @@
                         <!-- <pre id="editor"></pre> -->
                     </div>
                     <div class="editor-bottom-actions">
-                        <a @click="selectionDownloadUrl" href="#" v-if="selection.youtubeThumbnail">Youtube Thumbnail</a>
-                        <a @click="selectionDownloadUrl" href="#" v-if="selection.downloadUrl">Download Selection</a>
+                        <a @click.prevent="selectionComment" href="#" v-if="selection.comment">Comment Selection</a>
+                        <a @click.prevent="selectionFold" href="#" v-if="selection.fold">Fold Selection</a>
+                        <a @click.prevent="selectionDownloadUrl" href="#" v-if="selection.youtubeThumbnail">Youtube Thumbnail</a>
+                        <a @click.prevent="selectionDownloadUrl" href="#" v-if="selection.downloadUrl">Download Selection</a>
+                        <a @click.prevent="selectionParseGraph" href="#" v-if="selection.parseGraph">Parse SVG Graph</a>
                     </div>
                 </div>
                 <div class="col-6" ref="previewColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }" @scroll="previewScroll">
@@ -73,12 +76,16 @@
                 draftSaving: 0,
                 draftContent: null,
                 selection: {
+                    comment: false,
+                    fold: false,
                     downloadUrl: false,
                     youtubeThumbnail: false,
+                    parseGraph: false,
                 },
                 regex: {
                     url: /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/,
-                    youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/
+                    youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
+                    graph: /^``` (uml|graph TD|graph TB|graph BT|graph RL|graph LR|sequenceDiagram|gantt)\n(.|\n)+\n```$/
                 }
             };
         },
@@ -110,10 +117,15 @@
                 }
             });
             this.editor.selection.on("changeSelection", function(a, b, c) {
+                that.selection.comment = false;
+                that.selection.fold = false;
                 that.selection.downloadUrl = false;
                 that.selection.youtubeThumbnail = false;
+                that.selection.parseGraph = false;
                 var text = _.trim(that.editor.getSelectedText());
                 if (text != '') {
+                    that.selection.comment = true;
+                    that.selection.fold = true;
                     if (that.regex.youtube.test(text)) {
                         that.selection.youtubeThumbnail = true;
                         return;
@@ -121,6 +133,9 @@
                     if (that.regex.url.test(text)) {
                         that.selection.downloadUrl = true;
                         return;
+                    }
+                    if (that.regex.graph.test(text)) {
+                        that.selection.parseGraph = true;
                     }
                 }
             })
@@ -167,7 +182,6 @@
                 var callback = function(base64Image) {
                     // If there's an image, open it in the browser as a new window :)
                     if (base64Image) {
-                        that.editorImagesHide();
                         axios.post('/api/file/attach', { path: that.path_cur, base64: base64Image })
                             .then(({ data }) => {
                                 that.editor.session.insert(that.editor.getCursorPosition(), '![img](' + data.url + ' "=x300")')
@@ -234,39 +248,28 @@
                         that.editor.setValue(that.content, -1);
                         that.editor.resize();
                         that.editor.focus();
-                        that.editorImagesHide();
+                        that.editorUpdateFolds();
                     }, 100);
                 }
             },
-            editorImagesHide() {
+            editorUpdateFolds() {
                 var that = this;
                 ace.config.loadModule("ace/range", function(m) {
-                    that.editor.session.expandFolds(that.editor.session.getAllFolds());
+                    // Expand previous graph folds
+                    var expand = [], folds = that.editor.session.getAllFolds(), i;
+                    for (i in folds) {
+                        if (folds[i].placeholder == '..graph..') {
+                            expand.push(folds[i]);
+                        }
+                    }
+                    that.editor.session.expandFolds(expand);
+                    // Find current folds
                     var str = that.content, match, idx, end;
                     str = str.split("\n");
-                    for (let i in str) {
-                        match = str[i].match(/\(data:image\/[^\)]+\)/gi);
+                    for (i in str) {
+                        match = str[i].match(/^<div class="graph-container">(.*)<\/div>$/);
                         if (match != null) {
-                            for (let a in match) {
-                                idx = str[i].indexOf(match[a]);
-                                if (match[a].substr(-2, 1) == '"') {
-                                    end = -3;
-                                    while (end < 0) {
-                                        end--;
-                                        if (match[a].substr(end, 1) == '"') {
-                                            end--;
-                                            break;
-                                        } else if (end < -15) {
-                                            end = -1;
-                                            break;
-                                        }
-                                    }
-                                    end = idx + match[a].length + end;
-                                } else {
-                                    end = idx + match[a].length - 1;
-                                }
-                                that.editor.session.addFold("...", new m.Range(parseInt(i),idx + 12,parseInt(i), end));
-                            }
+                            that.editor.session.addFold("..graph..", new m.Range(parseInt(i), 29, parseInt(i), str[i].length - 6));
                         }
                     }
                 });
@@ -361,6 +364,12 @@
                         Vue.handleAxiosError(error);
                     });
             },
+            selectionComment() {
+                this.editor.session.replace(this.editor.selection.getRange(), this.commentWrap(this.editor.getSelectedText()));
+            },
+            selectionFold() {
+                this.editor.session.addFold("...", this.editor.selection.getRange());
+            },
             selectionDownloadUrl() {
                 if (Vue.loaderActive()) {
                     return;
@@ -392,6 +401,63 @@
                         doDownload(textClean);
                     }
                 }
+            },
+            selectionParseGraph() {
+                if (Vue.loaderActive()) {
+                    return;
+                }
+
+                var that = this;
+                var text = that.editor.getSelectedText();
+                var range = that.editor.selection.getRange();
+                var textClean = _.trim(text);
+                if (textClean != '' && that.regex.graph.test(textClean)) {
+                    var parsed = this.$options.filters['marked'](textClean);
+                    var match = parsed.match(/^<div class="graph-container">(.*)<\/div>$/);
+                    if (match) {
+                        parsed = match[1];
+                    }
+                    // Find width and height
+                    var h = '', w = '';
+                    match = parsed.match(/^<svg width="(\d+)" height="(\d+)" /);
+                    if (match) {
+                        w = match[1];
+                        h = match[2];
+                    } else {
+                        match = parsed.match(/ viewBox="([-0-9\.]+) ([-0-9\.]+) ([0-9\.]+) ([0-9\.]+)"/);
+                        if (match) {
+                            w = Math.floor(match[3]);
+                            w = w < 1 ? '' : w;
+                            h = Math.floor(match[4]);
+                            h = h < 1 ? '' : h;
+
+                            // Replace height and width from main svg element
+                            match = parsed.match(/^<svg ([^>]+)>/);
+                            if (match) {
+                                match[1] = match[0].replace(/ width="[0-9\.%]*"/, '').replace(/ height="[0-9\.%]*"/, '').replace('<svg', '<svg width="' + w + '" height="' + h + '" ');
+                                parsed = parsed.replace(match[0], match[1]);
+                            }
+                        }
+                    }
+
+                    Vue.loaderShow();
+                    axios.post('/api/file/attach-svg', { path: that.path_cur, svg: parsed })
+                        .then(({ data }) => {
+                            Vue.loaderHide();
+                            that.editor.session.replace(range, text.replace(textClean, that.commentWrap(textClean) + "\n" + '![svg](' + data.url + ' "=' + w + 'x' + h + '")')); // resize image only with width
+                        }).catch((error) => {
+                            Vue.loaderHide();
+                            that.error = error.response.data.message;
+                            Vue.handleAxiosError(error);
+                        });
+                }
+            },
+            commentWrap(text) {
+                var countEnd = (text.match(/-->/g) || []).length;
+                if (countEnd > 0) {
+                    text = text.split('-->').join('--\\>') + ' (' + countEnd + ' HTML end comment escaped with --\\>)';
+                }
+                return '<!-- ' + text + ' -->';
             },
         }
     }

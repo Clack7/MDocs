@@ -490,6 +490,33 @@ class FileController extends Controller
         abort(400, 'Invalid url.');
     }
 
+    public function attachmentUploadSvg(Request $request)
+    {
+        $path = $this->pathClean($request->request->get('path'));
+        $pathFile = $this->pathFile($path);
+        // Check file exists
+        if (!empty($path) && !is_file($pathFile)) {
+            abort(400, 'Invalid file path.');
+        }
+
+        // Parse Check Url valid Mime
+        $svg = $request->request->get('svg');
+        if (!empty($svg)) {
+            // Add xml declaration
+            $svg = '<?xml version="1.0" encoding="UTF-8" ?>' . "\n" . $svg;
+            // Set path and save file contents
+            $savePath = (empty($path) ? 'new-file' : $path);
+            $savePath = $this->dir . '/' . $savePath . '.md';
+            $filePath = $this->getAttachmentPath($savePath, 'svg');
+            \File::put($filePath, $svg);
+            return response()->json([
+                'url' => $this->attachmentUrl($filePath)
+            ], 201);
+        }
+
+        abort(400, 'Invalid svg.');
+    }
+
     private function getAttachmentPath($pathFile, $ext)
     {
         do {
