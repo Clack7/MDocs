@@ -22,12 +22,14 @@ export default  {
             parent.appendChild(this.element);
 
             // Vim save command
-            ace.config.loadModule("ace/keyboard/vim", function(m) {
-                that.vimApi = m.CodeMirror.Vim;
-                that.vimApi.defineEx("write", "w", function(cm, input) {
-                    that.onSave();
+            if (UtilConfig.vim.enabled) {
+                ace.config.loadModule("ace/keyboard/vim", function(m) {
+                    that.vimApi = m.CodeMirror.Vim;
+                    that.vimApi.defineEx("write", "w", function(cm, input) {
+                        that.onSave();
+                    });
                 });
-            });
+            }
 
             // Init ace editor
             this.instance = ace.edit("mdEditor", {
@@ -50,7 +52,9 @@ export default  {
             });
 
             // Editor init
-            this.instance.setKeyboardHandler("ace/keyboard/vim");
+            if (UtilConfig.vim.enabled) {
+                this.instance.setKeyboardHandler("ace/keyboard/vim");
+            }
             this.instance.resize();
             this.instance.on("change", function(e) {
                 that.onChange();
@@ -71,7 +75,9 @@ export default  {
         return this.instance;
     },
     unload: function() {
-        this.vimApi.exitInsertMode(this.instance.state.cm);
+        if (UtilConfig.vim.enabled) {
+            this.vimApi.exitInsertMode(this.instance.state.cm);
+        }
         this.onSave = function() {};
         this.onChange = function() {};
         this.onScroll = function() {};

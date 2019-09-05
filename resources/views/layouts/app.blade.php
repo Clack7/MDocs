@@ -45,6 +45,7 @@
     <script>
         window.UtilConfig = {
             spaRoutes: {!! json_encode(config('app.spa.routes')) !!},
+            vim: { enabled: {{ config('mdocs.vim.enabled') ? 'true' : 'false' }} }
         };
     </script>
 </body>

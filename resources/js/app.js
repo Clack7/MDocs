@@ -123,7 +123,8 @@ Vue.filter('marked', function(input) {
 });
 
 // Ace
-window.MDocs = { name: 'MDocs', files: [], editor: null };
+window.MDocs.files = [];
+window.MDocs.editor = null;
 import ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/webpack-resolver';
 import './extra/ext-emmet.js';
