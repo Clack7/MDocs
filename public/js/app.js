@@ -25550,6 +25550,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -25581,7 +25587,9 @@ __webpack_require__.r(__webpack_exports__);
         url: /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/,
         youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
         graph: /^``` (uml|graph TD|graph TB|graph BT|graph RL|graph LR|sequenceDiagram|gantt)\n(.|\n)+\n```$/
-      }
+      },
+      dragOverlay: false,
+      dragOverlayTO: null
     };
   },
   mounted: function mounted() {
@@ -26018,6 +26026,73 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return '<!-- ' + text + ' -->';
+    },
+    dragOverlayToggle: function dragOverlayToggle(positive) {
+      var that = this;
+      clearTimeout(that.dragOverlayTO);
+
+      if (positive) {
+        that.dragOverlay = true;
+      } else {
+        that.dragOverlayTO = setTimeout(function () {
+          that.dragOverlay = false;
+        }, 300);
+      }
+    },
+    dropUpload: function dropUpload(e) {
+      // Prevent default behavior (Prevent file from being opened)
+      e.preventDefault();
+      this.dragOverlayToggle(false);
+      var that = this;
+      var formData = new FormData();
+      formData.append('path', that.path_cur);
+
+      if (e.dataTransfer.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        for (var i = 0; i < e.dataTransfer.items.length; i++) {
+          // If dropped items aren't files, reject them
+          if (e.dataTransfer.items[i].kind === 'file') {
+            formData.append('files[]', e.dataTransfer.items[i].getAsFile());
+          }
+        }
+      } else {
+        // Use DataTransfer interface to access the file(s)
+        for (var i = 0; i < e.dataTransfer.files.length; i++) {
+          formData.append('files[]', e.dataTransfer.files[i]);
+        }
+      }
+
+      Vue.loaderShow();
+      axios.post('/api/file/attach-drop', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (_ref7) {
+        var data = _ref7.data;
+        Vue.loaderHide();
+        var text = [],
+            uk;
+
+        for (uk in data.urls) {
+          text.push('![img](' + data.urls[uk] + ' "=x300")');
+        }
+
+        if (text.length > 0) {
+          that.editor.session.insert(that.editor.getCursorPosition(), text.join("\n") + "\n");
+        }
+
+        if (data.errors.length > 0) {
+          that.error = data.errors.join('<br>');
+        }
+      })["catch"](function (error) {
+        Vue.loaderHide();
+        that.error = error.response.data.message;
+        Vue.handleAxiosError(error);
+      });
+    },
+    dragPreventOpen: function dragPreventOpen(e) {
+      // Prevent default behavior (Prevent file from being opened)
+      e.preventDefault();
     }
   }
 });
@@ -32964,7 +33039,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
 
 // exports
 
@@ -158166,21 +158241,25 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    {
+      on: {
+        dragenter: function($event) {
+          return _vm.dragOverlayToggle(true)
+        }
+      }
+    },
     [
       _vm.error != ""
-        ? _c(
-            "div",
-            {
-              staticClass: "error-alert alert alert-danger m-0 rounded-0",
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.error = ""
-                }
+        ? _c("div", {
+            staticClass: "error-alert alert alert-danger m-0 rounded-0",
+            domProps: { innerHTML: _vm._s(_vm.error) },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.error = ""
               }
-            },
-            [_vm._v(_vm._s(_vm.error))]
-          )
+            }
+          })
         : _vm._e(),
       _vm._v(" "),
       _c(
@@ -158414,7 +158493,36 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c("gallery-component", { attrs: { refContainer: "previewColumn" } })
+      _c("gallery-component", { attrs: { refContainer: "previewColumn" } }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "drop-overlay",
+          class: { "drop-overlay-show": _vm.dragOverlay },
+          on: {
+            dragleave: function($event) {
+              return _vm.dragOverlayToggle(false)
+            },
+            drop: function($event) {
+              return _vm.dropUpload($event)
+            },
+            dragover: function($event) {
+              return _vm.dragPreventOpen($event)
+            }
+          }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass:
+                "d-flex justify-content-center align-items-center h-100"
+            },
+            [_vm._v("\n            Drop files here to upload.\n        ")]
+          )
+        ]
+      )
     ],
     1
   )

@@ -12529,7 +12529,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 }
 
 .loader-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -12542,6 +12542,25 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 }
 
 .loader-overlay.loader-overlay-show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.drop-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffffd6;
+  z-index: 99900;
+  font-size: 20px;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s ease-out;
+}
+
+.drop-overlay.drop-overlay-show {
   visibility: visible;
   opacity: 1;
 }

@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div class="error-alert alert alert-danger m-0 rounded-0" v-if="error != ''" @click.prevent="error = ''">{{ error }}</div>
+    <div @dragenter="dragOverlayToggle(true)">
+        <div class="error-alert alert alert-danger m-0 rounded-0" v-if="error != ''" @click.prevent="error = ''" v-html="error"></div>
         <div class="card border-0">
             <path-header-component mode="editor"></path-header-component>
             <div class="row no-gutters">
@@ -51,6 +51,12 @@
         </div>
 
         <gallery-component refContainer="previewColumn"></gallery-component>
+
+        <div class="drop-overlay"  :class="{ 'drop-overlay-show': dragOverlay }" @dragleave="dragOverlayToggle(false)" @drop="dropUpload($event)" @dragover="dragPreventOpen($event)">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                Drop files here to upload.
+            </div>
+        </div>
     </div>
 </template>
 
@@ -86,7 +92,9 @@
                     url: /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/,
                     youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
                     graph: /^``` (uml|graph TD|graph TB|graph BT|graph RL|graph LR|sequenceDiagram|gantt)\n(.|\n)+\n```$/
-                }
+                },
+                dragOverlay: false,
+                dragOverlayTO: null,
             };
         },
         mounted() {
@@ -458,6 +466,66 @@
                     text = text.split('-->').join('--\\>') + ' (' + countEnd + ' HTML end comment escaped with --\\>)';
                 }
                 return '<!-- ' + text + ' -->';
+            },
+            dragOverlayToggle(positive) {
+                var that = this;
+                clearTimeout(that.dragOverlayTO);
+                if (positive) {
+                    that.dragOverlay = true;
+                } else {
+                    that.dragOverlayTO = setTimeout(function() {
+                        that.dragOverlay = false;
+                    }, 300);
+                }
+            },
+            dropUpload(e) {
+                // Prevent default behavior (Prevent file from being opened)
+                e.preventDefault();
+                this.dragOverlayToggle(false);
+
+                var that = this;
+                let formData = new FormData();
+                formData.append('path', that.path_cur);
+                if (e.dataTransfer.items) {
+                    // Use DataTransferItemList interface to access the file(s)
+                    for (var i = 0; i < e.dataTransfer.items.length; i++) {
+                        // If dropped items aren't files, reject them
+                        if (e.dataTransfer.items[i].kind === 'file') {
+                            formData.append('files[]', e.dataTransfer.items[i].getAsFile());
+                        }
+                    }
+                } else {
+                    // Use DataTransfer interface to access the file(s)
+                    for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                        formData.append('files[]', e.dataTransfer.files[i]);
+                    }
+                }
+
+                Vue.loaderShow();
+                axios.post('/api/file/attach-drop', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                })
+                    .then(({ data }) => {
+                        Vue.loaderHide();
+                        var text = [], uk;
+                        for (uk in data.urls) {
+                            text.push('![img](' + data.urls[uk] + ' "=x300")');
+                        }
+                        if (text.length > 0) {
+                            that.editor.session.insert(that.editor.getCursorPosition(), text.join("\n") + "\n");
+                        }
+                        if (data.errors.length > 0) {
+                            that.error = data.errors.join('<br>');
+                        }
+                    }).catch((error) => {
+                        Vue.loaderHide();
+                        that.error = error.response.data.message;
+                        Vue.handleAxiosError(error);
+                    });
+            },
+            dragPreventOpen(e) {
+                // Prevent default behavior (Prevent file from being opened)
+                e.preventDefault();
             },
         }
     }

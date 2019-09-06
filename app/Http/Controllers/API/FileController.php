@@ -517,6 +517,47 @@ class FileController extends Controller
         abort(400, 'Invalid svg.');
     }
 
+    public function attachmentUploadDrop(Request $request)
+    {
+        $path = $this->pathClean($request->request->get('path'));
+        $pathFile = $this->pathFile($path);
+        // Check file exists
+        if (!empty($path) && !is_file($pathFile)) {
+            abort(400, 'Invalid file path.');
+        }
+
+        // Parse Check Url valid Mime
+        $files = $request->files->get('files');
+        $validMimes = [
+            'image/jpeg' => 'jpg',
+            'image/gif'  => 'gif',
+            'image/png'  => 'png',
+        ];
+        $urls = [];
+        $errors = [];
+        foreach ($files as $file) {
+            $mime = $file->getClientMimeType();
+            if (isset($validMimes[$mime])) {
+                // Set path, download and save file contents
+                $savePath = (empty($path) ? 'new-file' : $path);
+                $savePath = $this->dir . '/' . $savePath . '.md';
+                $filePath = $this->getAttachmentPath($savePath, $validMimes[$mime]);
+                $file->move(
+                    pathinfo($filePath, PATHINFO_DIRNAME),
+                    pathinfo($filePath, PATHINFO_BASENAME)
+                );
+                $urls[] = $this->attachmentUrl($filePath);
+            } else {
+                $errors[] = $file->getClientOriginalName() . ': Invalid mime type ' . $mime;
+            }
+        }
+
+        return response()->json([
+            'urls' => $urls,
+            'errors' => $errors,
+        ], 201);
+    }
+
     private function getAttachmentPath($pathFile, $ext)
     {
         do {
