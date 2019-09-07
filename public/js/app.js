@@ -26027,12 +26027,14 @@ __webpack_require__.r(__webpack_exports__);
 
       return '<!-- ' + text + ' -->';
     },
-    dragOverlayToggle: function dragOverlayToggle(positive) {
+    dragOverlayToggle: function dragOverlayToggle(positive, e) {
       var that = this;
       clearTimeout(that.dragOverlayTO);
 
       if (positive) {
-        that.dragOverlay = true;
+        if (that.dropGetFiles(e).length > 0) {
+          that.dragOverlay = true;
+        }
       } else {
         that.dragOverlayTO = setTimeout(function () {
           that.dragOverlay = false;
@@ -26043,23 +26045,19 @@ __webpack_require__.r(__webpack_exports__);
       // Prevent default behavior (Prevent file from being opened)
       e.preventDefault();
       this.dragOverlayToggle(false);
-      var that = this;
+      var that = this,
+          files = this.dropGetFiles(e),
+          i;
+
+      if (files.length < 1) {
+        return;
+      }
+
       var formData = new FormData();
       formData.append('path', that.path_cur);
 
-      if (e.dataTransfer.items) {
-        // Use DataTransferItemList interface to access the file(s)
-        for (var i = 0; i < e.dataTransfer.items.length; i++) {
-          // If dropped items aren't files, reject them
-          if (e.dataTransfer.items[i].kind === 'file') {
-            formData.append('files[]', e.dataTransfer.items[i].getAsFile());
-          }
-        }
-      } else {
-        // Use DataTransfer interface to access the file(s)
-        for (var i = 0; i < e.dataTransfer.files.length; i++) {
-          formData.append('files[]', e.dataTransfer.files[i]);
-        }
+      for (i in files) {
+        formData.append('files[]', files[i]);
       }
 
       Vue.loaderShow();
@@ -26093,6 +26091,26 @@ __webpack_require__.r(__webpack_exports__);
     dragPreventOpen: function dragPreventOpen(e) {
       // Prevent default behavior (Prevent file from being opened)
       e.preventDefault();
+    },
+    dropGetFiles: function dropGetFiles(e) {
+      var files = [];
+
+      if (e.dataTransfer.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        for (var i = 0; i < e.dataTransfer.items.length; i++) {
+          // If dropped items aren't files, reject them
+          if (e.dataTransfer.items[i].kind === 'file') {
+            files.push(e.dataTransfer.items[i].getAsFile());
+          }
+        }
+      } else {
+        // Use DataTransfer interface to access the file(s)
+        for (var i = 0; i < e.dataTransfer.files.length; i++) {
+          files.push(e.dataTransfer.files[i]);
+        }
+      }
+
+      return files;
     }
   }
 });
@@ -33039,7 +33057,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
 
 // exports
 
@@ -158244,7 +158262,7 @@ var render = function() {
     {
       on: {
         dragenter: function($event) {
-          return _vm.dragOverlayToggle(true)
+          return _vm.dragOverlayToggle(true, $event)
         }
       }
     },

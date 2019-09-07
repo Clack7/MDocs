@@ -1,5 +1,5 @@
 <template>
-    <div @dragenter="dragOverlayToggle(true)">
+    <div @dragenter="dragOverlayToggle(true, $event)">
         <div class="error-alert alert alert-danger m-0 rounded-0" v-if="error != ''" @click.prevent="error = ''" v-html="error"></div>
         <div class="card border-0">
             <path-header-component mode="editor"></path-header-component>
@@ -467,11 +467,13 @@
                 }
                 return '<!-- ' + text + ' -->';
             },
-            dragOverlayToggle(positive) {
+            dragOverlayToggle(positive, e) {
                 var that = this;
                 clearTimeout(that.dragOverlayTO);
                 if (positive) {
-                    that.dragOverlay = true;
+                    if (that.dropGetFiles(e).length > 0) {
+                        that.dragOverlay = true;
+                    }
                 } else {
                     that.dragOverlayTO = setTimeout(function() {
                         that.dragOverlay = false;
@@ -483,24 +485,15 @@
                 e.preventDefault();
                 this.dragOverlayToggle(false);
 
-                var that = this;
+                var that = this, files = this.dropGetFiles(e), i;
+                if (files.length < 1) {
+                    return;
+                }
                 let formData = new FormData();
                 formData.append('path', that.path_cur);
-                if (e.dataTransfer.items) {
-                    // Use DataTransferItemList interface to access the file(s)
-                    for (var i = 0; i < e.dataTransfer.items.length; i++) {
-                        // If dropped items aren't files, reject them
-                        if (e.dataTransfer.items[i].kind === 'file') {
-                            formData.append('files[]', e.dataTransfer.items[i].getAsFile());
-                        }
-                    }
-                } else {
-                    // Use DataTransfer interface to access the file(s)
-                    for (var i = 0; i < e.dataTransfer.files.length; i++) {
-                        formData.append('files[]', e.dataTransfer.files[i]);
-                    }
+                for (i in files) {
+                    formData.append('files[]', files[i]);
                 }
-
                 Vue.loaderShow();
                 axios.post('/api/file/attach-drop', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
@@ -526,6 +519,24 @@
             dragPreventOpen(e) {
                 // Prevent default behavior (Prevent file from being opened)
                 e.preventDefault();
+            },
+            dropGetFiles(e) {
+                var files = [];
+                if (e.dataTransfer.items) {
+                    // Use DataTransferItemList interface to access the file(s)
+                    for (var i = 0; i < e.dataTransfer.items.length; i++) {
+                        // If dropped items aren't files, reject them
+                        if (e.dataTransfer.items[i].kind === 'file') {
+                            files.push(e.dataTransfer.items[i].getAsFile());
+                        }
+                    }
+                } else {
+                    // Use DataTransfer interface to access the file(s)
+                    for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                        files.push(e.dataTransfer.files[i]);
+                    }
+                }
+                return files;
             },
         }
     }
