@@ -26,7 +26,6 @@
         },
         methods: {
             search() {
-                this.query = this.query.trim();
                 this.focusIndex = null;
 
                 if (typeof this.queryCancel == 'function') {
@@ -34,7 +33,7 @@
                     this.queryCancel = null;
                 }
 
-                if (this.query.length < 3) {
+                if (this.query.trim().length < 3) {
                     this.results = [];
                     this.loading = false;
                     return;
@@ -44,7 +43,7 @@
                 let that = this;
                 this.loading = true;
                 axios.get('/api/file/search', {
-                        params: { query: this.query },
+                        params: { query: this.query.trim() },
                         cancelToken: new CancelToken(function executor(c) {
                             // An executor function receives a cancel function as a parameter
                             that.queryCancel = c;
@@ -98,6 +97,7 @@
                     return match;
                 }
                 let query = jQuery('<div>').text(this.query).html();
+                query = match.match(new RegExp(query, 'gi'));
                 return match.replace(new RegExp(query, 'gi'), '<em>' + query + '</em>');
             }
         }

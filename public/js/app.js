@@ -26316,7 +26316,6 @@ __webpack_require__.r(__webpack_exports__);
     search: function search() {
       var _this = this;
 
-      this.query = this.query.trim();
       this.focusIndex = null;
 
       if (typeof this.queryCancel == 'function') {
@@ -26324,7 +26323,7 @@ __webpack_require__.r(__webpack_exports__);
         this.queryCancel = null;
       }
 
-      if (this.query.length < 3) {
+      if (this.query.trim().length < 3) {
         this.results = [];
         this.loading = false;
         return;
@@ -26335,7 +26334,7 @@ __webpack_require__.r(__webpack_exports__);
       this.loading = true;
       axios.get('/api/file/search', {
         params: {
-          query: this.query
+          query: this.query.trim()
         },
         cancelToken: new CancelToken(function executor(c) {
           // An executor function receives a cancel function as a parameter
@@ -26400,6 +26399,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var query = jQuery('<div>').text(this.query).html();
+      query = match.match(new RegExp(query, 'gi'));
       return match.replace(new RegExp(query, 'gi'), '<em>' + query + '</em>');
     }
   }

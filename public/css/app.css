@@ -12393,7 +12393,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 .markdown-body .task-list-item input {
   pointer-events: none;
-  margin: 0 0 0.25em 0;
+  margin: 0 0 0.15em 0;
   vertical-align: middle;
   outline: 1px solid #0ccf10;
 }
