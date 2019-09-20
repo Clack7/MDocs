@@ -25664,7 +25664,7 @@ __webpack_require__.r(__webpack_exports__);
       if (error.response.status == 404 && error.response.data.message == 'File not found.') {
         _this.saving = false;
 
-        _this.update('');
+        _this.update(_this.path_new != '' ? '# ' + _this.path_new.split('/').pop() + "\n\n" : '');
 
         _this.path_cur = '';
       } else {
@@ -26267,7 +26267,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$parent.$router.push('/' + this.$parent.path_new);
     },
     pathTitle: function pathTitle() {
-      document.title = (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ') + MDocs.name;
+      document.title = (this.mode == 'editor' ? '@' : '') + (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ') + MDocs.name;
     }
   },
   filters: {

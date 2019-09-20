@@ -12384,7 +12384,11 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 .markdown-body .task-list-item {
   list-style-type: none;
-  margin-left: -16px;
+  margin-left: 0px;
+}
+
+.markdown-body .task-list-item > ul {
+  margin-left: 0px;
 }
 
 .markdown-body .task-list-item + .task-list-item {
@@ -12393,7 +12397,9 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 .markdown-body .task-list-item input {
   pointer-events: none;
-  margin: 0 0 0.15em 0;
+  margin: 0 -16.5px 2px 0;
+  position: relative;
+  left: -20px;
   vertical-align: middle;
   outline: 1px solid #0ccf10;
 }
@@ -12404,6 +12410,20 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 .markdown-body .task-list-item input.task-list-progress {
   outline: 1px solid #42adff;
+}
+
+.markdown-body ul ul {
+  padding-left: 1.4rem;
+}
+
+.markdown-body ul ul li {
+  margin-left: -6px;
+  padding-left: 6px;
+}
+
+.markdown-body ul ul li.task-list-item {
+  margin-left: 0px;
+  padding-left: 0px;
 }
 
 .markdown-body img {

@@ -160,7 +160,7 @@
                     }).catch((error) => {
                         if (error.response.status == 404 && error.response.data.message == 'File not found.') {
                             this.saving = false;
-                            this.update('');
+                            this.update(this.path_new != '' ? '# ' + this.path_new.split('/').pop() + "\n\n" : '');
                             this.path_cur = '';
                         } else {
                             this.error = 'Server error: ' + error.response.data.message;
