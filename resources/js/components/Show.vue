@@ -16,7 +16,7 @@
                     <div ref="previewColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }" @scroll="previewScroll">
                         <transition name="slide-fade">
                             <div v-html="contentMarked" class="markdown-body" v-if="content != ''"></div>
-                            <div v-if="createAction" class="markdown-body"><em>File not found.</em>  &nbsp;<a href="#" @click="edit()">Create?</a></div>
+                            <div v-if="createAction == true" class="markdown-body"><em>File not found.</em>  &nbsp;<a href="#" @click.prevent="edit()">Create?</a></div>
                         </transition>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                 path_cur: this.$route.params.path,
                 content: '',
                 contentMarked: 'Loading...',
-                createAction: false,
+                createAction: null,
                 error: '',
                 create: 0,
                 columnHeight: 100,
@@ -68,6 +68,7 @@
 
             axios.get('/api/file/' + this.path_cur)
                 .then((response) => {
+                    this.createAction = false;
                     this.content = response.data.content;
                     this.update();
                 }).catch((error) => {

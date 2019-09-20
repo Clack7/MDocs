@@ -6,12 +6,16 @@ export default  {
     element: null,
     holder: null,
     onSave: null,
+    onApply: null,
+    onCancel: null,
     onChange: null,
     onScroll: null,
     vimApi: null,
     load: function(parent, options) {
         let that = this;
         this.onSave   = options.onSave;
+        this.onApply  = options.onApply;
+        this.onCancel = options.onCancel;
         this.onChange = options.onChange;
         this.onScroll = options.onScroll;
 
@@ -25,8 +29,14 @@ export default  {
             if (UtilConfig.vim.enabled) {
                 ace.config.loadModule("ace/keyboard/vim", function(m) {
                     that.vimApi = m.CodeMirror.Vim;
-                    that.vimApi.defineEx("write", "w", function(cm, input) {
+                    that.vimApi.defineEx("wquit", "wq", function(cm, input) {
                         that.onSave();
+                    });
+                    that.vimApi.defineEx("write", "w", function(cm, input) {
+                        that.onApply();
+                    });
+                    that.vimApi.defineEx("quit", "q", function(cm, input) {
+                        that.onCancel();
                     });
                 });
             }
@@ -79,6 +89,8 @@ export default  {
             this.vimApi.exitInsertMode(this.instance.state.cm);
         }
         this.onSave = function() {};
+        this.onApply = function() {};
+        this.onCancel = function() {};
         this.onChange = function() {};
         this.onScroll = function() {};
         this.instance.setValue('', -1);

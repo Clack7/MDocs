@@ -26,6 +26,11 @@
                         <span class="sr-only">Loading...</span>
                     </div>
                 </div>
+                <transition name="slide-fade-fast">
+                    <div v-if="applied" style="position: absolute;top:55px;right:17px;text-align: right;font-size:13px;">
+                        <div class="alert alert-success m-0 p-1 px-2 rounded-0">Saved!</div>
+                    </div>
+                </transition>
             </div>
         </div>
 
@@ -69,6 +74,7 @@
                 content: '',
                 contentMarked: 'Loading...',
                 saving: true,
+                applied: false,
                 editor: null,
                 columnHeight: 100,
                 onScrollEditor: true,
@@ -76,7 +82,7 @@
                 onScrollPreview: true,
                 onScrollPreviewTO: null,
                 error: '',
-                createAction: true,
+                createAction: null,
                 showModal: false,
                 imagesSmall: true,
                 draftSaving: 0,
@@ -112,6 +118,8 @@
             }, 1000), draftSave = false;
             this.editor = MDocs.editor.load(this.$refs.editorHolder, {
                 onSave: this.save,
+                onApply: this.apply,
+                onCancel: this.cancel,
                 onChange: function() {
                     that.update(that.editor.getValue(), true);
                     if (draftSave) {
@@ -149,16 +157,17 @@
             })
 
             // Load content
-            this.createAction = this.path_cur == '';
             // if (this.path_cur != '') {
                 this.content = 'Loading...';
                 axios.get('/api/file/' + (this.path_cur == '' ? '@empty' : this.path_cur))
                     .then((response) => {
+                        this.createAction = false;
                         this.update(response.data.content, false);
                         this.draftContent = response.data.draft;
                         this.saving = false;
                     }).catch((error) => {
                         if (error.response.status == 404 && error.response.data.message == 'File not found.') {
+                            this.createAction = true;
                             this.saving = false;
                             this.update(this.path_new != '' ? '# ' + this.path_new.split('/').pop() + "\n\n" : '');
                             this.path_cur = '';
@@ -310,6 +319,12 @@
                 this.editor.getSession().setScrollTop(editTop);
             },
             save() {
+                this.saveProcess(false);
+            },
+            apply() {
+                this.saveProcess(true);
+            },
+            saveProcess(apply) {
                 if (this.saving) {
                     return;
                 }
@@ -322,8 +337,22 @@
                 axios.post('/api/file/' + this.path_new, { path_cur: this.path_cur, content: this.content })
                     .then(({ data }) => {
                         this.saving = false;
-                        this.$router.push('/' + data.path);
                         this.$root.$emit('filesChange');
+                        if (apply) {
+                            this.applied = true;
+                            clearTimeout(this.appliedTO);
+                            var that = this;
+                            this.appliedTO = setTimeout(function() {
+                                that.applied = false;
+                            }, 1000);
+                            this.createAction = false;
+                            if (data.path != this.path_cur) {
+                                this.path_cur = data.path;
+                                this.$router.push('/update/' + data.path);
+                            }
+                        } else {
+                            this.$router.push('/' + data.path);
+                        }
                     }).catch((error) => {
                         this.saving = false;
                         this.error = error.response.data.message;
@@ -364,8 +393,8 @@
                 this.saving = true;
                 axios.delete('/api/file/' + this.path_cur)
                     .then(({ data }) => {
-                        this.$router.push('/' + this.path_cur);
                         this.$root.$emit('filesChange');
+                        this.$router.push('/' + this.path_cur);
                     }).catch((error) => {
                         this.saving = false;
                         this.error = error.response.data.message;

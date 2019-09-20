@@ -5,17 +5,20 @@
             <span v-bind:class="{ visible: $parent.path_new == '' }">{{ $parent.path_new == '' ? 'File path...' : $parent.path_new|spaceNbsp }}</span>
         </div>
         <div class="path-header-extension flex-grow-1">{{ $parent.path_new == '' ? '' : '.md ' }}</div>
-        <div v-if="mode == 'show'">
-            <router-link class="btn btn-sm" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }"  style="margin: -3px" :to="'/update/' + $parent.path_cur" v-shortkey="['alt', 'e']" @shortkey.native="$parent.edit()">{{ !$parent.createAction ? 'Edit' : 'Create' }}</router-link>
+        <div v-if="mode == 'show'" class="path-header-actions" :class="{ 'path-header-actions-show' : $parent.createAction != null }">
+            <router-link class="btn btn-sm" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }" :to="'/update/' + $parent.path_cur" v-shortkey="['alt', 'e']" @shortkey.native="$parent.edit()">{{ !$parent.createAction ? 'Edit' : 'Create' }}</router-link>
         </div>
-        <div v-if="mode == 'editor'">
-            <button v-if="!$parent.createAction" tabindex="-1" class="btn btn-sm btn-outline-danger" @click="$parent.destroyConfirm()" style="margin: -3px">Delete</button>
-            &nbsp;&nbsp;&nbsp;
-            <button tabindex="-1" class="btn btn-sm btn-outline-info" @click="$parent.editorImagesToggle()" style="margin: -3px"  v-shortkey="['alt', 'i']" @shortkey="$parent.editorImagesToggle()">Toggle IMG</button>
-            &nbsp;&nbsp;&nbsp;
-            <button tabindex="-1" class="btn btn-sm btn-outline-secondary" @click="$parent.cancel()" style="margin: -3px"  v-shortkey="['alt', 'c']" @shortkey="$parent.cancel()">Cancel</button>
-            &nbsp;&nbsp;&nbsp;
-            <button tabindex="-1" class="btn btn-sm" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }" style="margin: -3px" @click.prevent="$parent.save" v-shortkey="['ctrl', 's']" @shortkey="$parent.save()">{{ $parent.saving ? 'Saving...' : 'Save file' }}</button>
+        <div v-if="mode == 'editor'" class="path-header-actions" :class="{ 'path-header-actions-show' : $parent.createAction != null }">
+            <button v-if="!$parent.createAction" tabindex="-1" class="btn btn-sm btn-outline-danger" @click="$parent.destroyConfirm()">Delete</button>
+            &nbsp;
+            <button tabindex="-1" class="btn btn-sm btn-outline-info" @click="$parent.editorImagesToggle()" v-shortkey="['alt', 'i']" @shortkey="$parent.editorImagesToggle()">Toggle IMG</button>
+            &nbsp;
+            <button tabindex="-1" class="btn btn-sm btn-outline-secondary" @click="$parent.cancel()" v-shortkey="['alt', 'c']" @shortkey="$parent.cancel()">{{ $parent.createAction ? 'Cancel' : 'Close' }}</button>
+            &nbsp;
+            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                <button tabindex="-1" class="btn" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }" @click.prevent="$parent.save" v-shortkey="['ctrl', 's']" @shortkey="$parent.save()">{{ $parent.saving ? 'Saving...' : 'Save file' }}</button>
+                <button tabindex="-1" class="btn" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }" @click.prevent="$parent.apply" v-shortkey="['alt', 's']" @shortkey="$parent.apply()"><strong>&#x2714;</strong></button>
+            </div>
         </div>
     </div>
 </template>

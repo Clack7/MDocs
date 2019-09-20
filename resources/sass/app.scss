@@ -58,6 +58,10 @@
   border-radius: 0;
 }
 
+.btn-success {
+  border-color: #26b161;
+}
+
 .error-alert {
   position: fixed;
   top: 25px;
@@ -274,13 +278,17 @@
 }
 /* Enter and leave animations can use different */
 /* durations and timing functions.              */
-.slide-fade-enter-active {
+.slide-fade-enter-active, .slide-fade-fast-enter-active {
   transition: all .3s ease;
 }
 .slide-fade-leave-active {
   transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
-.slide-fade-enter, .slide-fade-leave-to
+.slide-fade-fast-leave-active {
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to,
+.slide-fade-fast-enter, .slide-fade-fast-leave-to
 /* .slide-fade-leave-active below version 2.1.8 */ {
   transform: translateX(10px);
   opacity: 0;
@@ -333,6 +341,18 @@
 }
 .path-header-input span, .path-header-extension {
   color:#999;
+}
+.path-header-actions {
+  margin: -3px;
+
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.1s ease-out;
+
+  &.path-header-actions-show {
+    visibility: visible;
+    opacity: 1;
+  }
 }
 
 $toc-top-offset: 60px;

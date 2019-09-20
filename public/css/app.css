@@ -11297,6 +11297,10 @@ body {
   border-radius: 0;
 }
 
+.btn-success {
+  border-color: #26b161;
+}
+
 .error-alert {
   position: fixed;
   top: 25px;
@@ -12599,7 +12603,8 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 /* durations and timing functions.              */
 
-.slide-fade-enter-active {
+.slide-fade-enter-active,
+.slide-fade-fast-enter-active {
   transition: all 0.3s ease;
 }
 
@@ -12607,8 +12612,14 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
 
+.slide-fade-fast-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
 .slide-fade-enter,
-.slide-fade-leave-to {
+.slide-fade-leave-to,
+.slide-fade-fast-enter,
+.slide-fade-fast-leave-to {
   -webkit-transform: translateX(10px);
           transform: translateX(10px);
   opacity: 0;
@@ -12659,6 +12670,18 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 .path-header-input span,
 .path-header-extension {
   color: #999;
+}
+
+.path-header-actions {
+  margin: -3px;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.1s ease-out;
+}
+
+.path-header-actions.path-header-actions-show {
+  visibility: visible;
+  opacity: 1;
 }
 
 .toc-open {

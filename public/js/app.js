@@ -25556,6 +25556,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -25564,6 +25569,7 @@ __webpack_require__.r(__webpack_exports__);
       content: '',
       contentMarked: 'Loading...',
       saving: true,
+      applied: false,
       editor: null,
       columnHeight: 100,
       onScrollEditor: true,
@@ -25571,7 +25577,7 @@ __webpack_require__.r(__webpack_exports__);
       onScrollPreview: true,
       onScrollPreviewTO: null,
       error: '',
-      createAction: true,
+      createAction: null,
       showModal: false,
       imagesSmall: true,
       draftSaving: 0,
@@ -25610,6 +25616,8 @@ __webpack_require__.r(__webpack_exports__);
 
     this.editor = MDocs.editor.load(this.$refs.editorHolder, {
       onSave: this.save,
+      onApply: this.apply,
+      onCancel: this.cancel,
       onChange: function onChange() {
         that.update(that.editor.getValue(), true);
 
@@ -25651,17 +25659,19 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     }); // Load content
-
-    this.createAction = this.path_cur == ''; // if (this.path_cur != '') {
+    // if (this.path_cur != '') {
 
     this.content = 'Loading...';
     axios.get('/api/file/' + (this.path_cur == '' ? '@empty' : this.path_cur)).then(function (response) {
+      _this.createAction = false;
+
       _this.update(response.data.content, false);
 
       _this.draftContent = response.data.draft;
       _this.saving = false;
     })["catch"](function (error) {
       if (error.response.status == 404 && error.response.data.message == 'File not found.') {
+        _this.createAction = true;
         _this.saving = false;
 
         _this.update(_this.path_new != '' ? '# ' + _this.path_new.split('/').pop() + "\n\n" : '');
@@ -25829,6 +25839,12 @@ __webpack_require__.r(__webpack_exports__);
       this.editor.getSession().setScrollTop(editTop);
     },
     save: function save() {
+      this.saveProcess(false);
+    },
+    apply: function apply() {
+      this.saveProcess(true);
+    },
+    saveProcess: function saveProcess(apply) {
       var _this2 = this;
 
       if (this.saving) {
@@ -25850,9 +25866,25 @@ __webpack_require__.r(__webpack_exports__);
         var data = _ref2.data;
         _this2.saving = false;
 
-        _this2.$router.push('/' + data.path);
-
         _this2.$root.$emit('filesChange');
+
+        if (apply) {
+          _this2.applied = true;
+          clearTimeout(_this2.appliedTO);
+          var that = _this2;
+          _this2.appliedTO = setTimeout(function () {
+            that.applied = false;
+          }, 1000);
+          _this2.createAction = false;
+
+          if (data.path != _this2.path_cur) {
+            _this2.path_cur = data.path;
+
+            _this2.$router.push('/update/' + data.path);
+          }
+        } else {
+          _this2.$router.push('/' + data.path);
+        }
       })["catch"](function (error) {
         _this2.saving = false;
         _this2.error = error.response.data.message;
@@ -25904,9 +25936,9 @@ __webpack_require__.r(__webpack_exports__);
       axios["delete"]('/api/file/' + this.path_cur).then(function (_ref4) {
         var data = _ref4.data;
 
-        _this4.$router.push('/' + _this4.path_cur);
-
         _this4.$root.$emit('filesChange');
+
+        _this4.$router.push('/' + _this4.path_cur);
       })["catch"](function (error) {
         _this4.saving = false;
         _this4.error = error.response.data.message;
@@ -26235,6 +26267,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['mode'],
   data: function data() {
@@ -26460,7 +26495,7 @@ __webpack_require__.r(__webpack_exports__);
       path_cur: this.$route.params.path,
       content: '',
       contentMarked: 'Loading...',
-      createAction: false,
+      createAction: null,
       error: '',
       create: 0,
       columnHeight: 100,
@@ -26486,6 +26521,7 @@ __webpack_require__.r(__webpack_exports__);
     }
 
     axios.get('/api/file/' + this.path_cur).then(function (response) {
+      _this.createAction = false;
       _this.content = response.data.content;
 
       _this.update();
@@ -33057,7 +33093,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
 
 // exports
 
@@ -158286,169 +158322,201 @@ var render = function() {
         [
           _c("path-header-component", { attrs: { mode: "editor" } }),
           _vm._v(" "),
-          _c("div", { staticClass: "row no-gutters" }, [
-            _c(
-              "div",
-              {
-                ref: "editorColumn",
-                staticClass: "col-6",
-                style: {
-                  height: _vm.columnHeight + "px",
-                  overflow: "auto",
-                  "border-right": "1px solid #ccc"
-                }
-              },
-              [
-                _c("div", {
-                  ref: "editorHolder",
-                  staticStyle: { position: "relative", height: "100%" }
-                }),
-                _vm._v(" "),
-                _c("div", { staticClass: "editor-bottom-actions" }, [
-                  _vm.selection.comment
+          _c(
+            "div",
+            { staticClass: "row no-gutters" },
+            [
+              _c(
+                "div",
+                {
+                  ref: "editorColumn",
+                  staticClass: "col-6",
+                  style: {
+                    height: _vm.columnHeight + "px",
+                    overflow: "auto",
+                    "border-right": "1px solid #ccc"
+                  }
+                },
+                [
+                  _c("div", {
+                    ref: "editorHolder",
+                    staticStyle: { position: "relative", height: "100%" }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "editor-bottom-actions" }, [
+                    _vm.selection.comment
+                      ? _c(
+                          "a",
+                          {
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.selectionComment($event)
+                              }
+                            }
+                          },
+                          [_vm._v("Comment Selection")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selection.fold
+                      ? _c(
+                          "a",
+                          {
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.selectionFold($event)
+                              }
+                            }
+                          },
+                          [_vm._v("Fold Selection")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selection.youtubeThumbnail
+                      ? _c(
+                          "a",
+                          {
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.selectionDownloadUrl($event)
+                              }
+                            }
+                          },
+                          [_vm._v("Youtube Thumbnail")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selection.downloadUrl
+                      ? _c(
+                          "a",
+                          {
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.selectionDownloadUrl($event)
+                              }
+                            }
+                          },
+                          [_vm._v("Download Selection")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selection.parseGraph
+                      ? _c(
+                          "a",
+                          {
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.selectionParseGraph($event)
+                              }
+                            }
+                          },
+                          [_vm._v("Parse SVG Graph")]
+                        )
+                      : _vm._e()
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  ref: "previewColumn",
+                  staticClass: "col-6",
+                  style: { height: _vm.columnHeight + "px", overflow: "auto" },
+                  on: { scroll: _vm.previewScroll }
+                },
+                [
+                  _c("div", {
+                    staticClass: "markdown-body",
+                    class: { "images-small": _vm.imagesSmall },
+                    domProps: { innerHTML: _vm._s(_vm.contentMarked) }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticStyle: {
+                    position: "absolute",
+                    bottom: "5px",
+                    right: "10px",
+                    "text-align": "right"
+                  }
+                },
+                [
+                  _vm.draftContent != null && _vm.draftContent != ""
                     ? _c(
                         "a",
                         {
+                          staticStyle: {
+                            display: "inline-block",
+                            "font-size": "12px",
+                            position: "relative",
+                            top: "3px"
+                          },
                           attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.selectionComment($event)
-                            }
-                          }
+                          on: { click: _vm.loadDraft }
                         },
-                        [_vm._v("Comment Selection")]
+                        [_vm._v("Load Draft")]
                       )
                     : _vm._e(),
-                  _vm._v(" "),
-                  _vm.selection.fold
-                    ? _c(
-                        "a",
-                        {
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.selectionFold($event)
-                            }
-                          }
-                        },
-                        [_vm._v("Fold Selection")]
-                      )
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.selection.youtubeThumbnail
-                    ? _c(
-                        "a",
-                        {
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.selectionDownloadUrl($event)
-                            }
-                          }
-                        },
-                        [_vm._v("Youtube Thumbnail")]
-                      )
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.selection.downloadUrl
-                    ? _c(
-                        "a",
-                        {
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.selectionDownloadUrl($event)
-                            }
-                          }
-                        },
-                        [_vm._v("Download Selection")]
-                      )
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.selection.parseGraph
-                    ? _c(
-                        "a",
-                        {
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.selectionParseGraph($event)
-                            }
-                          }
-                        },
-                        [_vm._v("Parse SVG Graph")]
-                      )
-                    : _vm._e()
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                ref: "previewColumn",
-                staticClass: "col-6",
-                style: { height: _vm.columnHeight + "px", overflow: "auto" },
-                on: { scroll: _vm.previewScroll }
-              },
-              [
-                _c("div", {
-                  staticClass: "markdown-body",
-                  class: { "images-small": _vm.imagesSmall },
-                  domProps: { innerHTML: _vm._s(_vm.contentMarked) }
-                })
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticStyle: {
-                  position: "absolute",
-                  bottom: "5px",
-                  right: "10px",
-                  "text-align": "right"
-                }
-              },
-              [
-                _vm.draftContent != null && _vm.draftContent != ""
+                  _vm._v(" \n                "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "spinner-border spinner-border-sm text-primary fade-opacity",
+                      class: { "fade-opacity-show": _vm.draftSaving > 0 }
+                    },
+                    [
+                      _c("span", { staticClass: "sr-only" }, [
+                        _vm._v("Loading...")
+                      ])
+                    ]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c("transition", { attrs: { name: "slide-fade-fast" } }, [
+                _vm.applied
                   ? _c(
-                      "a",
+                      "div",
                       {
                         staticStyle: {
-                          display: "inline-block",
-                          "font-size": "12px",
-                          position: "relative",
-                          top: "3px"
-                        },
-                        attrs: { href: "#" },
-                        on: { click: _vm.loadDraft }
+                          position: "absolute",
+                          top: "55px",
+                          right: "17px",
+                          "text-align": "right",
+                          "font-size": "13px"
+                        }
                       },
-                      [_vm._v("Load Draft")]
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "alert alert-success m-0 p-1 px-2 rounded-0"
+                          },
+                          [_vm._v("Saved!")]
+                        )
+                      ]
                     )
-                  : _vm._e(),
-                _vm._v(" \n                "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "spinner-border spinner-border-sm text-primary fade-opacity",
-                    class: { "fade-opacity-show": _vm.draftSaving > 0 }
-                  },
-                  [
-                    _c("span", { staticClass: "sr-only" }, [
-                      _vm._v("Loading...")
-                    ])
-                  ]
-                )
-              ]
-            )
-          ])
+                  : _vm._e()
+              ])
+            ],
+            1
+          )
         ],
         1
       ),
@@ -158728,6 +158796,12 @@ var render = function() {
     _vm.mode == "show"
       ? _c(
           "div",
+          {
+            staticClass: "path-header-actions",
+            class: {
+              "path-header-actions-show": _vm.$parent.createAction != null
+            }
+          },
           [
             _c(
               "router-link",
@@ -158745,7 +158819,6 @@ var render = function() {
                   "btn-success": !_vm.$parent.createAction,
                   "btn-primary": _vm.$parent.createAction
                 },
-                staticStyle: { margin: "-3px" },
                 attrs: { to: "/update/" + _vm.$parent.path_cur },
                 nativeOn: {
                   shortkey: function($event) {
@@ -158761,107 +158834,155 @@ var render = function() {
       : _vm._e(),
     _vm._v(" "),
     _vm.mode == "editor"
-      ? _c("div", [
-          !_vm.$parent.createAction
-            ? _c(
-                "button",
-                {
-                  staticClass: "btn btn-sm btn-outline-danger",
-                  staticStyle: { margin: "-3px" },
-                  attrs: { tabindex: "-1" },
-                  on: {
-                    click: function($event) {
-                      return _vm.$parent.destroyConfirm()
+      ? _c(
+          "div",
+          {
+            staticClass: "path-header-actions",
+            class: {
+              "path-header-actions-show": _vm.$parent.createAction != null
+            }
+          },
+          [
+            !_vm.$parent.createAction
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-sm btn-outline-danger",
+                    attrs: { tabindex: "-1" },
+                    on: {
+                      click: function($event) {
+                        return _vm.$parent.destroyConfirm()
+                      }
                     }
+                  },
+                  [_vm._v("Delete")]
+                )
+              : _vm._e(),
+            _vm._v("\n         \n        "),
+            _c(
+              "button",
+              {
+                directives: [
+                  {
+                    name: "shortkey",
+                    rawName: "v-shortkey",
+                    value: ["alt", "i"],
+                    expression: "['alt', 'i']"
                   }
-                },
-                [_vm._v("Delete")]
-              )
-            : _vm._e(),
-          _vm._v("\n           \n        "),
-          _c(
-            "button",
-            {
-              directives: [
-                {
-                  name: "shortkey",
-                  rawName: "v-shortkey",
-                  value: ["alt", "i"],
-                  expression: "['alt', 'i']"
+                ],
+                staticClass: "btn btn-sm btn-outline-info",
+                attrs: { tabindex: "-1" },
+                on: {
+                  click: function($event) {
+                    return _vm.$parent.editorImagesToggle()
+                  },
+                  shortkey: function($event) {
+                    return _vm.$parent.editorImagesToggle()
+                  }
                 }
-              ],
-              staticClass: "btn btn-sm btn-outline-info",
-              staticStyle: { margin: "-3px" },
-              attrs: { tabindex: "-1" },
-              on: {
-                click: function($event) {
-                  return _vm.$parent.editorImagesToggle()
-                },
-                shortkey: function($event) {
-                  return _vm.$parent.editorImagesToggle()
-                }
-              }
-            },
-            [_vm._v("Toggle IMG")]
-          ),
-          _vm._v("\n           \n        "),
-          _c(
-            "button",
-            {
-              directives: [
-                {
-                  name: "shortkey",
-                  rawName: "v-shortkey",
-                  value: ["alt", "c"],
-                  expression: "['alt', 'c']"
-                }
-              ],
-              staticClass: "btn btn-sm btn-outline-secondary",
-              staticStyle: { margin: "-3px" },
-              attrs: { tabindex: "-1" },
-              on: {
-                click: function($event) {
-                  return _vm.$parent.cancel()
-                },
-                shortkey: function($event) {
-                  return _vm.$parent.cancel()
-                }
-              }
-            },
-            [_vm._v("Cancel")]
-          ),
-          _vm._v("\n           \n        "),
-          _c(
-            "button",
-            {
-              directives: [
-                {
-                  name: "shortkey",
-                  rawName: "v-shortkey",
-                  value: ["ctrl", "s"],
-                  expression: "['ctrl', 's']"
-                }
-              ],
-              staticClass: "btn btn-sm",
-              class: {
-                "btn-success": !_vm.$parent.createAction,
-                "btn-primary": _vm.$parent.createAction
               },
-              staticStyle: { margin: "-3px" },
-              attrs: { tabindex: "-1" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  return _vm.$parent.save($event)
-                },
-                shortkey: function($event) {
-                  return _vm.$parent.save()
+              [_vm._v("Toggle IMG")]
+            ),
+            _vm._v("\n         \n        "),
+            _c(
+              "button",
+              {
+                directives: [
+                  {
+                    name: "shortkey",
+                    rawName: "v-shortkey",
+                    value: ["alt", "c"],
+                    expression: "['alt', 'c']"
+                  }
+                ],
+                staticClass: "btn btn-sm btn-outline-secondary",
+                attrs: { tabindex: "-1" },
+                on: {
+                  click: function($event) {
+                    return _vm.$parent.cancel()
+                  },
+                  shortkey: function($event) {
+                    return _vm.$parent.cancel()
+                  }
                 }
-              }
-            },
-            [_vm._v(_vm._s(_vm.$parent.saving ? "Saving..." : "Save file"))]
-          )
-        ])
+              },
+              [_vm._v(_vm._s(_vm.$parent.createAction ? "Cancel" : "Close"))]
+            ),
+            _vm._v("\n         \n        "),
+            _c(
+              "div",
+              {
+                staticClass: "btn-group btn-group-sm",
+                attrs: { role: "group", "aria-label": "Basic example" }
+              },
+              [
+                _c(
+                  "button",
+                  {
+                    directives: [
+                      {
+                        name: "shortkey",
+                        rawName: "v-shortkey",
+                        value: ["ctrl", "s"],
+                        expression: "['ctrl', 's']"
+                      }
+                    ],
+                    staticClass: "btn",
+                    class: {
+                      "btn-success": !_vm.$parent.createAction,
+                      "btn-primary": _vm.$parent.createAction
+                    },
+                    attrs: { tabindex: "-1" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.$parent.save($event)
+                      },
+                      shortkey: function($event) {
+                        return _vm.$parent.save()
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      _vm._s(_vm.$parent.saving ? "Saving..." : "Save file")
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    directives: [
+                      {
+                        name: "shortkey",
+                        rawName: "v-shortkey",
+                        value: ["alt", "s"],
+                        expression: "['alt', 's']"
+                      }
+                    ],
+                    staticClass: "btn",
+                    class: {
+                      "btn-success": !_vm.$parent.createAction,
+                      "btn-primary": _vm.$parent.createAction
+                    },
+                    attrs: { tabindex: "-1" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.$parent.apply($event)
+                      },
+                      shortkey: function($event) {
+                        return _vm.$parent.apply()
+                      }
+                    }
+                  },
+                  [_c("strong", [_vm._v("✔")])]
+                )
+              ]
+            )
+          ]
+        )
       : _vm._e()
   ])
 }
@@ -159141,7 +159262,7 @@ var render = function() {
                         })
                       : _vm._e(),
                     _vm._v(" "),
-                    _vm.createAction
+                    _vm.createAction == true
                       ? _c("div", { staticClass: "markdown-body" }, [
                           _c("em", [_vm._v("File not found.")]),
                           _vm._v("   "),
@@ -159151,6 +159272,7 @@ var render = function() {
                               attrs: { href: "#" },
                               on: {
                                 click: function($event) {
+                                  $event.preventDefault()
                                   return _vm.edit()
                                 }
                               }
@@ -175130,12 +175252,16 @@ __webpack_require__.r(__webpack_exports__);
   element: null,
   holder: null,
   onSave: null,
+  onApply: null,
+  onCancel: null,
   onChange: null,
   onScroll: null,
   vimApi: null,
   load: function load(parent, options) {
     var that = this;
     this.onSave = options.onSave;
+    this.onApply = options.onApply;
+    this.onCancel = options.onCancel;
     this.onChange = options.onChange;
     this.onScroll = options.onScroll;
 
@@ -175148,8 +175274,14 @@ __webpack_require__.r(__webpack_exports__);
       if (UtilConfig.vim.enabled) {
         ace.config.loadModule("ace/keyboard/vim", function (m) {
           that.vimApi = m.CodeMirror.Vim;
-          that.vimApi.defineEx("write", "w", function (cm, input) {
+          that.vimApi.defineEx("wquit", "wq", function (cm, input) {
             that.onSave();
+          });
+          that.vimApi.defineEx("write", "w", function (cm, input) {
+            that.onApply();
+          });
+          that.vimApi.defineEx("quit", "q", function (cm, input) {
+            that.onCancel();
           });
         });
       } // Init ace editor
@@ -175201,6 +175333,10 @@ __webpack_require__.r(__webpack_exports__);
     }
 
     this.onSave = function () {};
+
+    this.onApply = function () {};
+
+    this.onCancel = function () {};
 
     this.onChange = function () {};
 
