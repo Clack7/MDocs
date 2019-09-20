@@ -84,11 +84,11 @@
 
   .task-list-item {
     list-style-type: none;
-    margin-left: 0px;
+    // margin-left: 0px;
 
-    > ul {
-      margin-left: 0px;
-    }
+    // > ul {
+    //   margin-left: 0px;
+    // }
   }
   .task-list-item + .task-list-item {
     margin-top: 3px;
@@ -97,7 +97,7 @@
     pointer-events: none;
     margin: 0 -16.5px 2px 0;
     position: relative;
-    left: -20px;
+    left: -21px;
     vertical-align: middle;
     outline: 1px solid #0ccf10;
 
@@ -110,15 +110,26 @@
     }
   }
 
-  ul ul {
-    padding-left: 1.4rem;
+  ul {
+    padding-left: 0;
 
     li {
-      margin-left: -6px;
-      padding-left: 6px;
+      margin-left: 2rem;
+      padding-left: 0.1rem;
+
       &.task-list-item {
-        margin-left:  0px;
-        padding-left: 0px;
+        margin-left: 0.7rem;
+        padding-left: 1.4rem;
+      }
+    }
+
+    ul li {
+      margin-left: 1rem;
+      padding-left: 0.4rem;
+
+      &.task-list-item {
+        margin-left: 0rem;
+        padding-left: 1.4rem;
       }
     }
   }
