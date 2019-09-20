@@ -121,10 +121,15 @@ class FileController extends Controller
         if ($path != '@empty') {
             $pathFile = $this->dir . '/' . $path . '.md';
             if (!\File::isFile($pathFile)) {
-                abort(404, 'File not found.');
+                if ($path != 'index') {
+                    abort(404, 'File not found.');
+                }
+                $content = \Storage::get('default/index.md');
+                $draft = $this->getDraft($path);
+            } else {
+                $content = \File::get($pathFile);
+                $draft = $this->getDraft($path);
             }
-            $content = \File::get($pathFile);
-            $draft = $this->getDraft($path);
         } else {
             $draft = $this->getDraft('');
         }
@@ -427,7 +432,7 @@ class FileController extends Controller
         $path = $this->pathClean($request->request->get('path'));
         $pathFile = $this->pathFile($path);
         // Check file exists
-        if (!empty($path) && !is_file($pathFile)) {
+        if (!empty($path) && !is_file($pathFile) && $path != 'index') {
             abort(400, 'Invalid file path.');
         }
 
@@ -455,7 +460,7 @@ class FileController extends Controller
         $path = $this->pathClean($request->request->get('path'));
         $pathFile = $this->pathFile($path);
         // Check file exists
-        if (!empty($path) && !is_file($pathFile)) {
+        if (!empty($path) && !is_file($pathFile) && $path != 'index') {
             abort(400, 'Invalid file path.');
         }
 
@@ -495,7 +500,7 @@ class FileController extends Controller
         $path = $this->pathClean($request->request->get('path'));
         $pathFile = $this->pathFile($path);
         // Check file exists
-        if (!empty($path) && !is_file($pathFile)) {
+        if (!empty($path) && !is_file($pathFile) && $path != 'index') {
             abort(400, 'Invalid file path.');
         }
 
@@ -522,7 +527,7 @@ class FileController extends Controller
         $path = $this->pathClean($request->request->get('path'));
         $pathFile = $this->pathFile($path);
         // Check file exists
-        if (!empty($path) && !is_file($pathFile)) {
+        if (!empty($path) && !is_file($pathFile) && $path != 'index') {
             abort(400, 'Invalid file path.');
         }
 

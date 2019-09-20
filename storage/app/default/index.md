@@ -1,14 +1,4 @@
-<template>
-    <div class="card border-0 rounded-0">
-        <div class="markdown-body" v-html="this.$options.filters['marked'](this.content)"></div>
-    </div>
-</template>
-
-<script>
-    export default {
-        data() {
-            return {
-                content: `# Markdown Guide
+# Markdown Guide
 
 [The Ultimate Guide to Markdown](https://gist.github.com/cuonggt/9b7d08a597b167299f0d)
 
@@ -277,11 +267,4 @@ GitHub supports emoji! Check out the [Emoji Cheat Sheet](http://www.emoji-cheat-
 ## References
 
 * http://blog.ghost.org/markdown/
-* https://guides.github.com/features/mastering-markdown/`
-            };
-        },
-        mounted() {
-            console.log('Component mounted Index.')
-        },
-    }
-</script>
+* https://guides.github.com/features/mastering-markdown/

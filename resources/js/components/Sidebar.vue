@@ -50,13 +50,15 @@
                         var levels = [];
                         function levelFill(list, level) {
                             for (var i in list) {
-                                levels.push({
-                                    name: list[i].name,
-                                    path: list[i].path,
-                                    file: list[i].file,
-                                    level: level + 0,
-                                    show: 1,
-                                });
+                                if (list[i].path != 'index' || list[i].children.length > 0) {
+                                    levels.push({
+                                        name: list[i].name,
+                                        path: list[i].path,
+                                        file: list[i].file,
+                                        level: level + 0,
+                                        show: 1,
+                                    });
+                                }
                                 levelFill(list[i].children, level + 1);
                             }
                         }

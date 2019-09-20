@@ -26208,34 +26208,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Index.vue?vue&type=script&lang=js&":
-/*!****************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Index.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      content: "# Markdown Guide\n\n[The Ultimate Guide to Markdown](https://gist.github.com/cuonggt/9b7d08a597b167299f0d)\n\n## Basic Markdown Formatting\n\n### Headings\n\n    # This is an <h1> tag\n    ## This is an <h2> tag\n    ### This is an <h3> tag\n    #### This is an <h4> tag\n    ##### This is an <h5> tag\n    ###### This is an <h6> tag\n\n### Emphasis\n\n    *This text will be italic*\n    _This will also be italic_\n\n    **This text will be bold**\n    __This will also be bold__\n\n    _You **can** combine them_\n\nResult:\n\n*This text will be italic*\n\n_This will also be italic_\n\n**This text will be bold**\n\n__This will also be bold__\n\n_You **can** combine them_\n\n### Lists\n\n**Inordered:**\n\n    * Milk\n    * Bread\n        * Wholegrain\n    * Butter\n\nResult:\n\n* Milk\n* Bread\n    * Wholegrain\n* Butter\n\n**Ordered:**\n\n    1. Tidy the kitchen\n    2. Prepare ingredients\n    3. Cook delicious things\n\nResult:\n\n1. Tidy the kitchen\n2. Prepare ingredients\n3. Cook delicious things\n\n### Images\n\n    ![Alt Text](url)\n\nResult:\n\n![m'lady](http://i.imgur.com/v8IVDka.jpg)\n\n### Links\n\n    [link](http://example.com)\n\nResult:\n\n[link](http://example.com)\n\n### Blockquotes\n\n    As Kanye West said:\n\n    > We're living the future so\n    > the present is our past.\n\nResult:\n\nAs Kanye West said:\n> We're living the future so\n> the present is our past.\n\n### Horizontal Rules\n\n    ---\n\nResult:\n\n---\n\n### Code Snippets\n\n    Indenting by 4 spaces will turn an entire paragraph into a code-block.\n\nResult:\n\n    .my-link {\n        text-decoration: underline;\n    }\n\n### Reference Lists & Titles\n\n    **The quick brown [fox][1], jumped over the lazy [dog][2].**\n\n    [1]: https://en.wikipedia.org/wiki/Fox \"Wikipedia: Fox\"\n    [2]: https://en.wikipedia.org/wiki/Dog \"Wikipedia: Dog\"\n\nResult:\n\n**The quick brown [fox][1], jumped over the lazy [dog][2].**\n\n[1]: https://en.wikipedia.org/wiki/Fox \"Wikipedia: Fox\"\n[2]: https://en.wikipedia.org/wiki/Dog \"Wikipedia: Dog\"\n\n### Escaping\n\n    \\*literally\\*\n\nResult:\n\n\\*literally\\*\n\n### Embedding HTML\n\n    <button class=\"button-save large\">Big Fat Button</button>\n\nResult:\n\n<button class=\"button-save large\">Big Fat Button</button>\n\n## Advanced Markdown\n\nNote: Some syntax which is not standard to native Markdown. They're extensions of the language.\n\n### Strike-throughs\n\n    ~~deleted words~~\n\nResult:\n\n~~deleted words~~\n\n### Highlights\n\nWork in [Ghost](https://ghost.org/):\n\n    ==oooh fancy==\n\nResult:\n\n==oooh fancy==\n\n### Automatic Links\n\n    https://ghost.org\n\nResult:\n\nhttps://ghost.org\n\n### Markdown Footnotes\n\nWork in [Ghost](https://ghost.org/):\n\n    The quick brown fox[^1] jumped over the lazy dog[^2].\n\n    [^1]: Foxes are red\n    [^2]: Dogs are usually not red\n\nResult:\n\nThe quick brown fox[^1] jumped over the lazy dog[^2].\n\n[^1]: Foxes are red\n[^2]: Dogs are usually not red\n\n## GitHub Flavored Markdown\n\n### Syntax Highlighting\n\n    ```javascript\n    function fancyAlert(arg) {\n      if(arg) {\n        $.facebox({div:'#foo'})\n      }\n    }\n    ```\n\nResult:\n\n```javascript\nfunction fancyAlert(arg) {\n  if(arg) {\n    $.facebox({div:'#foo'})\n  }\n}\n```\n\n### Task Lists\n\n    - [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported\n    - [x] list syntax required (any unordered or ordered list supported)\n    - [x] this is a complete item\n    - [ ] this is an incomplete item\n\nResult:\n\n- [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported\n- [x] list syntax required (any unordered or ordered list supported)\n- [x] this is a complete item\n- [ ] this is an incomplete item\n\n### Tables\n\nYou can create tables by assembling a list of words and dividing them with hyphens `-` (for the first row), and then separating each column with a pipe `|`:\n\n```plaintext\nFirst Header | Second Header\n------------ | -------------\nContent from cell 1 | Content from cell 2\nContent in the first column | Content in the second column\n```\n\nResult:\n\nFirst Header | Second Header\n------------ | -------------\nContent from cell 1 | Content from cell 2\nContent in the first column | Content in the second column\n\n### SHA references\n\nAny reference to a commit\u2019s SHA-1 hash will be automatically converted into a link to that commit on GitHub.\n\n    16c999e8c71134401a78d4d46435517b2271d6ac\n    mojombo@16c999e8c71134401a78d4d46435517b2271d6ac\n    mojombo/github-flavored-markdown@16c999e8c71134401a78d4d46435517b2271d6ac\n\n### Issue references within a repository\n\nAny number that refers to an Issue or Pull Request will be automatically converted into a link.\n\n    #1\n    mojombo#1\n    mojombo/github-flavored-markdown#1\n\n### Username @mentions\n\nTyping an `@` symbol, followed by a username, will notify that person to come and view the comment. This is called an \u201C@mention\u201D, because you\u2019re mentioning the individual. You can also @mention teams within an organization.\n\n### Emoji\n\nGitHub supports emoji! Check out the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/).\n\n## References\n\n* http://blog.ghost.org/markdown/\n* https://guides.github.com/features/mastering-markdown/"
-    };
-  },
-  mounted: function mounted() {
-    console.log('Component mounted Index.');
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PathHeader.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PathHeader.vue?vue&type=script&lang=js& ***!
@@ -26514,7 +26486,11 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    // Remove the md extension from the url
+    if (this.$route.params.path == '') {
+      this.$route.params.path = this.path_new = this.path_cur = 'index';
+    } // Remove the md extension from the url
+
+
     if (this.path_cur.match(/\.md$/i) != null) {
       this.$router.replace('/' + this.path_cur.slice(0, -3));
       return;
@@ -26566,6 +26542,12 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
       });
+    });
+    $previewColumn.on('click', 'a', function (e) {
+      if ($(this).attr('href').indexOf('./') === 0) {
+        e.preventDefault();
+        that.$router.push($(this).attr('href'));
+      }
     });
   },
   beforeDestroy: function beforeDestroy() {
@@ -26724,13 +26706,16 @@ __webpack_require__.r(__webpack_exports__);
 
         function levelFill(list, level) {
           for (var i in list) {
-            levels.push({
-              name: list[i].name,
-              path: list[i].path,
-              file: list[i].file,
-              level: level + 0,
-              show: 1
-            });
+            if (list[i].path != 'index' || list[i].children.length > 0) {
+              levels.push({
+                name: list[i].name,
+                path: list[i].path,
+                file: list[i].file,
+                level: level + 0,
+                show: 1
+              });
+            }
+
             levelFill(list[i].children, level + 1);
           }
         }
@@ -158695,37 +158680,6 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Index.vue?vue&type=template&id=bb962f12&":
-/*!********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Index.vue?vue&type=template&id=bb962f12& ***!
-  \********************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card border-0 rounded-0" }, [
-    _c("div", {
-      staticClass: "markdown-body",
-      domProps: {
-        innerHTML: _vm._s(this.$options.filters["marked"](this.content))
-      }
-    })
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PathHeader.vue?vue&type=template&id=bb30d286&":
 /*!*************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PathHeader.vue?vue&type=template&id=bb30d286& ***!
@@ -174705,7 +174659,6 @@ if (token) {
 var map = {
 	"./Editor.vue": "./resources/js/components/Editor.vue",
 	"./Gallery.vue": "./resources/js/components/Gallery.vue",
-	"./Index.vue": "./resources/js/components/Index.vue",
 	"./PathHeader.vue": "./resources/js/components/PathHeader.vue",
 	"./Search.vue": "./resources/js/components/Search.vue",
 	"./Show.vue": "./resources/js/components/Show.vue",
@@ -174885,75 +174838,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Gallery_vue_vue_type_template_id_5761a7b7___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Gallery_vue_vue_type_template_id_5761a7b7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/Index.vue":
-/*!*******************************************!*\
-  !*** ./resources/js/components/Index.vue ***!
-  \*******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Index_vue_vue_type_template_id_bb962f12___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Index.vue?vue&type=template&id=bb962f12& */ "./resources/js/components/Index.vue?vue&type=template&id=bb962f12&");
-/* harmony import */ var _Index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Index.vue?vue&type=script&lang=js& */ "./resources/js/components/Index.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _Index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _Index_vue_vue_type_template_id_bb962f12___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _Index_vue_vue_type_template_id_bb962f12___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Index.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Index.vue?vue&type=script&lang=js&":
-/*!********************************************************************!*\
-  !*** ./resources/js/components/Index.vue?vue&type=script&lang=js& ***!
-  \********************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Index.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Index.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Index.vue?vue&type=template&id=bb962f12&":
-/*!**************************************************************************!*\
-  !*** ./resources/js/components/Index.vue?vue&type=template&id=bb962f12& ***!
-  \**************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Index_vue_vue_type_template_id_bb962f12___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Index.vue?vue&type=template&id=bb962f12& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Index.vue?vue&type=template&id=bb962f12&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Index_vue_vue_type_template_id_bb962f12___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Index_vue_vue_type_template_id_bb962f12___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

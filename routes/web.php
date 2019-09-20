@@ -41,10 +41,6 @@ Route::group(['middleware' => []], function () {
 
     // SPA routes
     $spa = [
-        '/'             => [
-            'name'      => 'index',
-            'component' => 'Index',
-        ],
         '/create' => [
             'name'      => 'create',
             'component' => 'Editor',

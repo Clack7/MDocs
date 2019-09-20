@@ -60,6 +60,11 @@
             };
         },
         mounted() {
+            if (this.$route.params.path == '') {
+                this.$route.params.path =
+                this.path_new =
+                this.path_cur = 'index';
+            }
             // Remove the md extension from the url
             if (this.path_cur.match(/\.md$/i) != null) {
                 this.$router.replace('/' + this.path_cur.slice(0, -3));
@@ -108,6 +113,12 @@
                             });
                     }
                 });
+            });
+            $previewColumn.on('click', 'a', function(e) {
+                if ($(this).attr('href').indexOf('./') === 0) {
+                    e.preventDefault();
+                    that.$router.push($(this).attr('href'));
+                }
             });
         },
         beforeDestroy() {
