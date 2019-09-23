@@ -16,8 +16,8 @@
             <button tabindex="-1" class="btn btn-sm btn-outline-secondary" @click="$parent.cancel()" v-shortkey="['alt', 'c']" @shortkey="$parent.cancel()">{{ $parent.createAction ? 'Cancel' : 'Close' }}</button>
             &nbsp;
             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                <button tabindex="-1" class="btn" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }" @click.prevent="$parent.save" v-shortkey="['ctrl', 's']" @shortkey="$parent.save()">{{ $parent.saving ? 'Saving...' : 'Save file' }}</button>
-                <button tabindex="-1" class="btn" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }" @click.prevent="$parent.apply" v-shortkey="['alt', 's']" @shortkey="$parent.apply()"><strong>&#x2714;</strong></button>
+                <button tabindex="-1" class="btn" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }" @click.prevent="$parent.save" v-shortkey="['alt', 's']" @shortkey="$parent.save()">{{ $parent.saving ? 'Saving...' : 'Save file' }}</button>
+                <button tabindex="-1" class="btn" :class="{ 'btn-success' : !$parent.createAction, 'btn-primary': $parent.createAction }" @click.prevent="$parent.apply" v-shortkey="['ctrl', 's']" @shortkey="$parent.apply()"><strong>&#x2714;</strong></button>
             </div>
         </div>
     </div>

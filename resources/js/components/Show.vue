@@ -115,7 +115,7 @@
                 });
             });
             $previewColumn.on('click', 'a', function(e) {
-                if ($(this).attr('href').indexOf('./') === 0) {
+                if ($(this).attr('href').match(/^\.\/(.*)\.md$/) !== null) {
                     e.preventDefault();
                     that.$router.push($(this).attr('href'));
                 }

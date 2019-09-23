@@ -161,7 +161,7 @@
                 this.content = 'Loading...';
                 axios.get('/api/file/' + (this.path_cur == '' ? '@empty' : this.path_cur))
                     .then((response) => {
-                        this.createAction = false;
+                        this.createAction = this.path_cur == '';
                         this.update(response.data.content, false);
                         this.draftContent = response.data.draft;
                         this.saving = false;
@@ -530,8 +530,12 @@
                     .then(({ data }) => {
                         Vue.loaderHide();
                         var text = [], uk;
-                        for (uk in data.urls) {
-                            text.push('![img](' + data.urls[uk] + ' "=x300")');
+                        for (uk in data.uploads) {
+                            if (data.uploads[uk].is_image) {
+                                text.push('![' + data.uploads[uk].name + '](' + data.uploads[uk].url + ' "=x300")');
+                            } else {
+                                text.push('[' + data.uploads[uk].name + '](' + data.uploads[uk].url + ')');
+                            }
                         }
                         if (text.length > 0) {
                             that.editor.session.insert(that.editor.getCursorPosition(), text.join("\n") + "\n");

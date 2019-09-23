@@ -533,33 +533,33 @@ class FileController extends Controller
 
         // Parse Check Url valid Mime
         $files = $request->files->get('files');
-        $validMimes = [
-            'image/jpeg' => 'jpg',
-            'image/gif'  => 'gif',
-            'image/png'  => 'png',
-        ];
-        $urls = [];
+        $uploads = [];
         $errors = [];
         foreach ($files as $file) {
             $mime = $file->getClientMimeType();
-            if (isset($validMimes[$mime])) {
+            $mimeInfo = $this->getAttachmentMimeInfo($mime);
+            if ($mimeInfo['valid']) {
                 // Set path, download and save file contents
                 $savePath = (empty($path) ? 'new-file' : $path);
                 $savePath = $this->dir . '/' . $savePath . '.md';
-                $filePath = $this->getAttachmentPath($savePath, $validMimes[$mime]);
+                $filePath = $this->getAttachmentPath($savePath, $mimeInfo['extension']);
                 $file->move(
                     pathinfo($filePath, PATHINFO_DIRNAME),
                     pathinfo($filePath, PATHINFO_BASENAME)
                 );
-                $urls[] = $this->attachmentUrl($filePath);
+                $uploads[] = [
+                    'url' => $this->attachmentUrl($filePath),
+                    'name' => $file->getClientOriginalName(),
+                    'is_image' => $mimeInfo['is_image'],
+                ];
             } else {
                 $errors[] = $file->getClientOriginalName() . ': Invalid mime type ' . $mime;
             }
         }
 
         return response()->json([
-            'urls' => $urls,
-            'errors' => $errors,
+            'uploads' => $uploads,
+            'errors'  => $errors,
         ], 201);
     }
 
@@ -569,6 +569,26 @@ class FileController extends Controller
             $filePath = $pathFile . '_' . uniqid() . '.' . $ext;
         } while (file_exists($filePath));
         return $filePath;
+    }
+
+    private function getAttachmentMimeInfo($mime)
+    {
+        $info = ['valid' => false, 'extension' => null, 'image' => null];
+
+        $validMimes = [
+            // 'mime_type' => ['extension', is_image],
+            'image/jpeg' => ['jpg', true],
+            'image/gif'  => ['gif', true],
+            'image/png'  => ['png', true],
+            'application/pdf'  => ['pdf', false],
+        ];
+        if (isset($validMimes[$mime])) {
+            $info['valid']     = true;
+            $info['extension'] = $validMimes[$mime][0];
+            $info['is_image']  = $validMimes[$mime][1];
+        }
+
+        return $info;
     }
 
     public function delete($path)
