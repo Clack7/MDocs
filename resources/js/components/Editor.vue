@@ -2,7 +2,7 @@
     <div @dragenter="dragOverlayToggle(true, $event)">
         <div class="error-alert alert alert-danger m-0 rounded-0" v-if="error != ''" @click.prevent="error = ''" v-html="error"></div>
         <div class="card border-0">
-            <path-header-component mode="editor"></path-header-component>
+            <path-header-component mode="editor" ref="pathHeaderComponent"></path-header-component>
             <div class="row no-gutters">
                 <div class="col-6" ref="editorColumn" :style="{ height: columnHeight + 'px', overflow: 'auto', 'border-right': '1px solid #ccc' }">
                     <div style="position:relative;height:100%;" ref="editorHolder">
@@ -73,6 +73,8 @@
                 path_new: this.$route.params.path || '',
                 content: '',
                 contentMarked: 'Loading...',
+                contentOriginal: '',
+                hasChanges: false,
                 saving: true,
                 applied: false,
                 editor: null,
@@ -121,7 +123,7 @@
                 onApply: this.apply,
                 onCancel: this.cancel,
                 onChange: function() {
-                    that.update(that.editor.getValue(), true);
+                    that.update(that.editor.getValue(), true, false);
                     if (draftSave) {
                         draftDebounce();
                     }  else {
@@ -162,14 +164,14 @@
                 axios.get('/api/file/' + (this.path_cur == '' ? '@empty' : this.path_cur))
                     .then((response) => {
                         this.createAction = this.path_cur == '';
-                        this.update(response.data.content, false);
+                        this.update(response.data.content, false, true);
                         this.draftContent = response.data.draft;
                         this.saving = false;
                     }).catch((error) => {
                         if (error.response.status == 404 && error.response.data.message == 'File not found.') {
                             this.createAction = true;
                             this.saving = false;
-                            this.update(this.path_new != '' ? '# ' + this.path_new.split('/').pop() + "\n\n" : '');
+                            this.update(this.path_new != '' ? '# ' + this.path_new.split('/').pop() + "\n\n" : '', false, true);
                             this.path_cur = '';
                         } else {
                             this.error = 'Server error: ' + error.response.data.message;
@@ -254,7 +256,7 @@
                     img.src = URLObj.createObjectURL(blob);
                 }
             },
-            update(content, fromEditor) {
+            update(content, fromEditor, setOriginal) {
                 this.content = content;
                 // _.throttle(function () {
                     this.contentMarked = this.$options.filters['marked'](this.content);
@@ -267,6 +269,14 @@
                         that.editor.focus();
                         that.editorUpdateFolds();
                     }, 100);
+                }
+                if (setOriginal) {
+                    this.contentOriginal = this.content;
+                }
+                var hs = this.content != this.contentOriginal;
+                if (hs != this.hasChanges) {
+                    this.hasChanges = hs;
+                    this.$refs.pathHeaderComponent.pathTitle();
                 }
             },
             editorUpdateFolds() {
@@ -337,6 +347,9 @@
                 axios.post('/api/file/' + this.path_new, { path_cur: this.path_cur, content: this.content })
                     .then(({ data }) => {
                         this.saving = false;
+                        this.contentOriginal = this.content;
+                        this.hasChanges = false;
+                        this.$refs.pathHeaderComponent.pathTitle();
                         this.$root.$emit('filesChange');
                         if (apply) {
                             this.applied = true;
@@ -377,7 +390,7 @@
             },
             loadDraft() {
                 if (this.draftContent !== null && this.draftContent != '') {
-                    this.update(this.draftContent, false);
+                    this.update(this.draftContent, false, false);
                 }
             },
             cancel() {

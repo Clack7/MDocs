@@ -25568,6 +25568,8 @@ __webpack_require__.r(__webpack_exports__);
       path_new: this.$route.params.path || '',
       content: '',
       contentMarked: 'Loading...',
+      contentOriginal: '',
+      hasChanges: false,
       saving: true,
       applied: false,
       editor: null,
@@ -25619,7 +25621,7 @@ __webpack_require__.r(__webpack_exports__);
       onApply: this.apply,
       onCancel: this.cancel,
       onChange: function onChange() {
-        that.update(that.editor.getValue(), true);
+        that.update(that.editor.getValue(), true, false);
 
         if (draftSave) {
           draftDebounce();
@@ -25665,7 +25667,7 @@ __webpack_require__.r(__webpack_exports__);
     axios.get('/api/file/' + (this.path_cur == '' ? '@empty' : this.path_cur)).then(function (response) {
       _this.createAction = _this.path_cur == '';
 
-      _this.update(response.data.content, false);
+      _this.update(response.data.content, false, true);
 
       _this.draftContent = response.data.draft;
       _this.saving = false;
@@ -25674,7 +25676,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.createAction = true;
         _this.saving = false;
 
-        _this.update(_this.path_new != '' ? '# ' + _this.path_new.split('/').pop() + "\n\n" : '');
+        _this.update(_this.path_new != '' ? '# ' + _this.path_new.split('/').pop() + "\n\n" : '', false, true);
 
         _this.path_cur = '';
       } else {
@@ -25758,7 +25760,7 @@ __webpack_require__.r(__webpack_exports__);
         img.src = URLObj.createObjectURL(blob);
       }
     },
-    update: function update(content, fromEditor) {
+    update: function update(content, fromEditor, setOriginal) {
       this.content = content; // _.throttle(function () {
 
       this.contentMarked = this.$options.filters['marked'](this.content); // }, 100),
@@ -25772,6 +25774,17 @@ __webpack_require__.r(__webpack_exports__);
           that.editor.focus();
           that.editorUpdateFolds();
         }, 100);
+      }
+
+      if (setOriginal) {
+        this.contentOriginal = this.content;
+      }
+
+      var hs = this.content != this.contentOriginal;
+
+      if (hs != this.hasChanges) {
+        this.hasChanges = hs;
+        this.$refs.pathHeaderComponent.pathTitle();
       }
     },
     editorUpdateFolds: function editorUpdateFolds() {
@@ -25865,6 +25878,10 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (_ref2) {
         var data = _ref2.data;
         _this2.saving = false;
+        _this2.contentOriginal = _this2.content;
+        _this2.hasChanges = false;
+
+        _this2.$refs.pathHeaderComponent.pathTitle();
 
         _this2.$root.$emit('filesChange');
 
@@ -25916,7 +25933,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     loadDraft: function loadDraft() {
       if (this.draftContent !== null && this.draftContent != '') {
-        this.update(this.draftContent, false);
+        this.update(this.draftContent, false, false);
       }
     },
     cancel: function cancel() {
@@ -26246,6 +26263,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['mode'],
   data: function data() {
@@ -26278,7 +26303,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$parent.$router.push('/' + this.$parent.path_new);
     },
     pathTitle: function pathTitle() {
-      document.title = (this.mode == 'editor' ? '@' : '') + (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ') + MDocs.name;
+      document.title = (this.mode == 'editor' ? this.$parent.hasChanges ? '@' : '#' : '') + (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ') + MDocs.name;
     }
   },
   filters: {
@@ -33082,7 +33107,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
 
 // exports
 
@@ -158309,7 +158334,10 @@ var render = function() {
         "div",
         { staticClass: "card border-0" },
         [
-          _c("path-header-component", { attrs: { mode: "editor" } }),
+          _c("path-header-component", {
+            ref: "pathHeaderComponent",
+            attrs: { mode: "editor" }
+          }),
           _vm._v(" "),
           _c(
             "div",
@@ -158887,7 +158915,10 @@ var render = function() {
                     ],
                     staticClass: "btn",
                     class: {
-                      "btn-success": !_vm.$parent.createAction,
+                      "btn-success":
+                        !_vm.$parent.createAction && !_vm.$parent.hasChanges,
+                      "btn-info":
+                        !_vm.$parent.createAction && _vm.$parent.hasChanges,
                       "btn-primary": _vm.$parent.createAction
                     },
                     attrs: { tabindex: "-1" },
@@ -158921,7 +158952,10 @@ var render = function() {
                     ],
                     staticClass: "btn",
                     class: {
-                      "btn-success": !_vm.$parent.createAction,
+                      "btn-success":
+                        !_vm.$parent.createAction && !_vm.$parent.hasChanges,
+                      "btn-info":
+                        !_vm.$parent.createAction && _vm.$parent.hasChanges,
                       "btn-primary": _vm.$parent.createAction
                     },
                     attrs: { tabindex: "-1" },
