@@ -29,7 +29,7 @@
         "github-markdown-css": "^3.0.1",
         "highlight.js": "^9.15.6",
         "marked": "^0.6.2",
-        "mermaid": "^8.1.0",
+        "mermaid": "^8.2.3",
         "node-emoji": "^1.10.0",
         "nomnoml": "^0.6.1",
         "vue-router": "^3.0.6",
