@@ -28,7 +28,7 @@
         "blueimp-gallery": "^2.33.0",
         "github-markdown-css": "^3.0.1",
         "highlight.js": "^9.15.6",
-        "marked": "^0.6.2",
+        "marked": "^0.7.0",
         "mermaid": "^8.1.0",
         "node-emoji": "^1.10.0",
         "nomnoml": "^0.6.1",
