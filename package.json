@@ -27,7 +27,7 @@
         "ace-builds": "^1.4.3",
         "blueimp-gallery": "^2.33.0",
         "github-markdown-css": "^3.0.1",
-        "highlight.js": "^9.15.6",
+        "highlight.js": "^10.1.2",
         "marked": "^0.6.2",
         "mermaid": "^8.1.0",
         "node-emoji": "^1.10.0",
