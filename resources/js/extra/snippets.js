@@ -1,7 +1,7 @@
 let today = new Date();
 const snippets = [
     {
-        score: 3,
+        score: 4,
         // string used for filtering
         // value: ".obj",
         // optional, allows to display a caption different from value
@@ -74,6 +74,105 @@ const snippets = [
         caption: "-Image",
         // optional, snippet that can be inseted instead of value
         snippet: "![${1:alt}](${2:src})",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "-Table",
+        // optional, snippet that can be inseted instead of value
+        snippet: "| ${1:header} | ${2:header} |\n| -- | -- |\n| ${3:content} | ${4:content} |",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "- Check ✔️",
+        // optional, snippet that can be inseted instead of value
+        snippet: ":heavy_check_mark:",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "- Cross ❌",
+        // optional, snippet that can be inseted instead of value
+        snippet: ":x:",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "- Exclamation ❗",
+        // optional, snippet that can be inseted instead of value
+        snippet: ":exclamation:",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "- Question ❓",
+        // optional, snippet that can be inseted instead of value
+        snippet: ":question:",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "- Question 2 ⁉️",
+        // optional, snippet that can be inseted instead of value
+        snippet: ":interrobang:",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "- Plus ➕",
+        // optional, snippet that can be inseted instead of value
+        snippet: ":heavy_plus_sign:",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "- Minus ➖",
+        // optional, snippet that can be inseted instead of value
+        snippet: ":heavy_minus_sign:",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 2,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
+        caption: "- Diamond 💠",
+        // optional, snippet that can be inseted instead of value
+        snippet: ":diamond_shape_with_a_dot_inside:",
         // short description
         meta: "MDocs"
     },

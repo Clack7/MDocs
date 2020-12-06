@@ -26496,6 +26496,7 @@ __webpack_require__.r(__webpack_exports__);
       path_cur: this.$route.params.path,
       content: '',
       contentMarked: 'Loading...',
+      contentImages: [],
       createAction: null,
       error: '',
       create: 0,
@@ -26601,6 +26602,7 @@ __webpack_require__.r(__webpack_exports__);
       this.minimapScrollerBottom = Math.max(0, (this.$refs.previewColumn.scrollHeight - this.$refs.previewColumn.scrollTop - this.columnHeight) * 0.1);
     },
     update: function update() {
+      this.contentImages = [];
       this.contentMarked = this.$options.filters['marked'](this.content);
       var that = this;
       setTimeout(function () {
@@ -26625,12 +26627,36 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         that.tocItems = items;
-        var imgs = $previewColumn.find('img');
-        $previewColumn.find('img').on('load', function () {
+        that.contentImages = $previewColumn.find('img');
+        that.contentImages.on('load', function () {
           that.adjustMinimapSize();
         });
+        that.contentImagesCheck();
         that.adjustMinimapSize();
       }, 200);
+    },
+    updateContentImages: function updateContentImages() {},
+    contentImagesCheck: function contentImagesCheck() {
+      for (var i = this.contentImages.length - 1; i >= 0; i--) {
+        var img = this.contentImages[i];
+        img.dataset.fixed = typeof img.dataset.fixed == 'undefined' ? 0 : img.dataset.fixed;
+
+        if (img.complete) {
+          if (img.naturalHeight === 0 && img.dataset.fixed < 2) {
+            var srcCur = img.attributes.src.nodeValue;
+            var srcNew = srcCur.split('?')[0] + '?' + new Date().getTime();
+            img.src = srcNew;
+            $(this.$refs.minimapContent).find('img[src="' + srcCur + '"]')[0].src = srcNew;
+            img.dataset.fixed++;
+          } else {
+            this.contentImages.splice(i, 1);
+          }
+        }
+      }
+
+      if (this.contentImages.length > 0) {
+        setTimeout(this.contentImagesCheck, 500);
+      }
     },
     minimapScroll: function minimapScroll(x, y) {
       var mm = $(this.$refs.minimapContent);
@@ -174354,7 +174380,8 @@ mermaid__WEBPACK_IMPORTED_MODULE_2___default.a.initialize({
 var mermaidCounter = 0;
 
 window.nomnoml = nomnoml__WEBPACK_IMPORTED_MODULE_3___default.a;
-var nomnomlDirectives = "#fill: #ECECFF; #F0F0FF\n#lineWidth: 1.5\n#fillArrows: true\n#.class: none" // remove bold
+var nomnomlDirectives = // `#fill: #ECECFF; #F0F0FF
+"#fill: #ECECFF; #F7F7FF\n#lineWidth: 1.5\n#fillArrows: true\n#.class: none" // remove bold
 ;
 var rendererCode = renderer.code;
 var graphCache = [];
@@ -174446,7 +174473,9 @@ ace_builds_src_noconflict_ext_language_tools__WEBPACK_IMPORTED_MODULE_9___defaul
     callback(null, node_emoji__WEBPACK_IMPORTED_MODULE_4___default.a.search(prefix.substring(1)).slice(0, 10).map(function (emo) {
       return {
         caption: emo.emoji + ' :' + emo.key + ':',
-        value: emo.emoji,
+        value: ':' + emo.key + ':'
+        /*emo.emoji*/
+        ,
         score: 1,
         meta: 'emoji'
       };
@@ -176197,7 +176226,7 @@ ace.define("ace/snippets", ["require", "exports", "module", "ace/lib/oop", "ace/
 __webpack_require__.r(__webpack_exports__);
 var today = new Date();
 var snippets = [{
-  score: 3,
+  score: 4,
   // string used for filtering
   // value: ".obj",
   // optional, allows to display a caption different from value
@@ -176264,6 +176293,96 @@ var snippets = [{
   caption: "-Image",
   // optional, snippet that can be inseted instead of value
   snippet: "![${1:alt}](${2:src})",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "-Table",
+  // optional, snippet that can be inseted instead of value
+  snippet: "| ${1:header} | ${2:header} |\n| -- | -- |\n| ${3:content} | ${4:content} |",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "- Check ✔️",
+  // optional, snippet that can be inseted instead of value
+  snippet: ":heavy_check_mark:",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "- Cross ❌",
+  // optional, snippet that can be inseted instead of value
+  snippet: ":x:",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "- Exclamation ❗",
+  // optional, snippet that can be inseted instead of value
+  snippet: ":exclamation:",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "- Question ❓",
+  // optional, snippet that can be inseted instead of value
+  snippet: ":question:",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "- Question 2 ⁉️",
+  // optional, snippet that can be inseted instead of value
+  snippet: ":interrobang:",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "- Plus ➕",
+  // optional, snippet that can be inseted instead of value
+  snippet: ":heavy_plus_sign:",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "- Minus ➖",
+  // optional, snippet that can be inseted instead of value
+  snippet: ":heavy_minus_sign:",
+  // short description
+  meta: "MDocs"
+}, {
+  score: 2,
+  // string used for filtering
+  // value: ".obj",
+  // optional, allows to display a caption different from value
+  caption: "- Diamond 💠",
+  // optional, snippet that can be inseted instead of value
+  snippet: ":diamond_shape_with_a_dot_inside:",
   // short description
   meta: "MDocs"
 }, {

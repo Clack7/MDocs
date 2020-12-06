@@ -1,0 +1,17 @@
+{
+    "name": "MDocs",
+    "main_path": "F:/Google Drive/Prototype/Docs",
+    "filename_regex": "[^a-zA-Z0-9-_\\. \\/áéíóúÁÉÍÓÚñÑ]",
+    "attachments": {
+        "valid_mime_types": {
+            "image/jpeg": "jpg",
+            "image/gif":  "gif",
+            "image/png":  "png",
+            "application/pdf": "pdf"
+        }
+    },
+    "vim": {
+        "enabled": false
+    },
+    "snippets": {}
+}
