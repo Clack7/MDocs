@@ -241,6 +241,9 @@
     }
   }
 }
+.ace_editor, .ace_text-input {
+  font-family: $font-family-monospaced;
+}
 .loader-overlay {
   // position: absolute;
   position: fixed;
@@ -326,7 +329,7 @@
   position:relative;
 
   input, span {
-    font-family: monaco;
+    font-family: $font-family-monospaced;
     border: 0;
     background: transparent;
     font-size:0.9rem;
@@ -345,7 +348,7 @@
   }
 }
 .path-header-extension, .path-header-title {
-  font-family: monaco;
+  font-family: $font-family-monospaced;
   border: 0;
   background: transparent;
   font-size:0.9rem;

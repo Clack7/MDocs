@@ -48,7 +48,8 @@ let mermaidCounter = 0;
 import nomnoml from 'nomnoml';
 window.nomnoml = nomnoml;
 let nomnomlDirectives =
-`#fill: #ECECFF; #F0F0FF
+// `#fill: #ECECFF; #F0F0FF
+`#fill: #ECECFF; #F7F7FF
 #lineWidth: 1.5
 #fillArrows: true
 #.class: none` // remove bold
@@ -136,7 +137,7 @@ snippetManager.addCompleter({
         // console.log('prefix', prefix);
         if (prefix.length < 2 || prefix.charAt(0) != ':') { callback(null, []); return }
         callback(null, emoji.search(prefix.substring(1)).slice(0,10).map(function(emo) {
-            return { caption: emo.emoji + ' :' + emo.key + ':', value: emo.emoji, score: 1, meta: 'emoji' };
+            return { caption: emo.emoji + ' :' + emo.key + ':', value: ':' + emo.key + ':'/*emo.emoji*/, score: 1, meta: 'emoji' };
         }));
     }
 });
@@ -150,6 +151,7 @@ snippetManager.addCompleter({
         callback(null, snippets);
     }
 });
+
 // Autocomplete paths
 // Same code as in FileController.php
 function getRelativePath(fPath, tPath) {

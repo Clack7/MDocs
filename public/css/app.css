@@ -12557,6 +12557,11 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   text-decoration: none;
 }
 
+.ace_editor,
+.ace_text-input {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
 .loader-overlay {
   position: fixed;
   top: 0;
@@ -12646,7 +12651,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 .path-header-input input,
 .path-header-input span {
-  font-family: monaco;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
   border: 0;
   background: transparent;
   font-size: 0.9rem;
@@ -12666,7 +12671,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 .path-header-extension,
 .path-header-title {
-  font-family: monaco;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
   border: 0;
   background: transparent;
   font-size: 0.9rem;

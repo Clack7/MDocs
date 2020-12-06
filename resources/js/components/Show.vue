@@ -43,6 +43,7 @@
                 path_cur: this.$route.params.path,
                 content: '',
                 contentMarked: 'Loading...',
+                contentImages: [],
                 createAction: null,
                 error: '',
                 create: 0,
@@ -142,6 +143,7 @@
                 this.minimapScrollerBottom = Math.max(0, (this.$refs.previewColumn.scrollHeight - this.$refs.previewColumn.scrollTop - this.columnHeight) * 0.1);
             },
             update() {
+                this.contentImages = [];
                 this.contentMarked = this.$options.filters['marked'](this.content);
 
                 var that = this;
@@ -165,13 +167,36 @@
                     }
                     that.tocItems = items;
 
-                    var imgs = $previewColumn.find('img');
-                    $previewColumn.find('img').on('load', function() {
+                    that.contentImages = $previewColumn.find('img');
+                    that.contentImages.on('load', function() {
                         that.adjustMinimapSize();
                     });
+                    that.contentImagesCheck();
 
                     that.adjustMinimapSize();
                 }, 200);
+            },
+            updateContentImages() {
+            },
+            contentImagesCheck() {
+                for (var i = this.contentImages.length - 1; i >= 0; i--) {
+                    var img = this.contentImages[i];
+                    img.dataset.fixed = typeof img.dataset.fixed == 'undefined' ? 0 : img.dataset.fixed;
+                    if (img.complete) {
+                        if (img.naturalHeight === 0 && img.dataset.fixed < 2) {
+                            var srcCur = img.attributes.src.nodeValue;
+                            var srcNew = srcCur.split('?')[0] + '?' + (new Date().getTime());
+                            img.src = srcNew;
+                            $(this.$refs.minimapContent).find('img[src="' + srcCur + '"]')[0].src = srcNew;
+                            img.dataset.fixed++;
+                        } else {
+                            this.contentImages.splice(i, 1);
+                        }
+                    }
+                }
+                if (this.contentImages.length > 0) {
+                    setTimeout(this.contentImagesCheck, 500);
+                }
             },
             minimapScroll(x, y) {
                 var mm = $(this.$refs.minimapContent);
