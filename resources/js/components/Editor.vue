@@ -12,6 +12,7 @@
                         <a @click.prevent="selectionComment" href="#" v-if="selection.comment">Comment Selection</a>
                         <a @click.prevent="selectionFold" href="#" v-if="selection.fold">Fold Selection</a>
                         <a @click.prevent="selectionDownloadUrl" href="#" v-if="selection.youtubeThumbnail">Youtube Thumbnail</a>
+                        <a @click.prevent="selectionDownloadUrl" href="#" v-if="selection.sketchfabThumbnail">Sketchfab Thumbnail</a>
                         <a @click.prevent="selectionDownloadUrl" href="#" v-if="selection.downloadUrl">Download Selection</a>
                         <a @click.prevent="selectionParseGraph" href="#" v-if="selection.parseGraph">Parse SVG Graph</a>
                     </div>
@@ -94,11 +95,14 @@
                     fold: false,
                     downloadUrl: false,
                     youtubeThumbnail: false,
+                    sketchfabThumbnail: false,
                     parseGraph: false,
                 },
                 regex: {
                     url: /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/,
                     youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
+                    sketchfab: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:sketchfab\.com))(\/3d-models\/)([\w\-\/]+)(\S+)?$/,
+                    // https://sketchfab.com/3d-models/superhero-3d-print-model-e9b51db613554bda897513e2fe7f3019
                     graph: /^``` (uml|graph TD|graph TB|graph BT|graph RL|graph LR|sequenceDiagram|gantt)\n(.|\n)+\n```$/
                 },
                 dragOverlay: false,
@@ -139,6 +143,7 @@
                 that.selection.fold = false;
                 that.selection.downloadUrl = false;
                 that.selection.youtubeThumbnail = false;
+                that.selection.sketchfabThumbnail = false;
                 that.selection.parseGraph = false;
                 var text = _.trim(that.editor.getSelectedText());
                 if (text != '') {
@@ -146,6 +151,10 @@
                     that.selection.fold = true;
                     if (that.regex.youtube.test(text)) {
                         that.selection.youtubeThumbnail = true;
+                        return;
+                    }
+                    if (that.regex.sketchfab.test(text)) {
+                        that.selection.sketchfabThumbnail = true;
                         return;
                     }
                     if (that.regex.url.test(text)) {
@@ -345,7 +354,7 @@
                 }
                 this.saving = true;
                 axios.post('/api/file/' + this.path_new, { path_cur: this.path_cur, content: this.content })
-                    .then(({ data }) => {
+                    .then(({ data, status }) => {
                         this.saving = false;
                         this.contentOriginal = this.content;
                         this.hasChanges = false;
@@ -361,7 +370,11 @@
                             this.createAction = false;
                             if (data.path != this.path_cur) {
                                 this.path_cur = data.path;
-                                this.$router.push('/update/' + data.path);
+                                if (this.path_cur != this.$route.params.path) {
+                                    this.$router.replace('/update/' + data.path);
+                                } else if (status == 201) {
+                                    this.$router.go();
+                                }
                             }
                         } else {
                             this.$router.push('/' + data.path);
@@ -429,12 +442,12 @@
                 var text = that.editor.getSelectedText();
                 var range = that.editor.selection.getRange();
                 var textClean = _.trim(text);
-                var doDownload = function(url) {
+                var doDownload = function(url, addClean) {
                     Vue.loaderShow();
                     axios.post('/api/file/attach-url', { path: that.path_cur, url: url })
                         .then(({ data }) => {
                             Vue.loaderHide();
-                            that.editor.session.replace(range, text.replace(textClean, '![img](' + data.url + ' "=x300")'));
+                            that.editor.session.replace(range, text.replace(textClean, (addClean ? textClean + "\n" : '') + '![img](' + data.url + ' "=x300")'));
                         }).catch((error) => {
                             Vue.loaderHide();
                             that.error = error.response.data.message;
@@ -444,11 +457,15 @@
                 if (textClean != '') {
                     if (that.regex.youtube.test(textClean)) {
                         var code = textClean.match(that.regex.youtube)[5];
-                        doDownload('https://img.youtube.com/vi/' + code + '/maxresdefault.jpg');
+                        doDownload('https://img.youtube.com/vi/' + code + '/maxresdefault.jpg', true);
+                        return;
+                    }
+                    if (that.regex.sketchfab.test(textClean)) {
+                        doDownload('sketchfab:' + textClean, true);
                         return;
                     }
                     if (that.regex.url.test(textClean)) {
-                        doDownload(textClean);
+                        doDownload(textClean, false);
                     }
                 }
             },
