@@ -25561,6 +25561,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -25589,11 +25590,14 @@ __webpack_require__.r(__webpack_exports__);
         fold: false,
         downloadUrl: false,
         youtubeThumbnail: false,
+        sketchfabThumbnail: false,
         parseGraph: false
       },
       regex: {
         url: /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/,
         youtube: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
+        sketchfab: /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:sketchfab\.com))(\/3d-models\/)([\w\-\/]+)(\S+)?$/,
+        // https://sketchfab.com/3d-models/superhero-3d-print-model-e9b51db613554bda897513e2fe7f3019
         graph: /^``` (uml|graph TD|graph TB|graph BT|graph RL|graph LR|sequenceDiagram|gantt)\n(.|\n)+\n```$/
       },
       dragOverlay: false,
@@ -25638,6 +25642,7 @@ __webpack_require__.r(__webpack_exports__);
       that.selection.fold = false;
       that.selection.downloadUrl = false;
       that.selection.youtubeThumbnail = false;
+      that.selection.sketchfabThumbnail = false;
       that.selection.parseGraph = false;
 
       var text = _.trim(that.editor.getSelectedText());
@@ -25648,6 +25653,11 @@ __webpack_require__.r(__webpack_exports__);
 
         if (that.regex.youtube.test(text)) {
           that.selection.youtubeThumbnail = true;
+          return;
+        }
+
+        if (that.regex.sketchfab.test(text)) {
+          that.selection.sketchfabThumbnail = true;
           return;
         }
 
@@ -25876,7 +25886,8 @@ __webpack_require__.r(__webpack_exports__);
         path_cur: this.path_cur,
         content: this.content
       }).then(function (_ref2) {
-        var data = _ref2.data;
+        var data = _ref2.data,
+            status = _ref2.status;
         _this2.saving = false;
         _this2.contentOriginal = _this2.content;
         _this2.hasChanges = false;
@@ -25897,7 +25908,11 @@ __webpack_require__.r(__webpack_exports__);
           if (data.path != _this2.path_cur) {
             _this2.path_cur = data.path;
 
-            _this2.$router.push('/update/' + data.path);
+            if (_this2.path_cur != _this2.$route.params.path) {
+              _this2.$router.replace('/update/' + data.path);
+            } else if (status == 201) {
+              _this2.$router.go();
+            }
           }
         } else {
           _this2.$router.push('/' + data.path);
@@ -25979,7 +25994,7 @@ __webpack_require__.r(__webpack_exports__);
 
       var textClean = _.trim(text);
 
-      var doDownload = function doDownload(url) {
+      var doDownload = function doDownload(url, addClean) {
         Vue.loaderShow();
         axios.post('/api/file/attach-url', {
           path: that.path_cur,
@@ -25987,7 +26002,7 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (_ref5) {
           var data = _ref5.data;
           Vue.loaderHide();
-          that.editor.session.replace(range, text.replace(textClean, '![img](' + data.url + ' "=x300")'));
+          that.editor.session.replace(range, text.replace(textClean, (addClean ? textClean + "\n" : '') + '![img](' + data.url + ' "=x300")'));
         })["catch"](function (error) {
           Vue.loaderHide();
           that.error = error.response.data.message;
@@ -25998,12 +26013,17 @@ __webpack_require__.r(__webpack_exports__);
       if (textClean != '') {
         if (that.regex.youtube.test(textClean)) {
           var code = textClean.match(that.regex.youtube)[5];
-          doDownload('https://img.youtube.com/vi/' + code + '/maxresdefault.jpg');
+          doDownload('https://img.youtube.com/vi/' + code + '/maxresdefault.jpg', true);
+          return;
+        }
+
+        if (that.regex.sketchfab.test(textClean)) {
+          doDownload('sketchfab:' + textClean, true);
           return;
         }
 
         if (that.regex.url.test(textClean)) {
-          doDownload(textClean);
+          doDownload(textClean, false);
         }
       }
     },
@@ -26303,7 +26323,8 @@ __webpack_require__.r(__webpack_exports__);
       this.$parent.$router.push('/' + this.$parent.path_new);
     },
     pathTitle: function pathTitle() {
-      document.title = (this.mode == 'editor' ? this.$parent.hasChanges ? '@' : '#' : '') + (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ') + MDocs.name;
+      var name = this.$parent.path_new.split('/').pop();
+      document.title = (this.mode == 'editor' ? this.$parent.hasChanges ? '@' : '#' : '') + (this.$parent.path_new == '' ? '' : name + ' ~ ' + this.$parent.path_new + ' - ') + MDocs.name;
     }
   },
   filters: {
@@ -33133,7 +33154,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Confirm modal */\n.modal-mask[data-v-1dbb5118] {\r\n    position: fixed;\r\n    z-index: 9998;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    background-color: rgba(0, 0, 0, .5);\r\n    display: table;\r\n    transition: opacity .3s ease;\n}\r\n", ""]);
 
 // exports
 
@@ -158432,6 +158453,22 @@ var render = function() {
                             }
                           },
                           [_vm._v("Youtube Thumbnail")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selection.sketchfabThumbnail
+                      ? _c(
+                          "a",
+                          {
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.selectionDownloadUrl($event)
+                              }
+                            }
+                          },
+                          [_vm._v("Sketchfab Thumbnail")]
                         )
                       : _vm._e(),
                     _vm._v(" "),

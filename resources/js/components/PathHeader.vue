@@ -61,7 +61,8 @@
                 this.$parent.$router.push('/' + this.$parent.path_new);
             },
             pathTitle() {
-                document.title = (this.mode == 'editor' ? (this.$parent.hasChanges ? '@' : '#') : '') + (this.$parent.path_new == '' ? '' : this.$parent.path_new + ' - ') + MDocs.name;
+                let name = this.$parent.path_new.split('/').pop();
+                document.title = (this.mode == 'editor' ? (this.$parent.hasChanges ? '@' : '#') : '') + (this.$parent.path_new == '' ? '' : name + ' ~ ' + this.$parent.path_new + ' - ') + MDocs.name;
             }
         },
         filters: {

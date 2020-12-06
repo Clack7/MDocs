@@ -464,8 +464,19 @@ class FileController extends Controller
             abort(400, 'Invalid file path.');
         }
 
-        // Parse Check Url valid Mime
+        // Sketchfab thumbnail
         $url = $request->request->get('url');
+        if (strpos($url, 'sketchfab:') === 0) {
+            $url = substr($url, strlen('sketchfab:'));
+            $html = file_get_contents($url);
+            if (!preg_match('/<meta property="og:image" content="([^"]+)">/', $html, $match)) {
+                abort(400, 'Invalid sketchfab url content.');
+            }
+            // Set new url to download
+            $url = $match[1];
+        }
+
+        // Parse Check Url valid Mime
         $headers = get_headers($url);
         $validMimes = [
             'image/jpeg' => 'jpg',
