@@ -592,6 +592,7 @@ class FileController extends Controller
             'image/gif'  => ['gif', true],
             'image/png'  => ['png', true],
             'application/pdf'  => ['pdf', false],
+            'application/x-zip-compressed'  => ['zip', false],
         ];
         if (isset($validMimes[$mime])) {
             $info['valid']     = true;
