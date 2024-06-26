@@ -9,7 +9,7 @@
                         <!-- <h5>Table of contents</h5> -->
                         <ul>
                             <li v-for="item in tocItems">
-                                <a :style="{ 'font-size': (16 - item.level * 0.5) + 'px'  }" href="#" @click.prevent="scrollMeTo(item.to)" v-html="('<span class=\'toc-level-marker\'>&middot;</span>').repeat(item.level) + item.name"></a>
+                                <a :style="{ 'font-size': (16 - item.level * 0.5) + 'px'  }" :href="item.to" @click.prevent="scrollMeTo(item.to)" v-html="('<span class=\'toc-level-marker\'>&middot;</span>').repeat(item.level) + item.name"></a>
                             </li>
                         </ul>
                     </div></div></div></div>
@@ -116,7 +116,14 @@
                 });
             });
             $previewColumn.on('click', 'a', function(e) {
-                if ($(this).attr('href').match(/^\.\/(.*)\.md$/) !== null) {
+                let href = $(this).attr('href');
+                // Matching permalink
+                if (href.match(/^(#.*)$/) !== null) {
+                    e.preventDefault();
+                    that.scrollMeTo(href);
+
+                // Matching md url
+                } else if (href.match(/^\.\/(.*)\.md$/) !== null) {
                     e.preventDefault();
                     that.$router.push($(this).attr('href'));
                 }
@@ -174,6 +181,15 @@
                     that.contentImagesCheck();
 
                     that.adjustMinimapSize();
+
+                    // Go to permalink
+                    if (window.location.hash != '') {
+                        for (i in that.tocItems) {
+                            if (window.location.hash == that.tocItems[i].to) {
+                                that.scrollMeTo(that.tocItems[i].to);
+                            }
+                        }
+                    }
                 }, 200);
             },
             updateContentImages() {
@@ -210,7 +226,12 @@
                 setTimeout(function() {
                     that.tocHide = false;
                 }, 500);
-                $(this.$refs.previewColumn).scrollTop($(this.$refs.previewColumn).scrollTop() + $(to).offset().top - 110);
+                let prevcol = $(this.$refs.previewColumn);
+                prevcol.scrollTop(prevcol.scrollTop() + $(to).offset().top - 110);
+
+                // Highlight link text
+                prevcol.find('.text-warning').removeClass('text-warning');
+                $(to).addClass('text-warning');
             },
             edit() {
                 this.$router.push('/update/' + this.path_cur);

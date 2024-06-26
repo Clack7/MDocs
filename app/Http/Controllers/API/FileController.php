@@ -476,31 +476,44 @@ class FileController extends Controller
             $url = $match[1];
         }
 
-        // Parse Check Url valid Mime
-        $headers = get_headers($url);
-        $validMimes = [
-            'image/jpeg' => 'jpg',
-            'image/gif'  => 'gif',
-            'image/png'  => 'png',
-        ];
-        foreach ($headers as $header) {
-            $header = strtolower($header);
-            if (strpos($header, 'content-type') !== false) {
-                $mime = trim(explode(':', $header)[1]);
-                if (isset($validMimes[$mime])) {
-                    // Set path, download and save file contents
-                    $savePath = (empty($path) ? 'new-file' : $path);
-                    $savePath = $this->dir . '/' . $savePath . '.md';
-                    $filePath = $this->getAttachmentPath($savePath, $validMimes[$mime]);
-                    $contents = file_get_contents($url);
-                    \File::put($filePath, $contents);
-                    return response()->json([
-                        'url' => $this->attachmentUrl($filePath)
-                    ], 201);
-                } else {
-                    abort(400, 'Invalid mime type: ' . $mime);
+        $extension = null;
+
+        // Youtube doesnt allow header mime sniffing, set extension as jpg
+        if (strpos($url, 'https://img.youtube.com/vi/') === 0) {
+            $extension = 'jpg';
+
+        // Sniff the mime type
+        } else {
+            // Parse Check Url valid Mime
+            $headers = get_headers($url);
+            $validMimes = [
+                'image/jpeg' => 'jpg',
+                'image/gif'  => 'gif',
+                'image/png'  => 'png',
+            ];
+            foreach ($headers as $header) {
+                $header = strtolower($header);
+                if (strpos($header, 'content-type') !== false) {
+                    $mime = trim(explode(':', $header)[1]);
+                    if (isset($validMimes[$mime])) {
+                        $extension = $validMimes[$mime];
+                    } else {
+                        abort(400, 'Invalid mime type: ' . $mime);
+                    }
                 }
             }
+        }
+
+        // Set path, download and save file contents
+        if (!empty($extension)) {
+            $savePath = (empty($path) ? 'new-file' : $path);
+            $savePath = $this->dir . '/' . $savePath . '.md';
+            $filePath = $this->getAttachmentPath($savePath, $extension);
+            $contents = file_get_contents($url);
+            \File::put($filePath, $contents);
+            return response()->json([
+                'url' => $this->attachmentUrl($filePath)
+            ], 201);
         }
 
         abort(400, 'Invalid url.');
@@ -554,10 +567,12 @@ class FileController extends Controller
                 $savePath = (empty($path) ? 'new-file' : $path);
                 $savePath = $this->dir . '/' . $savePath . '.md';
                 $filePath = $this->getAttachmentPath($savePath, $mimeInfo['extension']);
-                $file->move(
-                    pathinfo($filePath, PATHINFO_DIRNAME),
-                    pathinfo($filePath, PATHINFO_BASENAME)
-                );
+                // Fix directory permissions bug
+                // $file->move(
+                //     pathinfo($filePath, PATHINFO_DIRNAME),
+                //     pathinfo($filePath, PATHINFO_BASENAME)
+                // );
+                \File::move($file->getPathname(), pathinfo($filePath, PATHINFO_DIRNAME) . '/' . pathinfo($filePath, PATHINFO_BASENAME));
                 $uploads[] = [
                     'url' => $this->attachmentUrl($filePath),
                     'name' => $file->getClientOriginalName(),
@@ -593,6 +608,7 @@ class FileController extends Controller
             'image/png'  => ['png', true],
             'application/pdf'  => ['pdf', false],
             'application/x-zip-compressed'  => ['zip', false],
+            'message/rfc822'  => ['mhtml', false],
         ];
         if (isset($validMimes[$mime])) {
             $info['valid']     = true;

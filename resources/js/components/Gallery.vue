@@ -38,7 +38,8 @@
                     });
                 });
                 var gallery = blueimp.Gallery(list, {
-                    index: index
+                    index: index,
+                    transitionSpeed: 0 //No animation
                 });
             });
         }

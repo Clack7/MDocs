@@ -2,7 +2,7 @@
     <div class="w-100 position-relative">
         <input ref="searchInput" v-model="query" @input="search()" :class="{ 'text-success': loading }" class="search-input form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" v-shortkey.native.focus="['alt', 'f']" v-on:keydown.down="resultFocus(true, $event)" v-on:keydown.tab.prevent="resultFocus(true, $event)" v-on:keydown.up="resultFocus(false, $event)" v-on:keydown.enter="goFocus()">
         <div class="search-autocomplete" v-if="showResults">
-            <a href="#" v-for="(result, index) in results" :key="index" @click.prevent="go(result.path)" :class="{ active: focusIndex == index }">
+            <a v-for="(result, index) in results" :key="index" :href="result.path" @click.prevent="go(result.path)" :class="{ active: focusIndex == index }">
                 <div v-html="highlightQuery(result.path) + '<span>.md</span>'"></div>
                 <p v-for="match in result.match" v-html="highlightQuery(match)"></p>
             </a>
