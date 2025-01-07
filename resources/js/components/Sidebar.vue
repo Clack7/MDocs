@@ -1,6 +1,6 @@
 <template>
     <nav class="col-md-3 col-lg-2 d-none d-md-block bg-light sidebar">
-        <div class="sidebar-sticky">
+        <div class="sidebar-sticky" ref="sidebarContainer">
             <ul class="nav flex-column">
                 <li v-for="file in levels" class="nav-item" @click="toggleCollapse(file)" v-if="file.show">
                     <span class="nav-link sidebar-parent" v-if="!file.file" v-html="levelName(file)" :class="{ 'child-active': routePath.indexOf(file.path) == 0 && file.path != routePath, 'parent-collapsed': collapsed.indexOf(file.path) >= 0 }"></span>
@@ -40,6 +40,11 @@
                 return '';
             }
         },
+        watch: {
+            routePath(newVal, oldVal) {
+                this.scrollToActive();
+            },
+        },
         methods: {
             load() {
                 axios.get('/api/file')
@@ -65,6 +70,7 @@
                         levelFill(response.data.tree, 0);
                         this.levels = levels;
                         this.updateCollapsedShow();
+                        this.scrollToActive();
                     }).catch((error) => {
                         Vue.handleAxiosError(error);
                     });
@@ -111,7 +117,24 @@
                         }
                     }
                 }
-            }
+            },
+            scrollToActive() {
+                console.log('scroll to active');
+                let sidebar = $(this.$refs.sidebarContainer);
+                // Let some time to update the active link
+                setTimeout(function() {
+                    let link = sidebar.find('.nav-link.active:first');
+                    if (link.length > 0) {
+                        let sidebarRect = sidebar[0].getBoundingClientRect();
+                        let linkRect = link[0].getBoundingClientRect();
+                        let top = linkRect.top - sidebarRect.top + sidebar[0].scrollTop - (sidebar[0].clientHeight / 3) + (link[0].offsetHeight/* / 2*/);
+
+                        // Apply the scroll movement
+                        sidebar.css('scroll-behavior', 'smooth');
+                        sidebar[0].scrollTo(0, top);
+                    }
+                }, 50);
+            },
         }
     }
 </script>
