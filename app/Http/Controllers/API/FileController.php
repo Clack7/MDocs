@@ -30,11 +30,54 @@ class FileController extends Controller
             }
             $path = str_replace('\\', '/', $file->getRelativePathname());
             $path = substr($path, 0, -3);
-            $list[strtolower($path)] = [
-                'path' => $path
-            ];
+            $values = ['path' => $path, 'is_index' => false];
+
+            // Handle special jekyll site
+            if (config('mdocs.type') == 'jekyll') {
+                $contents = $file->getContents();
+                $nav_order = null;
+                if (preg_match('/nav_order: (\d+)/', $contents, $match)) {
+                    $nav_order = $match[1];
+                }
+
+                // Add nav order to the list name
+                $parts = explode('/', $values['path']);
+                $title = array_pop($parts);
+                $isIndex = $title == 'index';
+                if (preg_match('/title: "(.+)"/', $contents, $match)) {
+                    $title = str_replace('/', '&#47;', $match[1]);
+                }
+                $title = $nav_order ? $nav_order . ' - ' . $title : $title;
+                $values['name'] = $title;
+
+                // Save values to sort
+                $values['nav_order'] = $nav_order ? $nav_order : 99999;
+                $values['is_index'] = $isIndex;
+            }
+
+            // Add to list
+            $sortKey = strtolower($values['path']);
+            $values['sort_key'] = $sortKey;
+            $list[$sortKey] = $values;
         }
-        ksort($list);
+
+        // Order by jekyll nav_sort or by path
+        if (config('mdocs.type') == 'jekyll') {
+            usort($list, function ($a, $b) {
+                // Sort if is index
+                if ($a['is_index'] != $b['is_index']) {
+                    return $a['is_index'] < $b['is_index'] ? 1 : 0;
+                }
+                // First sort by age (ascending)
+                if ($a['nav_order'] !== $b['nav_order']) {
+                    return $a['nav_order'] <=> $b['nav_order'];
+                }
+                // If ages are equal, sort by name (ascending)
+                return strcmp($a['sort_key'], $b['sort_key']);
+            });
+        } else {
+            ksort($list);
+        }
 
         // Build tree
         $tree = [];
@@ -47,16 +90,20 @@ class FileController extends Controller
                 // Check part exists in map and create
                 if (!isset($children[strtolower($part)])) {
                     $children[strtolower($part)] = [
-                        'name'     => $part,
+                        'name'     => isset($file['name']) ? $file['name'] : $part,
                         'path'     => implode('/', $path),
                         'file'     => false,
                         'children' => [],
                     ];
                 }
 
-                // ADd path to last part
+                // Add path to last part
                 if ($key == count($parts) - 1) {
-                    $children[strtolower($part)]['file'] = true;
+                    $child =& $children[strtolower($part)];
+                    $child['file'] = true;
+                    if ($file['is_index']) {
+                        $child['name'] = '**index**';
+                    }
 
                 // Continue in next part
                 } else {
@@ -67,6 +114,11 @@ class FileController extends Controller
         $treeArrayValues = function($tree) use (&$treeArrayValues) {
             foreach ($tree as $key => $val) {
                 $tree[$key]['children'] = $treeArrayValues($val['children']);
+            }
+            if (config('mdocs.type') == 'jekyll') {
+                usort($tree, function ($a, $b) {
+                    return strcmp($a['name'], $b['name']);
+                });
             }
             return array_values($tree);
         };

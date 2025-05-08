@@ -106,11 +106,27 @@ marked.setOptions({
 
 // Emojis
 import emoji from 'node-emoji';
+// Additional emoji filters
+let emoadd = {
+    'v': 'heavy_check_mark',
+    'w': 'warning',
+    'i': 'information_source',
+    '!': 'exclamation',
+};
 import hljs from 'highlight.js';
 // Add filter
 Vue.filter('marked', function(input) {
+    // Replace emojis
+    for (let i in emoadd) {
+        input = input.replaceAll(':' + i + ':', ':' + emoadd[i] + ':')
+    }
     const replacer = (match) => emoji.emojify(match);
     input = input.replace(/(:.*:)/g, replacer);
+
+    // Replace from matter
+    input = input.replace(/^---[\s\S]*?---/g,  match => `<pre>${match}</pre>`);
+
+    // Format markdown
     return marked(input, {
         gfm: true,
         breaks: true,
@@ -136,7 +152,15 @@ snippetManager.addCompleter({
     getCompletions: function(editor, session, pos, prefix, callback) {
         // console.log('prefix', prefix);
         if (prefix.length < 2 || prefix.charAt(0) != ':') { callback(null, []); return }
-        callback(null, emoji.search(prefix.substring(1)).slice(0,10).map(function(emo) {
+        let emosearch = prefix.substring(1)
+        let emoreplace = emosearch
+        if (typeof emoadd[emosearch] != 'undefined') {
+            emosearch = emoadd[emosearch]
+        }
+        callback(null, emoji.search(emosearch).slice(0,10).map(function(emo) {
+            if (emosearch != emoreplace) {
+                emo.key = emoreplace
+            }
             return { caption: emo.emoji + ' :' + emo.key + ':', value: ':' + emo.key + ':'/*emo.emoji*/, score: 1, meta: 'emoji' };
         }));
     }
@@ -221,11 +245,12 @@ snippetManager.addCompleter({
             callback(null, []); return;
         }
         // Display list
+        let ext = ['jekyll'].includes(window.MDocs.type) ? '' : '.md';
         for (i in window.MDocs.files) {
             parts = window.MDocs.files[i].path.split('/');
             list.push({
                 caption: '/' + window.MDocs.files[i].path,
-                value: '[' + parts[parts.length - 1] + '](' + rawurlencode(getRelativePath(path, window.MDocs.files[i].path)).replace(/%2F/g, '/') + '.md)',
+                value: '[' + parts[parts.length - 1] + '](' + rawurlencode(getRelativePath(path, window.MDocs.files[i].path)).replace(/%2F/g, '/') + ext + ')',
                 score: 1,
                 meta: 'MDocs'
             });

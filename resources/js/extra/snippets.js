@@ -5,6 +5,17 @@ const snippets = [
         // string used for filtering
         // value: ".obj",
         // optional, allows to display a caption different from value
+        caption: "--- Front Matter",
+        // optional, snippet that can be inseted instead of value
+        snippet: "---\ntitle: \"${1:Title}\"\n---\n\n${0}",
+        // short description
+        meta: "MDocs"
+    },
+    {
+        score: 4,
+        // string used for filtering
+        // value: ".obj",
+        // optional, allows to display a caption different from value
         caption: "-** Bold",
         // optional, snippet that can be inseted instead of value
         snippet: "**${1:Text}** ${0}",

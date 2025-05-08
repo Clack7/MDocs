@@ -57,7 +57,8 @@
         };
         window.MDocs = {
             name: '{{ config('app.name', 'Laravel') }}',
-            char_regex: '{{ config('mdocs.char_regex') }}'
+            char_regex: '{{ config('mdocs.char_regex') }}',
+            type: '{{ config('mdocs.type') }}',
         };
     </script>
 </body>

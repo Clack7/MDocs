@@ -1,5 +1,7 @@
 <?php
 
+$mdocs = require('mdocs.php');
+
 return [
 
     /*
@@ -13,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => $mdocs['name'], //env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
