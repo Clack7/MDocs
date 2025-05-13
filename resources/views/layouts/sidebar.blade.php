@@ -18,7 +18,11 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
+    @if(config('mdocs.theme') == 'dark')
+    <link href="{{ asset('css/app-dark.css') }}" rel="stylesheet">
+    @else
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @endif
 </head>
 <body>
     <div id="app">
@@ -59,6 +63,7 @@
             name: '{{ config('app.name', 'Laravel') }}',
             char_regex: '{{ config('mdocs.char_regex') }}',
             type: '{{ config('mdocs.type') }}',
+            theme: '{{ config('mdocs.theme') }}',
         };
     </script>
 </body>

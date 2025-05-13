@@ -43,10 +43,11 @@ class HostConfig
         // Search every index until host match
         $index = 0;
         while (true) {
-            $hostKey = "MDOCS_{$index}_HOST";
-            $dirKey  = "MDOCS_{$index}_DIR";
-            $nameKey = "MDOCS_{$index}_NAME";
-            $typeKey = "MDOCS_{$index}_TYPE";
+            $hostKey  = "MDOCS_{$index}_HOST";
+            $dirKey   = "MDOCS_{$index}_DIR";
+            $nameKey  = "MDOCS_{$index}_NAME";
+            $themeKey = "MDOCS_{$index}_THEME";
+            $typeKey  = "MDOCS_{$index}_TYPE";
             $configuredHost = env($hostKey);
 
             // If not valid host index, stop searching
@@ -57,9 +58,10 @@ class HostConfig
             // If host found return array data
             if ($configuredHost === $host) {
                 return [
-                    'dir'  => env($dirKey),
-                    'name' => env($nameKey),
-                    'type' => env($typeKey),
+                    'dir'   => env($dirKey),
+                    'name'  => env($nameKey),
+                    'theme' => env($themeKey),
+                    'type'  => env($typeKey),
                 ];
             }
 

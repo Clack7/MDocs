@@ -47,9 +47,15 @@ mermaid.initialize({
 let mermaidCounter = 0;
 import nomnoml from 'nomnoml';
 window.nomnoml = nomnoml;
-let nomnomlDirectives =
-// `#fill: #ECECFF; #F0F0FF
-`#fill: #ECECFF; #F7F7FF
+let nomnomlColors =
+`#fill: #ECECFF; #DBDBFF
+#stroke: #33322E`;
+if (['dark'].includes(window.MDocs.theme)) {
+    nomnomlColors =
+`#fill: #264273; #225699
+#stroke: #e1e1e1`;
+}
+let nomnomlDirectives = nomnomlColors + `
 #lineWidth: 1.5
 #fillArrows: true
 #.class: none` // remove bold

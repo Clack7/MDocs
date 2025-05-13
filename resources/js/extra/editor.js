@@ -1,4 +1,15 @@
 /**
+ * Custom ace theme
+ */
+ace.define("ace/theme/mdocs",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
+    exports.isDark = ['dark'].includes(window.MDocs.theme);//false;
+    exports.cssClass = "ace-mdocs";
+    exports.cssText = ""; // Loaded on css files
+    var dom = require("../lib/dom");
+    dom.importCssString(exports.cssText, exports.cssClass);
+});
+
+/**
  * Editor init and config
  */
 export default  {
@@ -43,7 +54,7 @@ export default  {
 
             // Init ace editor
             this.instance = ace.edit("mdEditor", {
-                theme: "ace/theme/chrome",
+                theme: "ace/theme/mdocs",
                 mode: "ace/mode/markdown",
                 wrap: true,
                 // minLines: 5,

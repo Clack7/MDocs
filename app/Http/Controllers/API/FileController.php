@@ -474,7 +474,7 @@ class FileController extends Controller
         }
         $filePath = $this->dir . '/' . $this->pathDecode($path) . '.md_' . $key . '.' . $ext;
         if (!\File::exists($filePath)) {
-            abort(400, 'File not found.');
+            abort(400, 'File not found. ' . $filePath);
         }
         return response()->file($filePath);
     }

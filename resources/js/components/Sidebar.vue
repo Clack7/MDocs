@@ -1,5 +1,5 @@
 <template>
-    <nav class="col-md-3 col-lg-2 d-none d-md-block bg-light sidebar">
+    <nav class="col-md-3 col-lg-2 d-none d-md-block sidebar">
         <div class="sidebar-sticky" ref="sidebarContainer">
             <ul class="nav flex-column">
                 <li v-for="file in levels" class="nav-item" @click="toggleCollapse(file)" v-if="file.show">
@@ -119,7 +119,6 @@
                 }
             },
             scrollToActive() {
-                console.log('scroll to active');
                 let sidebar = $(this.$refs.sidebarContainer);
                 // Let some time to update the active link
                 setTimeout(function() {
@@ -127,7 +126,7 @@
                     if (link.length > 0) {
                         let sidebarRect = sidebar[0].getBoundingClientRect();
                         let linkRect = link[0].getBoundingClientRect();
-                        let top = linkRect.top - sidebarRect.top + sidebar[0].scrollTop - (sidebar[0].clientHeight / 3) + (link[0].offsetHeight/* / 2*/);
+                        let top = linkRect.top - sidebarRect.top + sidebar[0].scrollTop - (sidebar[0].clientHeight / 2) + (link[0].offsetHeight/* / 2*/);
 
                         // Apply the scroll movement
                         sidebar.css('scroll-behavior', 'smooth');

@@ -11,7 +11,8 @@ class CheckHostConfig
     {
         // Validate if host config is found and loaded
         if (empty(config('mdocs.dir'))) {
-            abort(500, 'MDocs host configuration not found.');
+            $host = empty($_SERVER['HTTP_HOST']) ? 'empty' : $_SERVER['HTTP_HOST'];
+            abort(400, 'MDocs configuration for host "' . $host . '" not found.');
         }
 
         return $next($request);

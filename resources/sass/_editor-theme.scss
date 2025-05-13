@@ -1,0 +1,129 @@
+.ace-mdocs .ace_gutter {
+    background: $ace-gutter-bg;
+    color: $ace-gutter-color;
+    overflow : hidden;
+}
+.ace-mdocs .ace_print-margin {
+    width: 1px;
+    background: $ace-print-margin-bg;
+}
+.ace-mdocs {
+    background-color: $ace-bg;
+    color: $ace-color;
+}
+.ace-mdocs .ace_cursor {
+    color: $ace-cursor-color;
+}
+.ace-mdocs.ace_editor.ace_autocomplete {
+    color: $ace-autocomplete-color;
+}
+.ace-mdocs.normal-mode .ace_hidden-cursors .ace_cursor {
+    background-color: transparent;
+    border-top-color: $ace-cursor-border;
+    border-right-color: $ace-cursor-border;
+    border-bottom-color: $ace-cursor-border;
+    border-left-color: $ace-cursor-border;
+}
+.ace-mdocs .ace_invisible {
+    color: rgb(191, 191, 191);
+}
+.ace-mdocs .ace_constant.ace_buildin {
+    color: rgb(88, 72, 246);
+}
+.ace-mdocs .ace_constant.ace_language {
+    color: rgb(88, 92, 246);
+}
+.ace-mdocs .ace_constant.ace_library {
+    color: rgb(6, 150, 14);
+}
+.ace-mdocs .ace_invalid {
+    background-color: rgb(153, 0, 0);
+    color: white;
+}
+.ace-mdocs .ace_fold {
+}
+.ace-mdocs .ace_support.ace_function {
+    color: $ace-function;
+}
+.ace-mdocs .ace_support.ace_constant {
+    color: rgb(6, 150, 14);
+}
+.ace-mdocs .ace_support.ace_type,
+.ace-mdocs .ace_support.ace_class
+.ace-mdocs .ace_support.ace_other {
+    color: rgb(109, 121, 222);
+}
+.ace-mdocs .ace_variable.ace_parameter {
+    font-style:italic;
+    color:#FD971F;
+}
+.ace-mdocs .ace_keyword.ace_operator {
+    color: $ace-operator;
+}
+.ace-mdocs .ace_comment {
+    color: $ace-comment;
+}
+.ace-mdocs .ace_comment.ace_doc {
+    color: $ace-comment;
+}
+.ace-mdocs .ace_comment.ace_doc.ace_tag {
+    color: $ace-comment;
+}
+.ace-mdocs .ace_constant.ace_numeric {
+    color: rgb(0, 0, 205);
+}
+.ace-mdocs .ace_variable {
+    color: $ace-variable;
+}
+.ace-mdocs .ace_xml-pe {
+    color: rgb(104, 104, 91);
+}
+.ace-mdocs .ace_entity.ace_name.ace_function {
+    color: #0000A2;
+}
+.ace-mdocs .ace_heading {
+    color: $ace-heading;
+}
+.ace-mdocs .ace_list {
+    color: $ace-list;
+}
+.ace-mdocs .ace_marker-layer .ace_selection {
+    background: $ace-selection-bg;
+}
+.ace-mdocs .ace_marker-layer .ace_step {
+    background: rgb(252, 255, 0);
+}
+.ace-mdocs .ace_marker-layer .ace_stack {
+    background: rgb(164, 229, 101);
+}
+.ace-mdocs .ace_marker-layer .ace_bracket {
+    margin: -1px 0 0 -1px;
+    border: 1px solid rgb(192, 192, 192);
+}
+.ace-mdocs .ace_marker-layer .ace_active-line {
+    background: $ace-active-line;
+}
+.ace-mdocs .ace_gutter-active-line {
+    background-color : #dcdcdc;
+}
+.ace-mdocs .ace_marker-layer .ace_selected-word {
+    background: $ace-selected-word-bg;
+    border: 1px solid $ace-selected-word-border;
+}
+.ace-mdocs .ace_storage,
+.ace-mdocs .ace_keyword,
+.ace-mdocs .ace_meta.ace_tag {
+    color: $ace-tag;
+}
+.ace-mdocs .ace_string.ace_regex {
+    color: rgb(255, 0, 0)
+}
+.ace-mdocs .ace_string {
+    color: $ace-string;
+}
+.ace-mdocs .ace_entity.ace_other.ace_attribute-name {
+    color: $ace-attribute-name;
+}
+.ace-mdocs .ace_indent-guide {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==") right repeat-y;
+}

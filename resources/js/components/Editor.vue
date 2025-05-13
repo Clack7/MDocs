@@ -4,7 +4,7 @@
         <div class="card border-0">
             <path-header-component mode="editor" ref="pathHeaderComponent"></path-header-component>
             <div class="row no-gutters">
-                <div class="col-6" ref="editorColumn" :style="{ height: columnHeight + 'px', overflow: 'auto', 'border-right': '1px solid #ccc' }">
+                <div class="col-6 editor-column" ref="editorColumn" :style="{ height: columnHeight + 'px', overflow: 'auto' }">
                     <div style="position:relative;height:100%;" ref="editorHolder">
                         <!-- <pre id="editor"></pre> -->
                     </div>
