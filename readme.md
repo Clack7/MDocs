@@ -1,71 +1,68 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# MDocs
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+A lightweight web application for creating and managing Markdown files for documentation or personal notes, stored directly on disk with no database required.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* Create and edit Markdown files through a clean web interface
+* Read and write files directly on the filesystem
+* Automatically create folders based on URL paths
+* Support multiple documentation sites from a single installation
+* Upload files via drag-and-drop or paste images directly into the editor
+* Attachments use relative paths for better portability
+* Live preview editor with autocomplete for snippets, emojis, and file links
+* No database required
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<img src="./public/images/docs/mdocs_navigation.gif" alt="Navigation" style="width:70%;margin-bottom:10px;">
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+> Easy navigation with sidebar, dynamic table of contents, image viewer, and minimap.
 
-## Learning Laravel
+<img src="./public/images/docs/mdocs_create.gif" alt="Create" style="width:70%;margin-bottom:10px;">
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+> Quickly create or edit files by entering a path and starting to write.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost you and your team's skills by digging into our comprehensive video library.
+## Requirements
 
-## Laravel Sponsors
+* PHP 7.4 or higher
+* Web server (e.g., Apache, Nginx)
+* Composer
+* Node.js and npm
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Installation
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
+1. Clone the repository.
+2. Run `composer install` and `npm install`.
+3. Create a `.env` file (see **Configuration** below).
+4. Run `php artisan serve` or configure a virtual host.
 
-## Contributing
+## Configuration
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Add the following keys to your `.env` file:
 
-## Security Vulnerabilities
+| Name              | Description                                     |
+| ----------------- | ----------------------------------------------- |
+| `MDOCS_{X}_HOST`  | Hostname used to identify the site              |
+| `MDOCS_{X}_DIR`   | Path to the directory where Markdown files live |
+| `MDOCS_{X}_NAME`  | Display name of the site                        |
+| `MDOCS_{X}_THEME` | Site theme: accepts `"light"` or `"dark"`       |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Notes
 
-## License
+* Replace `{X}` with an incremental site index (e.g., 0, 1, 2...)
+* Indices must be **incremental and contiguous**
+* Make sure each `MDOCS_{X}_DIR` path is writable by the web server
+* For local development, you can use the host from `php artisan serve` (e.g., `127.0.0.1:8000`)
 
-The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Shortcuts
+
+| Shortcut | Action                                      |
+| -------- | ------------------------------------------- |
+| Alt + F  | **Global:** Focus the search input          |
+| Alt + N  | **Global:** Focus the filepath input        |
+| Alt + E  | **Content:** Edit the current file          |
+| Alt + S  | **Editor:** Save and close the editor       |
+| Ctrl + S | **Editor:** Save without closing the editor |
+| Alt + C  | **Editor:** Cancel editing                  |
+| /        | **Editor:** Open file link autocomplete     |
+| -        | **Editor:** Open snippet autocomplete       |
+| :        | **Editor:** Open emoji autocomplete         |
